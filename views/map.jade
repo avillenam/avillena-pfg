@@ -1,0 +1,437 @@
+extends layout
+
+block content
+    div#toolbar.intro.container-fluid.col-md-12
+        div.col-md-8
+        div.col-md-4.hidden-xs(style="padding:0px;") Geolocalización de objetos móviles
+    .map#map
+    #mouse-position
+    #popup.ol-popup
+        a#popup-closer.ol-popup-closer(href='#')
+        #popup-content
+    div.col-md-1(style="position: absolute; right: 1em; top: 60px;")
+        button.btn.btn-primary.btn-block(type="button" data-toggle="modal" data-target="#formVehicle" style="position: absolute; right: 3em; top:60 px;") Add Vehicle
+    div.col-md-1(style="position: absolute; right: 1em; top: 95px;")
+        button.btn.btn-primary.btn-block(type="button" data-toggle="modal" data-target="#formDriver" style="position: absolute; right: 3em; top:60 px;") Add Driver
+    div.col-md-1(style="position: absolute; right: 1em; top: 130px;")
+        button.btn.btn-primary.btn-block(type="button" data-toggle="modal" data-target="#formVehicleDriver" style="position: absolute; right: 3em; top:60 px;") Vehicle-Driver
+
+    a.toggleSettings
+        i.fa.fa-bars
+    div#tools
+        header.logoHeader Panel de búsqueda
+        .panel.with-nav-tabs.panel-default
+            .panel-heading
+                ul.nav.nav-tabs
+                    li.active
+                        a#tab-drivers(href='#tab_drivers_results', data-toggle='tab') Conductores
+                    li
+                        a#tab-vehicles(href='#tab_vehicles_results', data-toggle='tab') Vehículos
+            .panel-body
+                .tab-content
+                    #tab_drivers_results.tab-pane.fade.in.active
+                        div#drivers_results
+                    #tab_vehicles_results.tab-pane.fade
+                        div#vehicles_results
+
+    // Modal Vehicle
+    #formVehicle.modal.fade(tabindex='-1', role='dialog', aria-labelledby='formVehicleLabel')
+        .modal-dialog(role='document')
+            .modal-content
+                form(method="post" action="/vehicle")
+                    .modal-header
+                        button.close(type='button', data-dismiss='modal', aria-label='Close')
+                            span(aria-hidden='true') ×
+                        h4#myVehicleLabel.modal-title Add Vehicle
+                    .modal-body
+                        .form-group
+                            label Vehicle type
+                            select.form-control(type="text" name="type")
+                                option(value="Car") Car
+                                option(value="Van") Van
+                                option(value="Truck") Truck
+                                option(value="Bike") Bike
+                                option(value="Motorbike") Motorbike
+                                option(value="Electric Scooter") Electric Scooter
+                        .form-group
+                            label Brand
+                            input.form-control(type="text" name="brand")
+                        .form-group
+                            label Model
+                            input.form-control(type="text" name="model")
+                        .form-group
+                            label Number of passengers
+                            input.form-control(type="number" name="passengers")
+                        .form-group
+                            label Fuel Type
+                            select.form-control(type="text" name="fuel")
+                                option(value="Diesel") Diesel
+                                option(value="Gas") Gas
+                        .form-group
+                            label Available
+                            select.form-control(type="text" name="available")
+                                option(value="true") True
+                                option(value="false") False
+                    .modal-footer
+                        button.btn.btn-default(type='button', data-dismiss='modal') Close
+                        input.btn.btn-primary(type='submit' value="Save")
+
+    // Modal Driver
+    #formDriver.modal.fade(tabindex='-1', role='dialog', aria-labelledby='formDriverLabel')
+        .modal-dialog(role='document')
+            .modal-content
+                form(method="post" action="/driver")
+                    .modal-header
+                        button.close(type='button', data-dismiss='modal', aria-label='Close')
+                            span(aria-hidden='true') ×
+                        h4#myDriverLabel.modal-title Add Driver
+                    .modal-body
+                        .form-group
+                            label Name
+                            input.form-control(type="text" name="name")
+                        .form-group
+                            label Surname
+                            input.form-control(type="text" name="surname")
+                        .form-group
+                            label Birth Date
+                            input.form-control(type="date" name="birthdate")
+                        .form-group
+                            label Genre
+                            select.form-control(type="text" name="genre")
+                                option(value="Male") Male
+                                option(value="Female") Female
+                        .form-group
+                            label Mobile Number
+                            input.form-control(type="tel" name="mobile_number")
+                        .form-group
+                            label Email
+                            input.form-control(type="email" name="email")
+                        .form-group
+                            label Available
+                            select.form-control(type="text" name="available")
+                                option(value="true") True
+                                option(value="false") False
+                    .modal-footer
+                        button.btn.btn-default(type='button', data-dismiss='modal') Close
+                        input.btn.btn-primary(type='submit' value="Save")
+    // Modal Driver
+    #formVehicleDriver.modal.fade(tabindex='-1', role='dialog', aria-labelledby='formVehicleDriverLabel')
+        .modal-dialog(role='document')
+            .modal-content
+                form(method="post" action="/vehicleDriver")
+                    .modal-header
+                        button.close(type='button', data-dismiss='modal', aria-label='Close')
+                            span(aria-hidden='true') ×
+                        h4#myVehicleDriverLabel.modal-title Add Driver
+                    .modal-body
+                        .form-group
+                            label Vehicle
+                            input.form-control(type="text" name="id_vehicle")
+                        .form-group
+                            label Driver
+                            input.form-control(type="text" name="id_driver")
+                    .modal-footer
+                        button.btn.btn-default(type='button', data-dismiss='modal') Close
+                        input.btn.btn-primary(type='submit' value="Save")
+    //form.flotante(method="post" action="/coords")
+    //    .input-group.flex-nowrap.col-12
+    //        .input-group-prepend
+    //            span.input-group-text Id
+    //        input(type="text" id='identifier' class="form-control" placeholder="Id")
+    //    .input-group.flex-nowrap.col-12
+    //        .input-group-prepend
+    //            span.input-group-text Coord X
+    //        input(type="text" id='coord_x' class="form-control" placeholder="Coord X")
+    //    .input-group.flex-nowrap.col-12
+    //        .input-group-prepend
+    //            span.input-group-text Coord Y
+    //        input(type="text" id='coord_y' class="form-control" placeholder="Coord Y")
+    //    .input-group.flex-nowrap.col-12
+    //        .input-group-prepend
+    //            span.input-group-text fecha
+    //        input(type="text/javascript" id='fecha' class="form-control" placeholder="Fecha")
+    //    input(type="submit" value="Send")
+    script(type='text/javascript').
+        $(document).ready(function() {
+            //import {dibujaPosicion} from '../routes/modules/common'
+            // import TileWMS from 'https://github.com/openlayers/openlayers/blob/master/src/ol/source/TileWMS.js';
+            var projection = ol.proj.get('EPSG:3857');
+            var projectionExtent = projection.getExtent();
+            var size = ol.extent.getWidth(projectionExtent) / 256;
+            var resolutions = new Array(14);
+            var matrixIds = new Array(14);
+            var numResultados = 0;
+            for (var z = 0; z < 22; ++z) {
+                // generate resolutions and matrixIds arrays for this WMTS
+                resolutions[z] = size / Math.pow(2, z);
+                matrixIds[z] = z;
+            }
+            ;
+
+
+            var tileGrid = new ol.tilegrid.WMTS({
+                origin: ol.extent.getTopLeft(projectionExtent),
+                resolutions: resolutions,
+                matrixIds: matrixIds
+            });
+
+
+            const source = new ol.source.Vector;
+            var vectorLayer = new ol.layer.Vector({
+                source: source
+            });
+
+            // var wmsSource = new TileWMS({
+            //     url: 'http://ows.mundialis.de/services/service?',
+            //     params: {'LAYERS': 'TOPO-OSM-WMS'},
+            //     crossOrigin: 'anonymous'
+            // });
+
+            var osm = new ol.layer.Tile({
+                source: new ol.source.OSM()
+            });
+
+
+            var pnoaWmts = new ol.layer.Tile({
+                opacity: 0.7,
+                source: new ol.source.WMTS({
+                    url: 'http://www.ign.es/wmts/pnoa-ma',
+                    layer: 'OI.OrthoimageCoverage',
+                    matrixSet: 'EPSG:3857',
+                    format: 'image/jpeg',
+                    projection: projection,
+                    tileGrid: tileGrid,
+                    style: 'default',
+                    wrapX: true
+                })
+            });
+
+            /**
+             * Elements that make up the popup.
+             */
+            var container = document.getElementById('popup');
+            var content = document.getElementById('popup-content');
+            var closer = document.getElementById('popup-closer');
+
+
+            /**
+             * Create an overlay to anchor the popup to the map.
+             */
+            var overlay = new ol.Overlay({
+                element: container,
+                autoPan: true,
+                autoPanAnimation: {
+                    duration: 250
+                }
+            });
+            /**
+             * Add a click handler to hide the popup.
+             * @return {boolean} Don't follow the href.
+             */
+            closer.onclick = function () {
+                overlay.setPosition(undefined);
+                closer.blur();
+                return false;
+            };
+
+
+            var map = new ol.Map({
+                layers: [osm, vectorLayer],
+                target: 'map',
+                controls: ol.control.defaults().extend([
+                    new ol.control.ScaleLine({
+                        className: 'ol-scale-line',
+                        target: document.getElementById('scale-line')
+                    })
+                ]),
+                overlays: [overlay],
+                view: new ol.View({
+                    //center: ol.proj.transform([#{lng}, #{lat}], 'EPSG:4326', 'EPSG:3857'), zoom: 6
+                    center: ol.proj.fromLonLat([#{lng}, #{lat}]),
+                    zoom: 6
+                })
+            });
+
+            //var coords = [-3.671180674823532, 40.412316630630755];
+
+            // dibuja Point pasandole una geometria en geográficas
+            function dibujaPosicion(coords) {
+                var pointPos = new ol.geom.Point(toUtm(coords));
+                vectorLayer.setSource(new ol.source.Vector());
+                vectorLayer.getSource().addFeature(new ol.Feature({geometry: pointPos}));
+            }
+
+
+            function toGeo(coords) {
+                return ol.proj.transform(coords, 'EPSG:3857', 'EPSG:4326');
+            }
+
+            function toUtm(coords) {
+                return ol.proj.transform(coords, 'EPSG:4326', 'EPSG:3857');
+            }
+
+            /**
+             * Add a click handler to the map to render the popup.
+             */
+            map.on('singleclick', function (evt) {
+                var coordinate = evt.coordinate;
+                var hdms = toGeo(coordinate);
+
+                content.innerHTML = '<p>Coordenadas:</p><code>' + hdms +
+                    '</code>';
+                overlay.setPosition(coordinate);
+            });
+
+            function borraPantalla() {
+            }
+
+            function httpGet(theUrl) {
+                var xmlHttp = new XMLHttpRequest();
+                xmlHttp.open("GET", theUrl, false); // false for synchronous request
+                xmlHttp.send(null);
+                return xmlHttp.responseText;
+            }
+
+            function getDrivers() {
+                console.log('peticion enviada');
+                theUrl = 'http://localhost:3000/getDrivers';
+                var respuesta = JSON.parse(httpGet(theUrl));
+
+                var myItems = [], $drivers_results = $('#drivers_results');
+
+                for (var i = 0; i < respuesta.length; i++) {
+                    var id = respuesta[i]['id_driver'];
+                    var name = respuesta[i]['name'];
+                    var surname = respuesta[i]['surname'];
+                    var birthdate = (new Date(respuesta[i]['birthdate']));
+                    birthdate = birthdate.getDate() + "/" + birthdate.getMonth() + "/" + birthdate.getFullYear();
+                    var genre = respuesta[i]['genre'];
+                    var mobile_number = respuesta[i]['mobile_number'];
+                    var email = respuesta[i]['email'];
+
+                    //request Vehicle assigned
+                    theUrlVehicle = 'http://localhost:3000/vehicleByIdDriver/' + id;
+                    var resVehicleAssigned = JSON.parse(httpGet(theUrlVehicle));
+                    var id_vehicle;
+                    if (resVehicleAssigned.length == !0) {
+                        var vehicle = resVehicleAssigned[0];
+                        id_vehicle = vehicle['id_vehicle'] + ': ' + vehicle['brand'] + ' ' + vehicle['model'];
+                    } else {
+                        id_vehicle = 'Not assigned';
+                    }
+
+                    myItems.push("" +
+                        "<div class='resultItem'>" +
+                        "<img class='list-thumbnail' src='/images/businessman-310819.svg'>" +
+                        "<div href='#" + id + "' class='details'>" +
+                        "<div class='list-group-item-heading'><i class='fa fa-hashtag'></i>" + id + "</div>" +
+                        "<div title='Driver name'><i class='glyphicon glyphicon-user'></i>" + name + " " + surname + "</div>" +
+                        "<div title='Birthdate'><i class='glyphicon glyphicon-calendar'></i>" + birthdate + "</div>" +
+                        "<div title='Genre'><i class='fa fa-genderless'></i>" + genre + "</div>" +
+                        "<div title='Mobile number'><i class='fa fa-mobile-alt'></i>" + mobile_number + "</div>" +
+                        "<div title='Email'><i class='fa fa-at'></i>" + email + "</div>" +
+                        "<div title='Vehicle'><i class='fa fa-car-alt'></i>" + id_vehicle + "</div>" +
+                        "<a title='Delete driver' class='deleteIcon delete-driver' data-id=" + id + "><i class='fa fa-trash'></i></a>" +
+                        "<a title='Edit Driver' class='editIcon'><i class='fa fa-edit'></i></a>" +
+                        "<a class='btn'>Visualize</a>" +
+                        "</div>" +
+                        "</div>");
+                    //myItems.push("Hola");
+                }
+                $('#drivers_results').html(myItems.join(''));
+                console.log(respuesta);
+            }
+
+            function getVehicles() {
+                console.log('peticion enviada');
+                theUrl = 'http://localhost:3000/getVehicles';
+                var respuesta = JSON.parse(httpGet(theUrl));
+
+                var myItems = [], $vehicles_results = $('#vehicles_results');
+
+                for (var i = 0; i < respuesta.length; i++) {
+                    var id = respuesta[i]['id_vehicle'];
+                    var brand = respuesta[i]['brand'];
+                    var model = respuesta[i]['model'];
+                    var passengers = respuesta[i]['passengers'];
+                    var fuel = respuesta[i]['fuel'];
+                    //var driver = ;
+                    myItems.push("" +
+                        "<div class='resultItem'>" +
+                        "<img class='list-thumbnail' src='/images/bicycle icon.png'>" +
+                        "<div href='#" + id + "' class='details'>" +
+                        "<div class='list-group-item-heading'><i class='fa fa-hashtag'></i>" + id + "</div>" +
+                        "<div title='Driver'><i class='glyphicon glyphicon-user'></i>" + "Conductor id + nombre" + "</div>" +
+                        "<div title='Brand, model'><i class='glyphicon glyphicon-triangle-right'></i>" + brand + ", " + model + "</div>" +
+                        "<div title='Passengers'><i class='fa fa-users'></i>" + passengers + "</div>" +
+                        "<div title='Fuel'><i class='fa fa-gas-pump'></i>" + fuel + "</div>" +
+                        "<a title='Delete vehicle' class='deleteIcon delete-vehicle'><i class='fa fa-trash'></i></a>" +
+                        "<a title='Edit Vehicle' class='editIcon'><i class='fa fa-edit'></i></a>" +
+                        "<a class='btn'>Visualize</a>" +
+                        "</div>" +
+                        "</div>");
+
+                    //myItems.push("Hola");
+                }
+                $('#vehicles_results').html(myItems.join(''));
+                console.log(respuesta);
+            }
+
+            function lanzaPeticionDrivers() {
+                console.log('peticion enviada')
+                peticion_http = new XMLHttpRequest();
+                peticion_http.open('GET', 'http://localhost:3000/getDrivers/', true);
+                peticion_http.send(null);
+            }
+
+            $('#nav-vehicles-tab').on('click', function () {
+                lanzaPeticionDrivers();
+            });
+
+
+            // Execute 'slide' effect
+            function conmutaPanelBusqueda() {
+                // Execute the effect
+                $("#panelbusqueda").toggle('drop', {}, 500);
+            };
+
+            // Set the effect from selected value from menu
+            $("#botonmenu").click(function () {
+                // Execute the effect
+                conmutaPanelBusqueda();
+                lanzaPeticionDrivers();
+            });
+
+
+            $(".toggleSettings").click(function (event) {
+                $("#tools").toggle();
+                getDrivers();
+            })
+
+            $("#tab-vehicles").click(function () {
+                getVehicles();
+            })
+
+            $("#tab-drivers").click(function () {
+                getDrivers();
+            })
+
+            $(".delete-driver").on('click', function () {
+                console.log('intentando borrar un conductor');
+                var id = $(this).data('id');
+                var url = '/delete/' + id;
+                if (confirm('Delete driver?')) {
+                    $ajax({
+                        url: url,
+                        type: 'DELETE',
+                        success: function (result) {
+                            console.log('Deleting Driver...');
+                            window.location.href = '/map';
+                        },
+                        error: function (err) {
+                            console.log(err);
+                        }
+                    })
+                }
+            })
+        })
