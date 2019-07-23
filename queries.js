@@ -234,7 +234,7 @@ const vehicleDriver = (request, response) => {
             }
             //response.status(201).send(`Vehicle added with ID: ${results.rows[0]}`);
             console.log(results.rows[0]);
-            //response.redirect("/map");
+            response.redirect("/map");
         })
 }
 
