@@ -155,6 +155,8 @@ block content
         $(document).ready(function() {
             //import {dibujaPosicion} from '../routes/modules/common'
             // import TileWMS from 'https://github.com/openlayers/openlayers/blob/master/src/ol/source/TileWMS.js';
+            // const root = 'http://localhost:3000';
+            const root = 'https://avillena-pfg.herokuapp.com';
             var projection = ol.proj.get('EPSG:3857');
             var projectionExtent = projection.getExtent();
             var size = ol.extent.getWidth(projectionExtent) / 256;
@@ -294,7 +296,7 @@ block content
 
             function getDrivers() {
                 console.log('peticion enviada');
-                theUrl = 'http://localhost:3000/getDrivers';
+                theUrl = root + '/getDrivers';
                 var respuesta = JSON.parse(httpGet(theUrl));
 
                 var myItems = [], $drivers_results = $('#drivers_results');
@@ -310,7 +312,7 @@ block content
                     var email = respuesta[i]['email'];
 
                     //request Vehicle assigned
-                    theUrlVehicle = 'http://localhost:3000/vehicleByIdDriver/' + id;
+                    theUrlVehicle = root + '/vehicleByIdDriver/' + id;
                     var resVehicleAssigned = JSON.parse(httpGet(theUrlVehicle));
                     var id_vehicle;
                     if (resVehicleAssigned.length == !0) {
@@ -344,7 +346,7 @@ block content
 
             function getVehicles() {
                 console.log('peticion enviada');
-                theUrl = 'http://localhost:3000/getVehicles';
+                theUrl = root + '/getVehicles';
                 var respuesta = JSON.parse(httpGet(theUrl));
 
                 var myItems = [], $vehicles_results = $('#vehicles_results');
@@ -380,7 +382,7 @@ block content
             function lanzaPeticionDrivers() {
                 console.log('peticion enviada')
                 peticion_http = new XMLHttpRequest();
-                peticion_http.open('GET', 'http://localhost:3000/getDrivers/', true);
+                peticion_http.open('GET', root + '/getDrivers/', true);
                 peticion_http.send(null);
             }
 
