@@ -1,8 +1,8 @@
 //var Pool = require("pg").Pool;
 var pg = require("pg");
 
-var conString = "postgres://postgres:postgres@localhost:5432/api";
-// var conString = "postgres://wzkowhhekyvcbh:dbc37ca58c23fa2edf7ed4af8319e00316de9aaf1defbb8cac1fd86500704f6a@ec2-107-20-173-2.compute-1.amazonaws.com:5432/d2346t6en0926l";
+// var conString = "postgres://postgres:postgres@localhost:5432/api";
+var conString = "postgres://wzkowhhekyvcbh:dbc37ca58c23fa2edf7ed4af8319e00316de9aaf1defbb8cac1fd86500704f6a@ec2-107-20-173-2.compute-1.amazonaws.com:5432/d2346t6en0926l";
 
 const {Pool} = require('pg');
 const pool = new Pool({
@@ -31,23 +31,24 @@ function getNow(){
 }
 //Query functions
 const insertPosition = (request, response) => {
-    var date_registry = getNow();
+    //var date_registry = getNow();
     //to_timestamp('2019/06/20 17:15:27','YYYY/MM/DD HH24:MI:SS');
     const {id_vehicle, id_driver, coord_x, coord_y, origin, destiny, comments} = request.body;
     console.log(request.body);
-    console.log(coord_x);
-    console.log(coord_y);
-    console.log(typeof (coord_x));
-    console.log(typeof (coord_y));
+    // console.log(coord_x);
+    // console.log(coord_y);
+    // console.log(typeof (coord_x));
+    // console.log(typeof (coord_y));
 
-    pool.query('INSERT INTO position (id_vehicle, id_driver, coord_x, coord_y, origin, destiny, comments, the_geom) ' +
-        'VALUES ($1, $2, $3, $4, $5, $6, $7, ' +
+    pool.query('INSERT INTO position (id_vehicle, id_driver, coord_x, coord_y, origin, destiny, comments, date_registry, the_geom) ' +
+        'VALUES ($1, $2, $3, $4, $5, $6, $7, localtimestamp, ' +
         'st_geometryfromtext(\'POINT(' + coord_x + ' ' + coord_y + ')\',4326))',
-        [driver, vehicle, coord_x, coord_y, origin, destiny, comments], (error, results) => {
+        [id_vehicle, id_driver, coord_x, coord_y, origin, destiny, comments], (error, results) => {
             if (error) {
                 throw error
             }
-            response.status(201).send(`Position added with ID: ${results.rows[0]}`);
+            // response.status(201).send(`Position added with ID: ${results.rows[0]}`);
+            response.json(results.rows[0]);
             console.log(results.rows[0]);
         })
     //pool.end();
