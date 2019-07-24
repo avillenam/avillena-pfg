@@ -4,15 +4,16 @@ var bodyParser = require('body-parser');
 
 const db = require('../queries');
 
-var pg = require("pg");
+// var pg = require("pg");
 // var conString = "postgres://postgres:postgres@localhost:5432/api";
-var conString = "postgres://wzkowhhekyvcbh:dbc37ca58c23fa2edf7ed4af8319e00316de9aaf1defbb8cac1fd86500704f6a@ec2-107-20-173-2.compute-1.amazonaws.com:5432/d2346t6en0926l";
+// var conString = "postgres://wzkowhhekyvcbh:dbc37ca58c23fa2edf7ed4af8319e00316de9aaf1defbb8cac1fd86500704f6a@ec2-107-20-173-2.compute-1.amazonaws.com:5432/d2346t6en0926l";
 
-const {Pool} = require('pg');
+// const {Pool} = require('pg');
 
-const pool = new Pool({
-    connectionString: conString,
-});
+
+// const pool = new Pool({
+//     connectionString: conString,
+// });
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
@@ -22,34 +23,34 @@ router.get('/', function (req, res, next) {
 
 //map page
 router.get('/map', function (req, res, next) {
-    pool.on('error', (err, client) => {
-        console.error('Unexpected error on idle client', err)
-        process.exit(-1)
-    })
+    // pool.on('error', (err, client) => {
+    //     console.error('Unexpected error on idle client', err)
+    //     process.exit(-1)
+    // })
 
-    pool.connect((err, client, done) => {
-        if (err) throw err;
-        client.query('SELECT * FROM vehicles ORDER BY id_vehicle ASC', (err, response) => {
+    // pool.connect((err, client, done) => {
+    //     if (err) throw err;
+    //     client.query('SELECT * FROM vehicles ORDER BY id_vehicle ASC', (err, response) => {
             //done();
 
-            if (err) {
-                console.log(err.stack)
-            } else {
+            // if (err) {
+            //     console.log(err.stack)
+            // } else {
                 //console.log(res.rows[0])
-                var respuesta = response.rows;
+                // var respuesta = response.rows;
                 //console.log(respuesta);
                 //console.log(typeof (respuesta));
 
                 res.render('map', {
                     title: ' Geolocalización de objetos móviles',
                     lat: 40.034,
-                    lng: -4.02,
-                    vehicles: respuesta
+                    lng: -4.02
+                    // vehicles: respuesta
                 });
-            }
-        })
-        done();
-    })
+            // }
+        // })
+        // done();
+    // })
 
 });
 
@@ -98,6 +99,9 @@ router.get('/getVehicles', db.getVehicles);
 
 //Select vehicle by id_vehicle
 router.get('/vehicle/:id_vehicle', db.getVehicleById);
+
+//Delete vehicle by id_driver
+router.delete('/deleteVehicle/:id_vehicle', db.deleteVehicleById);
 
 //Select driver by id_vehicle
 router.get('/driverByIdVehicle/:id_vehicle', db.getDriverByIdVehicle);

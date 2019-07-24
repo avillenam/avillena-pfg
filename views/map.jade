@@ -155,8 +155,8 @@ block content
         $(document).ready(function() {
             //import {dibujaPosicion} from '../routes/modules/common'
             // import TileWMS from 'https://github.com/openlayers/openlayers/blob/master/src/ol/source/TileWMS.js';
-            // const root = 'http://localhost:3000';
-            const root = 'https://avillena-pfg.herokuapp.com';
+            const root = 'http://localhost:3000';
+            // const root = 'https://avillena-pfg.herokuapp.com';
             var projection = ol.proj.get('EPSG:3857');
             var projectionExtent = projection.getExtent();
             var size = ol.extent.getWidth(projectionExtent) / 256;
@@ -342,6 +342,7 @@ block content
                 }
                 $('#drivers_results').html(myItems.join(''));
                 console.log(respuesta);
+                updateFunctions();
             }
 
             function getVehicles() {
@@ -367,7 +368,7 @@ block content
                         "<div title='Brand, model'><i class='glyphicon glyphicon-triangle-right'></i>" + brand + ", " + model + "</div>" +
                         "<div title='Passengers'><i class='fa fa-users'></i>" + passengers + "</div>" +
                         "<div title='Fuel'><i class='fa fa-gas-pump'></i>" + fuel + "</div>" +
-                        "<a title='Delete vehicle' class='deleteIcon delete-vehicle'><i class='fa fa-trash'></i></a>" +
+                        "<a title='Delete vehicle' class='deleteIcon delete-vehicle' data-id=" + id + "><i class='fa fa-trash'></i></a>" +
                         "<a title='Edit Vehicle' class='editIcon'><i class='fa fa-edit'></i></a>" +
                         "<a class='btn'>Visualize</a>" +
                         "</div>" +
@@ -377,6 +378,7 @@ block content
                 }
                 $('#vehicles_results').html(myItems.join(''));
                 console.log(respuesta);
+                updateFunctions();
             }
 
             function lanzaPeticionDrivers() {
@@ -418,22 +420,45 @@ block content
                 getDrivers();
             })
 
-            $(".delete-driver").on('click', function () {
-                console.log('intentando borrar un conductor');
-                var id = $(this).data('id');
-                var url = '/delete/' + id;
-                if (confirm('Delete driver?')) {
-                    $ajax({
-                        url: url,
-                        type: 'DELETE',
-                        success: function (result) {
-                            console.log('Deleting Driver...');
-                            window.location.href = '/map';
-                        },
-                        error: function (err) {
-                            console.log(err);
-                        }
-                    })
-                }
-            })
+            function updateFunctions(){
+                $(".delete-driver").on('click', function () {
+                    console.log('intentando borrar un conductor');
+                    var id = $(this).data('id');
+                    var url = '/deleteDriver/' + id;
+                    if (confirm('Delete driver with id:' + id + '?')) {
+                        $.ajax({
+                            url: url,
+                            type: 'DELETE',
+                            success: function (result) {
+                                console.log('Deleting Driver with id:' + id);
+                                window.location.href = '/map';
+                            },
+                            error: function (err) {
+                                console.log(err);
+                            }
+                        })
+                    }
+                });
+
+                $(".delete-vehicle").on('click', function () {
+                    console.log('intentando borrar un vehículo');
+                    var id = $(this).data('id');
+                    var url = '/deleteVehicle/' + id;
+                    if (confirm('Delete vehicle with id:' + id + '?')) {
+                        $.ajax({
+                            url: url,
+                            type: 'DELETE',
+                            success: function (result) {
+                                console.log('Deleting Vehicle with id:' + id);
+                                window.location.href = '/map';
+                            },
+                            error: function (err) {
+                                console.log(err);
+                            }
+                        })
+                    }
+                });
+            }
+
+
         })
