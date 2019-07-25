@@ -420,6 +420,29 @@ block content
                 getDrivers();
             })
 
+            function drawFeatures(id){
+
+                var layer = [];
+                var peticionGet = "";
+                peticionGet = 'position-vehicle/' + id;
+
+                console.log('Se va a lanzar la peticion: ' + peticionGet);
+
+                layer = new ol.layer.Vector({
+                    source: new ol.source.Vector({
+                        url: peticionGet,//aquí hace la petición GET a 'index.js' que, a su vez, realiza la peticion a la BD.
+                        format: new ol.format.GeoJSON()
+                    }),
+                    visible: true
+                });
+
+                setTimeout(function () {
+                    map.addLayer(layer);
+                }, 1000);
+                //- map.addLayer(layer);
+                map.getLayers().getArray()[1].setZIndex(1); //Pone por encima la capa del BBOX dibujado
+            }
+            
             function updateFunctions(){
 
                 // Delete driver by id
@@ -465,10 +488,12 @@ block content
                 $('.visualize-vehicle').on('click', function () {
                     var id = $(this).data('id');
                     var url = '/position-vehicle/' + id;
+                    console.log('Obtiene la posición del vehículo: ' + id);
 
                     console.log('Obtiene la posición del vehículo: ' + id);
 
-
+                    //Call to the function than draws the position of the mobile object
+                    drawFeatures(id);
                 });
 
             }
