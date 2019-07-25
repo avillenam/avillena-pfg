@@ -155,8 +155,8 @@ block content
         $(document).ready(function() {
             //import {dibujaPosicion} from '../routes/modules/common'
             // import TileWMS from 'https://github.com/openlayers/openlayers/blob/master/src/ol/source/TileWMS.js';
-            const root = 'http://localhost:3000';
-            // const root = 'https://avillena-pfg.herokuapp.com';
+            // const root = 'http://localhost:3000';
+            const root = 'https://avillena-pfg.herokuapp.com';
             var projection = ol.proj.get('EPSG:3857');
             var projectionExtent = projection.getExtent();
             var size = ol.extent.getWidth(projectionExtent) / 256;
