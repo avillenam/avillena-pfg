@@ -71,8 +71,8 @@ const getPositionByVehicle = (request, response) => {
         if (error) {
             throw error
         }
-        response.status(200).json(results.rows[0]);
-        console.log(results.rows[0]);
+        response.status(200).json(results.rows[0].row_to_json);
+        console.log(results.rows[0].row_to_json);
     })
 }
 
