@@ -155,8 +155,8 @@ block content
         $(document).ready(function() {
             //import {dibujaPosicion} from '../routes/modules/common'
             // import TileWMS from 'https://github.com/openlayers/openlayers/blob/master/src/ol/source/TileWMS.js';
-            // const root = 'http://localhost:3000';
-            const root = 'https://avillena-pfg.herokuapp.com';
+            const root = 'http://localhost:3000';
+            // const root = 'https://avillena-pfg.herokuapp.com';
             var projection = ol.proj.get('EPSG:3857');
             var projectionExtent = projection.getExtent();
             var size = ol.extent.getWidth(projectionExtent) / 256;
@@ -335,7 +335,7 @@ block content
                         "<div title='Vehicle'><i class='fa fa-car-alt'></i>" + id_vehicle + "</div>" +
                         "<a title='Delete driver' class='deleteIcon delete-driver' data-id=" + id + "><i class='fa fa-trash'></i></a>" +
                         "<a title='Edit Driver' class='editIcon'><i class='fa fa-edit'></i></a>" +
-                        "<a class='btn'>Visualize</a>" +
+                        "<a class='btn visualize-driver' data-id=" + id + ">Visualize</a>" +
                         "</div>" +
                         "</div>");
                     //myItems.push("Hola");
@@ -370,7 +370,7 @@ block content
                         "<div title='Fuel'><i class='fa fa-gas-pump'></i>" + fuel + "</div>" +
                         "<a title='Delete vehicle' class='deleteIcon delete-vehicle' data-id=" + id + "><i class='fa fa-trash'></i></a>" +
                         "<a title='Edit Vehicle' class='editIcon'><i class='fa fa-edit'></i></a>" +
-                        "<a class='btn visualize-vehicle'>Visualize</a>" +
+                        "<a class='btn visualize-vehicle' data-id=" + id + ">Visualize</a>" +
                         "</div>" +
                         "</div>");
 
@@ -463,6 +463,10 @@ block content
 
                 //Visualize and zoom to a vehicle
                 $('.visualize-vehicle').on('click', function () {
+                    var id = $(this).data('id');
+                    var url = '/position-vehicle/' + id;
+
+                    console.log('Obtiene la posición del vehículo: ' + id);
 
 
                 });
