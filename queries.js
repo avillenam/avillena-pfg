@@ -1,9 +1,14 @@
 //var Pool = require("pg").Pool;
 var pg = require("pg");
 
+
 // var conString = "postgres://postgres:postgres@localhost:5432/api";
 var conString = "postgres://wzkowhhekyvcbh:dbc37ca58c23fa2edf7ed4af8319e00316de9aaf1defbb8cac1fd86500704f6a@ec2-107-20-173-2.compute-1.amazonaws.com:5432/d2346t6en0926l";
 
+/*
+const db = require('./public/javascripts/constants');
+let connString = db.CONN_STRING;
+*/
 const {Pool} = require('pg');
 const pool = new Pool({
     connectionString: conString,
@@ -142,7 +147,7 @@ const deleteDriverById = (request, response) => {
             throw error
         }
         response.status(200).json(results.rows);
-        console.log(results.rows[0]);
+        // console.log(results.rows[0]);
     })
 }
 
@@ -203,13 +208,16 @@ const getVehicleById = (request, response) => {
 }
 
 const deleteVehicleById = (request, response) => {
-    pool.query('DELETE FROM vehicles WHERE id_vehicle=' + (request.params.id_vehicle).toString(), (error, results) => {
+    // delete the vehicle from 'vehicles' table
+    pool.query('DELETE FROM vehicles WHERE id_vehicle=' + (request.params.id_vehicle).toString() + ';', (error, results) => {
         if (error) {
             throw error
         }
         response.status(200).json(results.rows);
         console.log(results.rows[0]);
-    })
+    });
+
+
 }
 
 
@@ -252,6 +260,29 @@ const vehicleDriver = (request, response) => {
 }
 
 
+const deleteVehicleDriverByIdVehicle = (request, response) => {
+// delete relation in 'vehicle_driver' relation
+    pool.query('DELETE FROM vehicle_driver WHERE id_vehicle=' + (request.params.id_vehicle).toString() + ';', (error, results) => {
+        if (error) {
+            throw error
+        }
+        response.status(200).json(results.rows);
+        //console.log(results.rows[0]);
+    });
+}
+
+const deleteVehicleDriverByIdDriver = (request, response) => {
+// delete relation in 'vehicle_driver' relation
+    pool.query('DELETE FROM vehicle_driver WHERE id_driver =' + (request.params.id_driver).toString() + ';', (error, results) => {
+        if (error) {
+            throw error
+        }
+        response.status(200).json(results.rows);
+        //console.log(results.rows[0]);
+    });
+}
+
+
 
 module.exports = {
     insertPosition,
@@ -268,5 +299,7 @@ module.exports = {
     getVehicleByIdDriver,
     vehicleDriver,
     deleteVehicleById,
+    deleteVehicleDriverByIdVehicle,
+    deleteVehicleDriverByIdDriver,
     getTest
 }

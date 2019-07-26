@@ -155,8 +155,11 @@ block content
         $(document).ready(function() {
             //import {dibujaPosicion} from '../routes/modules/common'
             // import TileWMS from 'https://github.com/openlayers/openlayers/blob/master/src/ol/source/TileWMS.js';
-            // const root = 'http://localhost:3000';
-            const root = 'https://avillena-pfg.herokuapp.com';
+            /*
+            const root = 'http://localhost:3000';
+            // const root = 'https://avillena-pfg.herokuapp.com';
+            */
+
             var projection = ol.proj.get('EPSG:3857');
             var projectionExtent = projection.getExtent();
             var size = ol.extent.getWidth(projectionExtent) / 256;
@@ -296,7 +299,7 @@ block content
 
             function getDrivers() {
                 console.log('peticion enviada');
-                theUrl = root + '/getDrivers';
+                theUrl = ROOT + '/getDrivers';
                 var respuesta = JSON.parse(httpGet(theUrl));
 
                 var myItems = [], $drivers_results = $('#drivers_results');
@@ -312,7 +315,7 @@ block content
                     var email = respuesta[i]['email'];
 
                     //request Vehicle assigned
-                    theUrlVehicle = root + '/vehicleByIdDriver/' + id;
+                    theUrlVehicle = ROOT + '/vehicleByIdDriver/' + id;
                     var resVehicleAssigned = JSON.parse(httpGet(theUrlVehicle));
                     var id_vehicle;
                     if (resVehicleAssigned.length == !0) {
@@ -347,7 +350,7 @@ block content
 
             function getVehicles() {
                 console.log('peticion enviada');
-                theUrl = root + '/getVehicles';
+                theUrl = ROOT + '/getVehicles';
                 var respuesta = JSON.parse(httpGet(theUrl));
 
                 var myItems = [], $vehicles_results = $('#vehicles_results');
@@ -384,7 +387,7 @@ block content
             function lanzaPeticionDrivers() {
                 console.log('peticion enviada')
                 peticion_http = new XMLHttpRequest();
-                peticion_http.open('GET', root + '/getDrivers/', true);
+                peticion_http.open('GET', ROOT + '/getDrivers/', true);
                 peticion_http.send(null);
             }
 
@@ -428,6 +431,7 @@ block content
 
                 console.log('Se va a lanzar la peticion: ' + peticionGet);
 
+                /*
                 layer = new ol.layer.Vector({
                     source: new ol.source.Vector({
                         url: peticionGet,//aquí hace la petición GET a 'index.js' que, a su vez, realiza la peticion a la BD.
@@ -439,6 +443,38 @@ block content
                 setTimeout(function () {
                     map.addLayer(layer);
                 }, 1000);
+                */
+
+                //create a source to house the features of an object
+                var source = new ol.source.Vector({
+                    format: new ol.format.GeoJSON()
+                });
+                console.log('source' + source.getExtent());
+
+                // create a new layer
+                layer = new ol.layer.Vector({
+                    source: source,
+                    visible: true
+                });
+                console.log('layer creada' + layer);
+
+                $.ajax({
+                    dataType: "json",
+                    url: peticionGet,
+                    type: 'GET',
+                    success: function (data) {
+                        console.log('datos ' + data.toString());
+                        source.addFeatures(data.type);
+                        map.addLayer(layer);
+                    },
+                    error: function (err) {
+                        console.log(err);
+                    }
+                })
+
+                // add the layer to the map
+
+
                 //- map.addLayer(layer);
                 map.getLayers().getArray()[1].setZIndex(1); //Pone por encima la capa del BBOX dibujado
             }

@@ -127,6 +127,11 @@ router.get('/position-vehicle/:id_vehicle', db.getPositionByVehicle);
 //Insert a vhicleDriver relation
 router.post('/vehicleDriver', db.vehicleDriver);
 
+//Delete vehicleDriver relation by id_vehicle
+router.post('/deleteVehicleDriverByIdVehicle/:id_vehicle', db.deleteVehicleDriverByIdVehicle);
+
+//Delete vehicleDriver relation by id_driver
+router.post('/deleteVehicleDriverByIdDriver/:id_driver', db.deleteVehicleDriverByIdDriver);
 
 router.post('/pos', function (req, res) {
     console.log(res);
