@@ -152,13 +152,14 @@ block content
     //        input(type="text/javascript" id='fecha' class="form-control" placeholder="Fecha")
     //    input(type="submit" value="Send")
     script(type='text/javascript').
-        $(document).ready(function() {
+        //$(document).ready(function() {
             //import {dibujaPosicion} from '../routes/modules/common'
             // import TileWMS from 'https://github.com/openlayers/openlayers/blob/master/src/ol/source/TileWMS.js';
             /*
             const root = 'http://localhost:3000';
             // const root = 'https://avillena-pfg.herokuapp.com';
             */
+            import Polygon from 'ol/geom/Polygon';
 
             var projection = ol.proj.get('EPSG:3857');
             var projectionExtent = projection.getExtent();
@@ -170,9 +171,38 @@ block content
                 // generate resolutions and matrixIds arrays for this WMTS
                 resolutions[z] = size / Math.pow(2, z);
                 matrixIds[z] = z;
-            }
-            ;
+            };
 
+        var styles = {
+            '1': new ol.style.Style({
+                stroke: new ol.style.Stroke({
+                    color: 'rgb(128, 255, 0)',
+                    width: 2
+                })
+            }),
+            '2': new ol.style.Style({
+                stroke: new ol.style.Stroke({
+                    color: 'rgb(0, 0, 255)',
+                    width: 2
+                })
+            }),
+            '3': new ol.style.Style({
+                stroke: new ol.style.Stroke({
+                    color: 'rgb(137, 89, 168)',
+                    width: 1
+                })
+            }),
+            '4': new ol.style.Style({
+                stroke: new ol.style.Stroke({
+                    color: 'rgb(66, 113, 174)',
+                    width: 1
+                })
+            })
+        }
+
+            var styleFunction = function (id) {
+                return styles[id];
+            };
 
             var tileGrid = new ol.tilegrid.WMTS({
                 origin: ol.extent.getTopLeft(projectionExtent),
@@ -181,6 +211,14 @@ block content
             });
 
 
+            var stylePoint = new ol.style.Style({
+                stroke: new ol.style.Stroke({
+                    color: 'green',
+                    width: 1
+                })
+            });
+
+            // Layer for draw single vector features
             const source = new ol.source.Vector;
             var vectorLayer = new ol.layer.Vector({
                 source: source
@@ -262,8 +300,27 @@ block content
             // dibuja Point pasandole una geometria en geográficas
             function dibujaPosicion(coords) {
                 var pointPos = new ol.geom.Point(toUtm(coords));
+                var point = new ol.Feature({
+                    geometry: pointPos
+                });
+
+                var stylePoint = new ol.style.Style({
+                    stroke: new ol.style.Stroke({
+                        color: [64, 200, 200, 0.5],
+                        width: 1
+                    })
+                });
+                point.setStyle(stylePoint);
+
                 vectorLayer.setSource(new ol.source.Vector());
-                vectorLayer.getSource().addFeature(new ol.Feature({geometry: pointPos}));
+                vectorLayer.getSource().addFeature(point);
+            }
+
+            // Zooom and fit to the source of a layer
+            function zoomToFeature(source){
+                var feature = source.getFeatures()[0];
+                var polygon = /** @type {module:ol/geom/SimpleGeometry~SimpleGeometry} */ (feature.getGeometry());
+                view.fit(polygon, {padding: [170, 50, 30, 150]});
             }
 
 
@@ -423,48 +480,56 @@ block content
                 getDrivers();
             })
 
+
+            // create a layer for drawing each of the objects
             function drawFeatures(id){
 
-                var layer = [];
+                //var layer = [];
                 var peticionGet = "";
                 peticionGet = 'position-vehicle/' + id;
 
-                console.log('Se va a lanzar la peticion: ' + peticionGet);
+                console.log('Id: ' + id);
+                console.log('Id type: ' + typeof(id));
 
-                /*
-                layer = new ol.layer.Vector({
-                    source: new ol.source.Vector({
-                        url: peticionGet,//aquí hace la petición GET a 'index.js' que, a su vez, realiza la peticion a la BD.
-                        format: new ol.format.GeoJSON()
-                    }),
-                    visible: true
+                // TODO: add styleFunction
+                var stylePoint = new ol.style.Style({
+                    stroke: new ol.style.Stroke({
+                        color: [64, 200, 200, 0.5],
+                        width: 1
+                    })
                 });
-
-                setTimeout(function () {
-                    map.addLayer(layer);
-                }, 1000);
-                */
-
-                //create a source to house the features of an object
-                var source = new ol.source.Vector({
-                    format: new ol.format.GeoJSON()
+                // Layer that house an object
+                var layer = new ol.layer.Vector({
+                    visible: true,
+                    zIndex: 1
                 });
-                console.log('source' + source.getExtent());
-
-                // create a new layer
-                layer = new ol.layer.Vector({
-                    source: source,
-                    visible: true
-                });
-                console.log('layer creada' + layer);
 
                 $.ajax({
                     dataType: "json",
                     url: peticionGet,
                     type: 'GET',
                     success: function (data) {
-                        console.log('datos ' + data.toString());
-                        source.addFeatures(data.type);
+                        //console.log('datos: ' + JSON.stringify(data));
+
+                        var format = new ol.format.GeoJSON({
+                            defaultDataProjection: 'EPSG:3857'
+                        });
+
+                        var features = format.readFeatures(data, {
+                            dataProjection: 'EPSG:4326',
+                            featureProjection: 'EPSG:3857'
+                        });
+
+
+                        var vectorSource = new ol.source.Vector({
+                            features: features
+                        });
+
+                        //console.log(vectorSource.getFeatures());
+
+                        layer.setSource(vectorSource);
+                        //layer.setStyle(stylePoint);
+
                         map.addLayer(layer);
                     },
                     error: function (err) {
@@ -476,7 +541,7 @@ block content
 
 
                 //- map.addLayer(layer);
-                map.getLayers().getArray()[1].setZIndex(1); //Pone por encima la capa del BBOX dibujado
+                //map.getLayers().getArray()[1].setZIndex(1); //Pone por encima la capa del BBOX dibujado
             }
             
             function updateFunctions(){
@@ -535,4 +600,4 @@ block content
             }
 
 
-        })
+        //})

@@ -14,6 +14,7 @@
     "morgan": "^1.9.1",
     "nodemo": "^1.0.0",
     "nodemon": "^1.19.1",
+    "ol": "^5.3.3",
     "openlayers": "^3.16.0",
     "pg": "*",
     "postgeo": "*",
