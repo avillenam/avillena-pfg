@@ -153,25 +153,23 @@ block content
     //    input(type="submit" value="Send")
     script(type='text/javascript').
         //$(document).ready(function() {
-            //import {dibujaPosicion} from '../routes/modules/common'
-            // import TileWMS from 'https://github.com/openlayers/openlayers/blob/master/src/ol/source/TileWMS.js';
-            /*
-            const root = 'http://localhost:3000';
-            // const root = 'https://avillena-pfg.herokuapp.com';
-            */
-            import Polygon from 'ol/geom/Polygon';
-
-            var projection = ol.proj.get('EPSG:3857');
-            var projectionExtent = projection.getExtent();
-            var size = ol.extent.getWidth(projectionExtent) / 256;
-            var resolutions = new Array(14);
-            var matrixIds = new Array(14);
-            var numResultados = 0;
-            for (var z = 0; z < 22; ++z) {
-                // generate resolutions and matrixIds arrays for this WMTS
-                resolutions[z] = size / Math.pow(2, z);
-                matrixIds[z] = z;
-            };
+        //import {dibujaPosicion} from '../routes/modules/common'
+        // import TileWMS from 'https://github.com/openlayers/openlayers/blob/master/src/ol/source/TileWMS.js';
+        /*
+        const root = 'http://localhost:3000';
+        // const root = 'https://avillena-pfg.herokuapp.com';
+        */
+        var projection = ol.proj.get('EPSG:3857');
+        var projectionExtent = projection.getExtent();
+        var size = ol.extent.getWidth(projectionExtent) / 256;
+        var resolutions = new Array(14);
+        var matrixIds = new Array(14);
+        var numResultados = 0;
+        for (var z = 0; z < 22; ++z) {
+            // generate resolutions and matrixIds arrays for this WMTS
+            resolutions[z] = size / Math.pow(2, z);
+            matrixIds[z] = z;
+        };
 
         var styles = {
             '1': new ol.style.Style({
@@ -200,404 +198,406 @@ block content
             })
         }
 
-            var styleFunction = function (id) {
-                return styles[id];
-            };
+        var styleFunction = function (id) {
+            return styles[id];
+        };
 
-            var tileGrid = new ol.tilegrid.WMTS({
-                origin: ol.extent.getTopLeft(projectionExtent),
-                resolutions: resolutions,
-                matrixIds: matrixIds
+        var tileGrid = new ol.tilegrid.WMTS({
+            origin: ol.extent.getTopLeft(projectionExtent),
+            resolutions: resolutions,
+            matrixIds: matrixIds
+        });
+
+
+        var stylePoint = new ol.style.Style({
+            stroke: new ol.style.Stroke({
+                color: 'green',
+                width: 1
+            })
+        });
+
+        // Layer for draw single vector features
+        const source = new ol.source.Vector;
+        var vectorLayer = new ol.layer.Vector({
+            source: source
+        });
+
+        // var wmsSource = new TileWMS({
+        //     url: 'http://ows.mundialis.de/services/service?',
+        //     params: {'LAYERS': 'TOPO-OSM-WMS'},
+        //     crossOrigin: 'anonymous'
+        // });
+
+        var osm = new ol.layer.Tile({
+            source: new ol.source.OSM()
+        });
+
+
+        var pnoaWmts = new ol.layer.Tile({
+            opacity: 0.7,
+            source: new ol.source.WMTS({
+                url: 'http://www.ign.es/wmts/pnoa-ma',
+                layer: 'OI.OrthoimageCoverage',
+                matrixSet: 'EPSG:3857',
+                format: 'image/jpeg',
+                projection: projection,
+                tileGrid: tileGrid,
+                style: 'default',
+                wrapX: true
+            })
+        });
+
+        /**
+         * Elements that make up the popup.
+         */
+        var container = document.getElementById('popup');
+        var content = document.getElementById('popup-content');
+        var closer = document.getElementById('popup-closer');
+
+
+        /**
+         * Create an overlay to anchor the popup to the map.
+         */
+        var overlay = new ol.Overlay({
+            element: container,
+            autoPan: true,
+            autoPanAnimation: {
+                duration: 250
+            }
+        });
+        /**
+         * Add a click handler to hide the popup.
+         * @return {boolean} Don't follow the href.
+         */
+        closer.onclick = function () {
+            overlay.setPosition(undefined);
+            closer.blur();
+            return false;
+        };
+
+
+        var map = new ol.Map({
+            layers: [osm, vectorLayer],
+            target: 'map',
+            controls: ol.control.defaults().extend([
+                new ol.control.ScaleLine({
+                    className: 'ol-scale-line',
+                    target: document.getElementById('scale-line')
+                })
+            ]),
+            overlays: [overlay],
+            view: new ol.View({
+                //center: ol.proj.transform([#{lng}, #{lat}], 'EPSG:4326', 'EPSG:3857'), zoom: 6
+                center: ol.proj.fromLonLat([#{lng}, #{lat}]),
+                zoom: 6
+            })
+        });
+
+        //var coords = [-3.671180674823532, 40.412316630630755];
+
+        // dibuja Point pasandole una geometria en geográficas
+        function dibujaPosicion(coords) {
+            var pointPos = new ol.geom.Point(toUtm(coords));
+            var point = new ol.Feature({
+                geometry: pointPos
             });
-
 
             var stylePoint = new ol.style.Style({
                 stroke: new ol.style.Stroke({
-                    color: 'green',
+                    color: [64, 200, 200, 0.5],
                     width: 1
                 })
             });
+            point.setStyle(stylePoint);
 
-            // Layer for draw single vector features
-            const source = new ol.source.Vector;
-            var vectorLayer = new ol.layer.Vector({
-                source: source
-            });
+            vectorLayer.setSource(new ol.source.Vector());
+            vectorLayer.getSource().addFeature(point);
+        }
 
-            // var wmsSource = new TileWMS({
-            //     url: 'http://ows.mundialis.de/services/service?',
-            //     params: {'LAYERS': 'TOPO-OSM-WMS'},
-            //     crossOrigin: 'anonymous'
-            // });
+        //var view = new ol.View(map.getView());
 
-            var osm = new ol.layer.Tile({
-                source: new ol.source.OSM()
-            });
+        // Zooom and fit to the source of a layer
+        function zoomToFeature(source){
+            var extent = source.getExtent();
+            var polygon = new ol.geom.Polygon.fromExtent(extent);
+            map.getView().fit(polygon, {padding: [170, 50, 30, 150]});
+        }
 
 
-            var pnoaWmts = new ol.layer.Tile({
-                opacity: 0.7,
-                source: new ol.source.WMTS({
-                    url: 'http://www.ign.es/wmts/pnoa-ma',
-                    layer: 'OI.OrthoimageCoverage',
-                    matrixSet: 'EPSG:3857',
-                    format: 'image/jpeg',
-                    projection: projection,
-                    tileGrid: tileGrid,
-                    style: 'default',
-                    wrapX: true
+        function toGeo(coords) {
+            return ol.proj.transform(coords, 'EPSG:3857', 'EPSG:4326');
+        }
+
+        function toUtm(coords) {
+            return ol.proj.transform(coords, 'EPSG:4326', 'EPSG:3857');
+        }
+
+        /**
+         * Add a click handler to the map to render the popup.
+         */
+        map.on('singleclick', function (evt) {
+            var coordinate = evt.coordinate;
+            var hdms = toGeo(coordinate);
+
+            content.innerHTML = '<p>Coordenadas:</p><code>' + hdms +
+                '</code>';
+            overlay.setPosition(coordinate);
+        });
+
+        function borraPantalla() {
+        }
+
+        function httpGet(theUrl) {
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET", theUrl, false); // false for synchronous request
+            xmlHttp.send(null);
+            return xmlHttp.responseText;
+        }
+
+        function getDrivers() {
+            console.log('peticion enviada');
+            theUrl = ROOT + '/getDrivers';
+            var respuesta = JSON.parse(httpGet(theUrl));
+
+            var myItems = [], $drivers_results = $('#drivers_results');
+
+            for (var i = 0; i < respuesta.length; i++) {
+                var id = respuesta[i]['id_driver'];
+                var name = respuesta[i]['name'];
+                var surname = respuesta[i]['surname'];
+                var birthdate = (new Date(respuesta[i]['birthdate']));
+                birthdate = birthdate.getDate() + "/" + birthdate.getMonth() + "/" + birthdate.getFullYear();
+                var genre = respuesta[i]['genre'];
+                var mobile_number = respuesta[i]['mobile_number'];
+                var email = respuesta[i]['email'];
+
+                //request Vehicle assigned
+                theUrlVehicle = ROOT + '/vehicleByIdDriver/' + id;
+                var resVehicleAssigned = JSON.parse(httpGet(theUrlVehicle));
+                var id_vehicle;
+                if (resVehicleAssigned.length == !0) {
+                    var vehicle = resVehicleAssigned[0];
+                    id_vehicle = vehicle['id_vehicle'] + ': ' + vehicle['brand'] + ' ' + vehicle['model'];
+                } else {
+                    id_vehicle = 'Not assigned';
+                }
+
+                myItems.push("" +
+                    "<div class='resultItem'>" +
+                    "<img class='list-thumbnail' src='/images/businessman-310819.svg'>" +
+                    "<div href='#" + id + "' class='details'>" +
+                    "<div class='list-group-item-heading'><i class='fa fa-hashtag'></i>" + id + "</div>" +
+                    "<div title='Driver name'><i class='glyphicon glyphicon-user'></i>" + name + " " + surname + "</div>" +
+                    "<div title='Birthdate'><i class='glyphicon glyphicon-calendar'></i>" + birthdate + "</div>" +
+                    "<div title='Genre'><i class='fa fa-genderless'></i>" + genre + "</div>" +
+                    "<div title='Mobile number'><i class='fa fa-mobile-alt'></i>" + mobile_number + "</div>" +
+                    "<div title='Email'><i class='fa fa-at'></i>" + email + "</div>" +
+                    "<div title='Vehicle'><i class='fa fa-car-alt'></i>" + id_vehicle + "</div>" +
+                    "<a title='Delete driver' class='deleteIcon delete-driver' data-id=" + id + "><i class='fa fa-trash'></i></a>" +
+                    "<a title='Edit Driver' class='editIcon'><i class='fa fa-edit'></i></a>" +
+                    "<a class='btn visualize-driver' data-id=" + id + ">Visualize</a>" +
+                    "</div>" +
+                    "</div>");
+                //myItems.push("Hola");
+            }
+            $('#drivers_results').html(myItems.join(''));
+            console.log(respuesta);
+            updateFunctions();
+        }
+
+        function getVehicles() {
+            console.log('peticion enviada');
+            theUrl = ROOT + '/getVehicles';
+            var respuesta = JSON.parse(httpGet(theUrl));
+
+            var myItems = [], $vehicles_results = $('#vehicles_results');
+
+            for (var i = 0; i < respuesta.length; i++) {
+                var id = respuesta[i]['id_vehicle'];
+                var brand = respuesta[i]['brand'];
+                var model = respuesta[i]['model'];
+                var passengers = respuesta[i]['passengers'];
+                var fuel = respuesta[i]['fuel'];
+                //var driver = ;
+                myItems.push("" +
+                    "<div class='resultItem'>" +
+                    "<img class='list-thumbnail' src='/images/bicycle icon.png'>" +
+                    "<div href='#" + id + "' class='details'>" +
+                    "<div class='list-group-item-heading'><i class='fa fa-hashtag'></i>" + id + "</div>" +
+                    "<div title='Driver'><i class='glyphicon glyphicon-user'></i>" + "Conductor id + nombre" + "</div>" +
+                    "<div title='Brand, model'><i class='glyphicon glyphicon-triangle-right'></i>" + brand + ", " + model + "</div>" +
+                    "<div title='Passengers'><i class='fa fa-users'></i>" + passengers + "</div>" +
+                    "<div title='Fuel'><i class='fa fa-gas-pump'></i>" + fuel + "</div>" +
+                    "<a title='Delete vehicle' class='deleteIcon delete-vehicle' data-id=" + id + "><i class='fa fa-trash'></i></a>" +
+                    "<a title='Edit Vehicle' class='editIcon'><i class='fa fa-edit'></i></a>" +
+                    "<a class='btn visualize-vehicle' data-id=" + id + ">Visualize</a>" +
+                    "</div>" +
+                    "</div>");
+
+                //myItems.push("Hola");
+            }
+            $('#vehicles_results').html(myItems.join(''));
+            console.log(respuesta);
+            updateFunctions();
+        }
+
+        function lanzaPeticionDrivers() {
+            console.log('peticion enviada')
+            peticion_http = new XMLHttpRequest();
+            peticion_http.open('GET', ROOT + '/getDrivers/', true);
+            peticion_http.send(null);
+        }
+
+        $('#nav-vehicles-tab').on('click', function () {
+            lanzaPeticionDrivers();
+        });
+
+
+        // Execute 'slide' effect
+        function conmutaPanelBusqueda() {
+            // Execute the effect
+            $("#panelbusqueda").toggle('drop', {}, 500);
+        };
+
+        // Set the effect from selected value from menu
+        $("#botonmenu").click(function () {
+            // Execute the effect
+            conmutaPanelBusqueda();
+            lanzaPeticionDrivers();
+        });
+
+
+        $(".toggleSettings").click(function (event) {
+            $("#tools").toggle();
+            getDrivers();
+        })
+
+        $("#tab-vehicles").click(function () {
+            getVehicles();
+        })
+
+        $("#tab-drivers").click(function () {
+            getDrivers();
+        })
+
+
+        // create a layer for drawing each of the objects
+        function drawFeatures(id){
+
+            //var layer = [];
+            var peticionGet = "";
+            peticionGet = 'position-vehicle/' + id;
+
+            console.log('Id: ' + id);
+            console.log('Id type: ' + typeof(id));
+
+            // TODO: add styleFunction
+            var stylePoint = new ol.style.Style({
+                stroke: new ol.style.Stroke({
+                    color: [64, 200, 200, 0.5],
+                    width: 1
                 })
             });
+            // Layer that house an object
+            var layer = new ol.layer.Vector({
+                visible: true,
+                zIndex: 1
+            });
 
-            /**
-             * Elements that make up the popup.
-             */
-            var container = document.getElementById('popup');
-            var content = document.getElementById('popup-content');
-            var closer = document.getElementById('popup-closer');
+            $.ajax({
+                dataType: "json",
+                url: peticionGet,
+                type: 'GET',
+                success: function (data) {
+                    //console.log('datos: ' + JSON.stringify(data));
+
+                    var format = new ol.format.GeoJSON({
+                        defaultDataProjection: 'EPSG:3857'
+                    });
+
+                    var features = format.readFeatures(data, {
+                        dataProjection: 'EPSG:4326',
+                        featureProjection: 'EPSG:3857'
+                    });
 
 
-            /**
-             * Create an overlay to anchor the popup to the map.
-             */
-            var overlay = new ol.Overlay({
-                element: container,
-                autoPan: true,
-                autoPanAnimation: {
-                    duration: 250
+                    var vectorSource = new ol.source.Vector({
+                        features: features
+                    });
+
+                    //console.log(vectorSource.getFeatures());
+
+                    layer.setSource(vectorSource);
+                    //layer.setStyle(stylePoint);
+
+                    map.addLayer(layer);
+                },
+                error: function (err) {
+                    console.log(err);
                 }
-            });
-            /**
-             * Add a click handler to hide the popup.
-             * @return {boolean} Don't follow the href.
-             */
-            closer.onclick = function () {
-                overlay.setPosition(undefined);
-                closer.blur();
-                return false;
-            };
-
-
-            var map = new ol.Map({
-                layers: [osm, vectorLayer],
-                target: 'map',
-                controls: ol.control.defaults().extend([
-                    new ol.control.ScaleLine({
-                        className: 'ol-scale-line',
-                        target: document.getElementById('scale-line')
-                    })
-                ]),
-                overlays: [overlay],
-                view: new ol.View({
-                    //center: ol.proj.transform([#{lng}, #{lat}], 'EPSG:4326', 'EPSG:3857'), zoom: 6
-                    center: ol.proj.fromLonLat([#{lng}, #{lat}]),
-                    zoom: 6
-                })
-            });
-
-            //var coords = [-3.671180674823532, 40.412316630630755];
-
-            // dibuja Point pasandole una geometria en geográficas
-            function dibujaPosicion(coords) {
-                var pointPos = new ol.geom.Point(toUtm(coords));
-                var point = new ol.Feature({
-                    geometry: pointPos
-                });
-
-                var stylePoint = new ol.style.Style({
-                    stroke: new ol.style.Stroke({
-                        color: [64, 200, 200, 0.5],
-                        width: 1
-                    })
-                });
-                point.setStyle(stylePoint);
-
-                vectorLayer.setSource(new ol.source.Vector());
-                vectorLayer.getSource().addFeature(point);
-            }
-
-            // Zooom and fit to the source of a layer
-            function zoomToFeature(source){
-                var feature = source.getFeatures()[0];
-                var polygon = /** @type {module:ol/geom/SimpleGeometry~SimpleGeometry} */ (feature.getGeometry());
-                view.fit(polygon, {padding: [170, 50, 30, 150]});
-            }
-
-
-            function toGeo(coords) {
-                return ol.proj.transform(coords, 'EPSG:3857', 'EPSG:4326');
-            }
-
-            function toUtm(coords) {
-                return ol.proj.transform(coords, 'EPSG:4326', 'EPSG:3857');
-            }
-
-            /**
-             * Add a click handler to the map to render the popup.
-             */
-            map.on('singleclick', function (evt) {
-                var coordinate = evt.coordinate;
-                var hdms = toGeo(coordinate);
-
-                content.innerHTML = '<p>Coordenadas:</p><code>' + hdms +
-                    '</code>';
-                overlay.setPosition(coordinate);
-            });
-
-            function borraPantalla() {
-            }
-
-            function httpGet(theUrl) {
-                var xmlHttp = new XMLHttpRequest();
-                xmlHttp.open("GET", theUrl, false); // false for synchronous request
-                xmlHttp.send(null);
-                return xmlHttp.responseText;
-            }
-
-            function getDrivers() {
-                console.log('peticion enviada');
-                theUrl = ROOT + '/getDrivers';
-                var respuesta = JSON.parse(httpGet(theUrl));
-
-                var myItems = [], $drivers_results = $('#drivers_results');
-
-                for (var i = 0; i < respuesta.length; i++) {
-                    var id = respuesta[i]['id_driver'];
-                    var name = respuesta[i]['name'];
-                    var surname = respuesta[i]['surname'];
-                    var birthdate = (new Date(respuesta[i]['birthdate']));
-                    birthdate = birthdate.getDate() + "/" + birthdate.getMonth() + "/" + birthdate.getFullYear();
-                    var genre = respuesta[i]['genre'];
-                    var mobile_number = respuesta[i]['mobile_number'];
-                    var email = respuesta[i]['email'];
-
-                    //request Vehicle assigned
-                    theUrlVehicle = ROOT + '/vehicleByIdDriver/' + id;
-                    var resVehicleAssigned = JSON.parse(httpGet(theUrlVehicle));
-                    var id_vehicle;
-                    if (resVehicleAssigned.length == !0) {
-                        var vehicle = resVehicleAssigned[0];
-                        id_vehicle = vehicle['id_vehicle'] + ': ' + vehicle['brand'] + ' ' + vehicle['model'];
-                    } else {
-                        id_vehicle = 'Not assigned';
-                    }
-
-                    myItems.push("" +
-                        "<div class='resultItem'>" +
-                        "<img class='list-thumbnail' src='/images/businessman-310819.svg'>" +
-                        "<div href='#" + id + "' class='details'>" +
-                        "<div class='list-group-item-heading'><i class='fa fa-hashtag'></i>" + id + "</div>" +
-                        "<div title='Driver name'><i class='glyphicon glyphicon-user'></i>" + name + " " + surname + "</div>" +
-                        "<div title='Birthdate'><i class='glyphicon glyphicon-calendar'></i>" + birthdate + "</div>" +
-                        "<div title='Genre'><i class='fa fa-genderless'></i>" + genre + "</div>" +
-                        "<div title='Mobile number'><i class='fa fa-mobile-alt'></i>" + mobile_number + "</div>" +
-                        "<div title='Email'><i class='fa fa-at'></i>" + email + "</div>" +
-                        "<div title='Vehicle'><i class='fa fa-car-alt'></i>" + id_vehicle + "</div>" +
-                        "<a title='Delete driver' class='deleteIcon delete-driver' data-id=" + id + "><i class='fa fa-trash'></i></a>" +
-                        "<a title='Edit Driver' class='editIcon'><i class='fa fa-edit'></i></a>" +
-                        "<a class='btn visualize-driver' data-id=" + id + ">Visualize</a>" +
-                        "</div>" +
-                        "</div>");
-                    //myItems.push("Hola");
-                }
-                $('#drivers_results').html(myItems.join(''));
-                console.log(respuesta);
-                updateFunctions();
-            }
-
-            function getVehicles() {
-                console.log('peticion enviada');
-                theUrl = ROOT + '/getVehicles';
-                var respuesta = JSON.parse(httpGet(theUrl));
-
-                var myItems = [], $vehicles_results = $('#vehicles_results');
-
-                for (var i = 0; i < respuesta.length; i++) {
-                    var id = respuesta[i]['id_vehicle'];
-                    var brand = respuesta[i]['brand'];
-                    var model = respuesta[i]['model'];
-                    var passengers = respuesta[i]['passengers'];
-                    var fuel = respuesta[i]['fuel'];
-                    //var driver = ;
-                    myItems.push("" +
-                        "<div class='resultItem'>" +
-                        "<img class='list-thumbnail' src='/images/bicycle icon.png'>" +
-                        "<div href='#" + id + "' class='details'>" +
-                        "<div class='list-group-item-heading'><i class='fa fa-hashtag'></i>" + id + "</div>" +
-                        "<div title='Driver'><i class='glyphicon glyphicon-user'></i>" + "Conductor id + nombre" + "</div>" +
-                        "<div title='Brand, model'><i class='glyphicon glyphicon-triangle-right'></i>" + brand + ", " + model + "</div>" +
-                        "<div title='Passengers'><i class='fa fa-users'></i>" + passengers + "</div>" +
-                        "<div title='Fuel'><i class='fa fa-gas-pump'></i>" + fuel + "</div>" +
-                        "<a title='Delete vehicle' class='deleteIcon delete-vehicle' data-id=" + id + "><i class='fa fa-trash'></i></a>" +
-                        "<a title='Edit Vehicle' class='editIcon'><i class='fa fa-edit'></i></a>" +
-                        "<a class='btn visualize-vehicle' data-id=" + id + ">Visualize</a>" +
-                        "</div>" +
-                        "</div>");
-
-                    //myItems.push("Hola");
-                }
-                $('#vehicles_results').html(myItems.join(''));
-                console.log(respuesta);
-                updateFunctions();
-            }
-
-            function lanzaPeticionDrivers() {
-                console.log('peticion enviada')
-                peticion_http = new XMLHttpRequest();
-                peticion_http.open('GET', ROOT + '/getDrivers/', true);
-                peticion_http.send(null);
-            }
-
-            $('#nav-vehicles-tab').on('click', function () {
-                lanzaPeticionDrivers();
-            });
-
-
-            // Execute 'slide' effect
-            function conmutaPanelBusqueda() {
-                // Execute the effect
-                $("#panelbusqueda").toggle('drop', {}, 500);
-            };
-
-            // Set the effect from selected value from menu
-            $("#botonmenu").click(function () {
-                // Execute the effect
-                conmutaPanelBusqueda();
-                lanzaPeticionDrivers();
-            });
-
-
-            $(".toggleSettings").click(function (event) {
-                $("#tools").toggle();
-                getDrivers();
             })
 
-            $("#tab-vehicles").click(function () {
-                getVehicles();
-            })
-
-            $("#tab-drivers").click(function () {
-                getDrivers();
-            })
+            // add the layer to the map
 
 
-            // create a layer for drawing each of the objects
-            function drawFeatures(id){
+            //- map.addLayer(layer);
+            //map.getLayers().getArray()[1].setZIndex(1); //Pone por encima la capa del BBOX dibujado
+        }
 
-                //var layer = [];
-                var peticionGet = "";
-                peticionGet = 'position-vehicle/' + id;
+        function updateFunctions(){
 
-                console.log('Id: ' + id);
-                console.log('Id type: ' + typeof(id));
-
-                // TODO: add styleFunction
-                var stylePoint = new ol.style.Style({
-                    stroke: new ol.style.Stroke({
-                        color: [64, 200, 200, 0.5],
-                        width: 1
+            // Delete driver by id
+            $(".delete-driver").on('click', function () {
+                var id = $(this).data('id');
+                var url = '/deleteDriver/' + id;
+                if (confirm('Delete driver with id:' + id + '?')) {
+                    $.ajax({
+                        url: url,
+                        type: 'DELETE',
+                        success: function (result) {
+                            console.log('Deleting Driver with id:' + id);
+                            window.location.href = '/map';
+                        },
+                        error: function (err) {
+                            console.log(err);
+                        }
                     })
-                });
-                // Layer that house an object
-                var layer = new ol.layer.Vector({
-                    visible: true,
-                    zIndex: 1
-                });
+                }
+            });
 
-                $.ajax({
-                    dataType: "json",
-                    url: peticionGet,
-                    type: 'GET',
-                    success: function (data) {
-                        //console.log('datos: ' + JSON.stringify(data));
-
-                        var format = new ol.format.GeoJSON({
-                            defaultDataProjection: 'EPSG:3857'
-                        });
-
-                        var features = format.readFeatures(data, {
-                            dataProjection: 'EPSG:4326',
-                            featureProjection: 'EPSG:3857'
-                        });
-
-
-                        var vectorSource = new ol.source.Vector({
-                            features: features
-                        });
-
-                        //console.log(vectorSource.getFeatures());
-
-                        layer.setSource(vectorSource);
-                        //layer.setStyle(stylePoint);
-
-                        map.addLayer(layer);
-                    },
-                    error: function (err) {
-                        console.log(err);
-                    }
-                })
-
-                // add the layer to the map
+            // Delete vehicle by id
+            $(".delete-vehicle").on('click', function () {
+                var id = $(this).data('id');
+                var url = '/deleteVehicle/' + id;
+                if (confirm('Delete vehicle with id:' + id + '?')) {
+                    $.ajax({
+                        url: url,
+                        type: 'DELETE',
+                        success: function (result) {
+                            console.log('Deleting Vehicle with id:' + id);
+                            window.location.href = '/map';
+                        },
+                        error: function (err) {
+                            console.log(err);
+                        }
+                    })
+                }
+            });
 
 
-                //- map.addLayer(layer);
-                //map.getLayers().getArray()[1].setZIndex(1); //Pone por encima la capa del BBOX dibujado
-            }
-            
-            function updateFunctions(){
+            //Visualize and zoom to a vehicle
+            $('.visualize-vehicle').on('click', function () {
+                var id = $(this).data('id');
+                var url = '/position-vehicle/' + id;
+                console.log('Obtiene la posición del vehículo: ' + id);
 
-                // Delete driver by id
-                $(".delete-driver").on('click', function () {
-                    var id = $(this).data('id');
-                    var url = '/deleteDriver/' + id;
-                    if (confirm('Delete driver with id:' + id + '?')) {
-                        $.ajax({
-                            url: url,
-                            type: 'DELETE',
-                            success: function (result) {
-                                console.log('Deleting Driver with id:' + id);
-                                window.location.href = '/map';
-                            },
-                            error: function (err) {
-                                console.log(err);
-                            }
-                        })
-                    }
-                });
+                console.log('Obtiene la posición del vehículo: ' + id);
 
-                // Delete vehicle by id
-                $(".delete-vehicle").on('click', function () {
-                    var id = $(this).data('id');
-                    var url = '/deleteVehicle/' + id;
-                    if (confirm('Delete vehicle with id:' + id + '?')) {
-                        $.ajax({
-                            url: url,
-                            type: 'DELETE',
-                            success: function (result) {
-                                console.log('Deleting Vehicle with id:' + id);
-                                window.location.href = '/map';
-                            },
-                            error: function (err) {
-                                console.log(err);
-                            }
-                        })
-                    }
-                });
+                //Call to the function than draws the position of the mobile object
+                drawFeatures(id);
+            });
 
-
-                //Visualize and zoom to a vehicle
-                $('.visualize-vehicle').on('click', function () {
-                    var id = $(this).data('id');
-                    var url = '/position-vehicle/' + id;
-                    console.log('Obtiene la posición del vehículo: ' + id);
-
-                    console.log('Obtiene la posición del vehículo: ' + id);
-
-                    //Call to the function than draws the position of the mobile object
-                    drawFeatures(id);
-                });
-
-            }
+        }
 
 
         //})
