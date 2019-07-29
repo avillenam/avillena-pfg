@@ -159,6 +159,9 @@ block content
         const root = 'http://localhost:3000';
         // const root = 'https://avillena-pfg.herokuapp.com';
         */
+        // variable that will house vehicles JSON features
+        var vehiclesJSON = {};
+
         var projection = ol.proj.get('EPSG:3857');
         var projectionExtent = projection.getExtent();
         var size = ol.extent.getWidth(projectionExtent) / 256;
@@ -357,19 +360,19 @@ block content
         function getDrivers() {
             console.log('peticion enviada');
             theUrl = ROOT + '/getDrivers';
-            var respuesta = JSON.parse(httpGet(theUrl));
+            var driversJSON = JSON.parse(httpGet(theUrl));
 
             var myItems = [], $drivers_results = $('#drivers_results');
 
-            for (var i = 0; i < respuesta.length; i++) {
-                var id = respuesta[i]['id_driver'];
-                var name = respuesta[i]['name'];
-                var surname = respuesta[i]['surname'];
-                var birthdate = (new Date(respuesta[i]['birthdate']));
+            for (var i = 0; i < driversJSON.length; i++) {
+                var id = driversJSON[i]['id_driver'];
+                var name = driversJSON[i]['name'];
+                var surname = driversJSON[i]['surname'];
+                var birthdate = (new Date(driversJSON[i]['birthdate']));
                 birthdate = birthdate.getDate() + "/" + birthdate.getMonth() + "/" + birthdate.getFullYear();
-                var genre = respuesta[i]['genre'];
-                var mobile_number = respuesta[i]['mobile_number'];
-                var email = respuesta[i]['email'];
+                var genre = driversJSON[i]['genre'];
+                var mobile_number = driversJSON[i]['mobile_number'];
+                var email = driversJSON[i]['email'];
 
                 //request Vehicle assigned
                 theUrlVehicle = ROOT + '/vehicleByIdDriver/' + id;
@@ -401,24 +404,110 @@ block content
                 //myItems.push("Hola");
             }
             $('#drivers_results').html(myItems.join(''));
-            console.log(respuesta);
+            console.log(driversJSON);
             updateFunctions();
         }
+
+        //TODO:
+        function updateVehiclesPosition(){
+            var peticionGet = "";
+
+            //TODO: obtiene todos los objetos
+            peticionGet = 'position-vehicle/' + id;
+
+
+            $.ajax({
+                dataType: "json",
+                url: peticionGet,
+                type: 'GET',
+                success: function (data) {
+
+                }
+            })
+        }
+
+        function createLayerById (id){
+            console.log('createLayerById: ' + id);
+            var peticionGet = "";
+            peticionGet = 'position-vehicle/' + id;
+
+            console.log('Id: ' + id);
+            console.log('Id type: ' + typeof (id));
+
+            // TODO: add styleFunction
+            var stylePoint = new ol.style.Style({
+                stroke: new ol.style.Stroke({
+                    color: [64, 200, 200, 0.5],
+                    width: 1
+                })
+            });
+            // Layer that house an object
+            var layer = new ol.layer.Vector({
+                visible: false,
+                zIndex: 1
+            });
+
+            $.ajax({
+                dataType: "json",
+                url: peticionGet,
+                type: 'GET',
+                success: function (data) {
+                    //console.log('datos: ' + JSON.stringify(data));
+
+                    console.log(data.features);
+                    console.log(data);
+                    console.log(JSON.stringify(data));
+
+                    if(data.features != null){
+                        var format = new ol.format.GeoJSON({
+                            defaultDataProjection: 'EPSG:3857'
+                        });
+
+                        var features = format.readFeatures(data, {
+                            dataProjection: 'EPSG:4326',
+                            featureProjection: 'EPSG:3857'
+                        });
+
+
+                        // create new Vector object to house the features
+                        var vectorSource = new ol.source.Vector({
+                            features: features
+                        });
+
+
+                        // set source for the layer
+                        layer.setSource(vectorSource);
+                    }
+
+                    // add the layer to the map
+                    map.addLayer(layer);
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            })
+        }
+
 
         function getVehicles() {
             console.log('peticion enviada');
             theUrl = ROOT + '/getVehicles';
-            var respuesta = JSON.parse(httpGet(theUrl));
+            vehiclesJSON = JSON.parse(httpGet(theUrl));
+            return vehiclesJSON;
+        }
 
+        function createVehicleHTMLelements(){
+            vehiclesJSON = getVehicles();
             var myItems = [], $vehicles_results = $('#vehicles_results');
 
-            for (var i = 0; i < respuesta.length; i++) {
-                var id = respuesta[i]['id_vehicle'];
-                var brand = respuesta[i]['brand'];
-                var model = respuesta[i]['model'];
-                var passengers = respuesta[i]['passengers'];
-                var fuel = respuesta[i]['fuel'];
-                //var driver = ;
+            for (var i = 0; i < vehiclesJSON.length; i++) {
+                var id = vehiclesJSON[i]['id_vehicle'];
+                var brand = vehiclesJSON[i]['brand'];
+                var model = vehiclesJSON[i]['model'];
+                var passengers = vehiclesJSON[i]['passengers'];
+                var fuel = vehiclesJSON[i]['fuel'];
+
+                //create HTML element for each vehicle
                 myItems.push("" +
                     "<div class='resultItem'>" +
                     "<img class='list-thumbnail' src='/images/bicycle icon.png'>" +
@@ -430,16 +519,23 @@ block content
                     "<div title='Fuel'><i class='fa fa-gas-pump'></i>" + fuel + "</div>" +
                     "<a title='Delete vehicle' class='deleteIcon delete-vehicle' data-id=" + id + "><i class='fa fa-trash'></i></a>" +
                     "<a title='Edit Vehicle' class='editIcon'><i class='fa fa-edit'></i></a>" +
-                    "<a class='btn visualize-vehicle' data-id=" + id + ">Visualize</a>" +
+                    "<a class='btn visualize-vehicle' title='Visualize vehicle' data-id=" + id + ">Visualize</a>" +
+                    "<a class='btn zoom-vehicle' title='Zoom to vehicle' data-id=" + id + "><i class='fas fa-bullseye'></i></a>" +
                     "</div>" +
                     "</div>");
 
+                // Create a layer for each vehicle
+                createLayerById(id);
+
                 //myItems.push("Hola");
             }
+
             $('#vehicles_results').html(myItems.join(''));
-            console.log(respuesta);
+            console.log(vehiclesJSON);
             updateFunctions();
         }
+
+
 
         function lanzaPeticionDrivers() {
             console.log('peticion enviada')
@@ -473,75 +569,27 @@ block content
         })
 
         $("#tab-vehicles").click(function () {
-            getVehicles();
+            createVehicleHTMLelements();
         })
 
         $("#tab-drivers").click(function () {
             getDrivers();
         })
 
+        // obtain the layer position depending of the position
+        function layerPosition(id){
+            var position = 0;
+            for(var i = 0; i < vehiclesJSON.length; i++){
+                if(vehiclesJSON[i].id_vehicle==id){
+                    position = i + 2;
+                }
+            }
+            return position;
+        }
 
         // create a layer for drawing each of the objects
-        function drawFeatures(id){
-
-            //var layer = [];
-            var peticionGet = "";
-            peticionGet = 'position-vehicle/' + id;
-
-            console.log('Id: ' + id);
-            console.log('Id type: ' + typeof(id));
-
-            // TODO: add styleFunction
-            var stylePoint = new ol.style.Style({
-                stroke: new ol.style.Stroke({
-                    color: [64, 200, 200, 0.5],
-                    width: 1
-                })
-            });
-            // Layer that house an object
-            var layer = new ol.layer.Vector({
-                visible: true,
-                zIndex: 1
-            });
-
-            $.ajax({
-                dataType: "json",
-                url: peticionGet,
-                type: 'GET',
-                success: function (data) {
-                    //console.log('datos: ' + JSON.stringify(data));
-
-                    var format = new ol.format.GeoJSON({
-                        defaultDataProjection: 'EPSG:3857'
-                    });
-
-                    var features = format.readFeatures(data, {
-                        dataProjection: 'EPSG:4326',
-                        featureProjection: 'EPSG:3857'
-                    });
-
-
-                    var vectorSource = new ol.source.Vector({
-                        features: features
-                    });
-
-                    //console.log(vectorSource.getFeatures());
-
-                    layer.setSource(vectorSource);
-                    //layer.setStyle(stylePoint);
-
-                    map.addLayer(layer);
-                },
-                error: function (err) {
-                    console.log(err);
-                }
-            })
-
-            // add the layer to the map
-
-
-            //- map.addLayer(layer);
-            //map.getLayers().getArray()[1].setZIndex(1); //Pone por encima la capa del BBOX dibujado
+        function showFeatureLayer(id){
+            map.getLayers().getArray()[layerPosition(id)].setVisible(true);
         }
 
         function updateFunctions(){
@@ -588,16 +636,36 @@ block content
             //Visualize and zoom to a vehicle
             $('.visualize-vehicle').on('click', function () {
                 var id = $(this).data('id');
-                var url = '/position-vehicle/' + id;
+                //var url = '/position-vehicle/' + id;
                 console.log('Obtiene la posición del vehículo: ' + id);
 
-                console.log('Obtiene la posición del vehículo: ' + id);
+                // Call to the function than show the position of the vehicle
+                showFeatureLayer(id);
 
-                //Call to the function than draws the position of the mobile object
-                drawFeatures(id);
             });
 
+
+            $('.zoom-vehicle').on('click', function () {
+                var id = $(this).data('id');
+                var position = layerPosition(id);
+                var source = map.getLayers().getArray()[position].getSource();
+
+                // test if there is source or the layer has not features
+                if (source != null){
+                    zoomToFeature(source);
+                }
+            });
         }
 
+        $(document).ready(function() {
+            //setInterval(updatePosition, 5000);
+
+            function updatePosition() {
+                var d = new Date();
+
+                console.log('Update position at: ' + d.toLocaleTimeString());
+            }
+
+        });
 
         //})

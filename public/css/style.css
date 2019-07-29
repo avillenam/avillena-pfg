@@ -25,6 +25,10 @@ a {
     width: 100%;
 }
 
+.btn.zoom-vehicle{
+    margin-left: 5px;
+}
+
 .flotante {
     position: absolute;
     right: 50px;
@@ -259,7 +263,7 @@ tr {
 .btn {
     border-radius: 6px;
     border: none;
-    background: #3b3a9c;
+    background: #3a789c;
     color: #fff;
     padding: 6px 10px;
     display: inline-block;
