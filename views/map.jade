@@ -408,25 +408,26 @@ block content
             updateFunctions();
         }
 
-        //TODO:
-        function updateVehiclesPosition(){
-            var peticionGet = "";
-
-            //TODO: obtiene todos los objetos
-            peticionGet = 'position-vehicle/' + id;
-
-
-            $.ajax({
-                dataType: "json",
-                url: peticionGet,
-                type: 'GET',
-                success: function (data) {
-
-                }
-            })
+        // Obtain all vehicles
+        function getVehicles() {
+            console.log('peticion enviada');
+            theUrl = ROOT + '/getVehicles';
+            vehiclesJSON = JSON.parse(httpGet(theUrl));
+            return vehiclesJSON;
         }
 
-        function createLayerById (id){
+        // obtain the layer position depending of the position
+        function layerPosition(id) {
+            var position = 0;
+            for (var i = 0; i < vehiclesJSON.length; i++) {
+                if (vehiclesJSON[i].id_vehicle == id) {
+                    position = i + 2;
+                }
+            }
+            return position;
+        }
+
+        function createLayerById(id) {
             console.log('createLayerById: ' + id);
             var peticionGet = "";
             peticionGet = 'position-vehicle/' + id;
@@ -458,7 +459,7 @@ block content
                     console.log(data);
                     console.log(JSON.stringify(data));
 
-                    if(data.features != null){
+                    if (data.features != null) {
                         var format = new ol.format.GeoJSON({
                             defaultDataProjection: 'EPSG:3857'
                         });
@@ -488,12 +489,49 @@ block content
             })
         }
 
+        //TODO:
+        function updateVehiclesPosition(){
+            var vehicles = getVehicles();
+            var peticionGet = "";
 
-        function getVehicles() {
-            console.log('peticion enviada');
-            theUrl = ROOT + '/getVehicles';
-            vehiclesJSON = JSON.parse(httpGet(theUrl));
-            return vehiclesJSON;
+            // loop for obtain position of each vehicle
+            var numVehicles = vehicles.length;
+            for(var i = 0; i < numVehicles ; i++){
+                var id = vehicles[i].id_vehicle;
+                var layerNumber = layerPosition(id);
+                request = 'position-vehicle/' + id;
+                $.ajax({
+                    dataType: "json",
+                    url: request,
+                    type: 'GET',
+                    success: function (data) {
+                        if (data.features != null) {
+                            var format = new ol.format.GeoJSON({
+                                defaultDataProjection: 'EPSG:3857'
+                            });
+
+                            var features = format.readFeatures(data, {
+                                dataProjection: 'EPSG:4326',
+                                featureProjection: 'EPSG:3857'
+                            });
+
+
+                            // create new Vector object to house the features
+                            var vectorSource = new ol.source.Vector({
+                                features: features
+                            });
+
+                            var layer = map.getLayers().getArray()[layerNumber];
+                            if(layer == undefined){
+                                createLayerById(id);
+                            }
+
+                            layer.setSource(vectorSource);
+                        }
+                    }
+                })
+
+            }
         }
 
         function createVehicleHTMLelements(){
@@ -566,6 +604,7 @@ block content
         $(".toggleSettings").click(function (event) {
             $("#tools").toggle();
             getDrivers();
+            createVehicleHTMLelements();
         })
 
         $("#tab-vehicles").click(function () {
@@ -576,16 +615,6 @@ block content
             getDrivers();
         })
 
-        // obtain the layer position depending of the position
-        function layerPosition(id){
-            var position = 0;
-            for(var i = 0; i < vehiclesJSON.length; i++){
-                if(vehiclesJSON[i].id_vehicle==id){
-                    position = i + 2;
-                }
-            }
-            return position;
-        }
 
         // create a layer for drawing each of the objects
         function showFeatureLayer(id){
@@ -658,11 +687,11 @@ block content
         }
 
         $(document).ready(function() {
-            //setInterval(updatePosition, 5000);
+            //setInterval(updatePosition, 1000);
 
             function updatePosition() {
                 var d = new Date();
-
+                updateVehiclesPosition();
                 console.log('Update position at: ' + d.toLocaleTimeString());
             }
 
