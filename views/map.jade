@@ -515,22 +515,20 @@ block content
                                 featureProjection: 'EPSG:3857'
                             });
 
-
                             // create new Vector object to house the features
                             var vectorSource = new ol.source.Vector({
                                 features: features
                             });
 
+                            // variable for store currrent layer
                             var layer = map.getLayers().getArray()[layerNumber];
                             if(layer == undefined){
                                 createLayerById(id);
                             }
-
                             layer.setSource(vectorSource);
                         }
                     }
                 })
-
             }
         }
 
