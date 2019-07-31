@@ -358,12 +358,16 @@ block content
         }
 
         function getDrivers() {
-            console.log('peticion enviada');
+            // request to be launched
             theUrl = ROOT + '/getDrivers';
+
+            // http request to obtain the drivers
             var driversJSON = JSON.parse(httpGet(theUrl));
 
+            //variables for house the items
             var myItems = [], $drivers_results = $('#drivers_results');
 
+            // Loop for creating each element in the viewer panel
             for (var i = 0; i < driversJSON.length; i++) {
                 var id = driversJSON[i]['id_driver'];
                 var name = driversJSON[i]['name'];
@@ -497,15 +501,23 @@ block content
             // loop for obtain position of each vehicle
             var numVehicles = vehicles.length;
             for(var i = 0; i < numVehicles ; i++){
-                var id = vehicles[i].id_vehicle;
+                var id = null;
+                id = vehicles[i].id_vehicle;
                 var layerNumber = layerPosition(id);
-                request = 'position-vehicle/' + id;
+                console.log("i: " + i + ", id: " + id);
+                GETrequest = 'position-vehicle/' + id;
+                console.log("lanza petición: " + GETrequest);
                 $.ajax({
+                    async: false,
+                    cache: false,
                     dataType: "json",
-                    url: request,
+                    url: GETrequest,
                     type: 'GET',
                     success: function (data) {
+                        console.log("tiene coordenadas el vehículo id: " + id + "?");
+                        console.log(data.features);
                         if (data.features != null) {
+                            console.log("Si tiene")
                             var format = new ol.format.GeoJSON({
                                 defaultDataProjection: 'EPSG:3857'
                             });
@@ -525,7 +537,10 @@ block content
                             if(layer == undefined){
                                 createLayerById(id);
                             }
+                            console.log("Actualiza source!")
                             layer.setSource(vectorSource);
+                        }else {
+                            console.log("No tiene")
                         }
                     }
                 })
@@ -601,8 +616,8 @@ block content
 
         $(".toggleSettings").click(function (event) {
             $("#tools").toggle();
-            getDrivers();
-            createVehicleHTMLelements();
+            // getDrivers();
+            // createVehicleHTMLelements();
         })
 
         $("#tab-vehicles").click(function () {
@@ -685,8 +700,14 @@ block content
         }
 
         $(document).ready(function() {
-            //setInterval(updatePosition, 1000);
+            // Obtain the drivers and the vehicles from the database
+            getDrivers();
+            createVehicleHTMLelements();
 
+            // launch the requests in loop each 2 seconds
+            // setInterval(updatePosition, 5000);
+
+            // function that calls the function that update the vehicles's position
             function updatePosition() {
                 var d = new Date();
                 updateVehiclesPosition();

@@ -5,8 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6d5f1f38-e885-4881-8791-5da2d0a04345" name="Default Changelist" comment="version 1">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/views/map.jade" beforeDir="false" afterPath="$PROJECT_DIR$/views/map.jade" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
@@ -32,8 +30,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/routes/index.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2346">
-              <caret line="138" column="3" selection-start-line="138" selection-start-column="3" selection-end-line="138" selection-end-column="3" />
+            <state relative-caret-position="245">
+              <caret line="97" column="24" selection-start-line="97" selection-start-column="13" selection-end-line="97" selection-end-column="24" />
             </state>
           </provider>
         </entry>
@@ -50,8 +48,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/views/map.jade">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="358">
-              <caret line="522" column="64" selection-start-line="522" selection-start-column="64" selection-end-line="522" selection-end-column="64" />
+            <state relative-caret-position="4936">
+              <caret line="708" lean-forward="true" selection-start-line="708" selection-end-line="708" />
             </state>
           </provider>
         </entry>
@@ -104,7 +102,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>delete</find>
       <find>btn</find>
       <find>deleteIcon</find>
       <find>getDriver</find>
@@ -130,10 +127,11 @@
       <find>.btn</find>
       <find>visualize-vehicle</find>
       <find>peticion enviada</find>
-      <find>Id type:</find>
       <find>layerPosition(id);</find>
       <find>tab-vehicles</find>
       <find>createVehicleHTMLelements</find>
+      <find>Id type:</find>
+      <find>updateFunctions</find>
     </findStrings>
     <replaceStrings>
       <replace>router</replace>
@@ -216,7 +214,7 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="TODO_SCOPE" value="Project Files" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="D:/PROGRAMACION/pg_node" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
@@ -286,12 +284,12 @@
       <workItem from="1564151304841" duration="13756000" />
       <workItem from="1564377389688" duration="13707000" />
       <workItem from="1564420976335" duration="4642000" />
-      <workItem from="1564474221028" duration="1903000" />
+      <workItem from="1564474221028" duration="7447000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="272594000" />
+    <option name="totallyTimeSpent" value="278138000" />
   </component>
   <component name="TodoView" selected-index="2">
     <todo-panel id="selected-file">
@@ -437,13 +435,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/routes/index.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2346">
-          <caret line="138" column="3" selection-start-line="138" selection-start-column="3" selection-end-line="138" selection-end-column="3" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/queries.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="85">
@@ -479,10 +470,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/routes/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="245">
+          <caret line="97" column="24" selection-start-line="97" selection-start-column="13" selection-end-line="97" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/views/map.jade">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="358">
-          <caret line="522" column="64" selection-start-line="522" selection-start-column="64" selection-end-line="522" selection-end-column="64" />
+        <state relative-caret-position="4936">
+          <caret line="708" lean-forward="true" selection-start-line="708" selection-end-line="708" />
         </state>
       </provider>
     </entry>
