@@ -431,6 +431,7 @@ block content
             return position;
         }
 
+        // creates layer for each vehicle
         function createLayerById(id) {
             console.log('createLayerById: ' + id);
             var peticionGet = "";
@@ -459,8 +460,8 @@ block content
                 success: function (data) {
                     //console.log('datos: ' + JSON.stringify(data));
 
-                    console.log(data.features);
-                    console.log(data);
+                    console.log("data.features: " + data.features);
+                    console.log("data: " + data);
                     console.log(JSON.stringify(data));
 
                     if (data.features != null) {
@@ -473,10 +474,20 @@ block content
                             featureProjection: 'EPSG:3857'
                         });
 
+                        // create a Polygon from points of the vehicle
+                        var lineStringCoords = [];
+                        for (var i in features) {
+                            var c = features[i].getGeometry().getCoordinates();
+                            lineStringCoords.push(c);
+                        }
+
+                        var feature = new ol.Feature({
+                            geometry: new ol.geom.LineString(lineStringCoords)
+                        })
 
                         // create new Vector object to house the features
                         var vectorSource = new ol.source.Vector({
-                            features: features
+                            features: [feature]
                         });
 
 
@@ -524,16 +535,28 @@ block content
 
                             var features = format.readFeatures(data, {
                                 dataProjection: 'EPSG:4326',
-                                featureProjection: 'EPSG:3857'
+                            featureProjection: 'EPSG:3857'
                             });
+
+                            // create a Polygon from points of the vehicle
+                            var lineStringCoords = [];
+                            for (var i in features) {
+                                var c = features[i].getGeometry().getCoordinates();
+                                lineStringCoords.push(c);
+                            }
+
+                            var feature = new ol.Feature({
+                                geometry: new ol.geom.Polygon(lineStringCoords)
+                            })
 
                             // create new Vector object to house the features
                             var vectorSource = new ol.source.Vector({
-                                features: features
+                                features: [feature]
                             });
 
                             // variable for store currrent layer
                             var layer = map.getLayers().getArray()[layerNumber];
+
                             if(layer == undefined){
                                 createLayerById(id);
                             }
