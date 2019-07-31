@@ -441,16 +441,19 @@ block content
             console.log('Id type: ' + typeof (id));
 
             // TODO: add styleFunction
-            var stylePoint = new ol.style.Style({
+            var trackStyle = new ol.style.Style({
                 stroke: new ol.style.Stroke({
-                    color: [64, 200, 200, 0.5],
-                    width: 1
+                    color: 'rgba(0,0,255,1.0)',
+                    width: 3,
+                    lineCap: 'round'
                 })
             });
+
             // Layer that house an object
             var layer = new ol.layer.Vector({
                 visible: false,
-                zIndex: 1
+                zIndex: 1,
+                style: trackStyle
             });
 
             $.ajax({
@@ -558,6 +561,7 @@ block content
                             var layer = map.getLayers().getArray()[layerNumber];
 
                             if(layer == undefined){
+                                console.log('genera una capa nueva, id:' + layerNumber)
                                 createLayerById(id);
                             }
                             console.log("Actualiza source!")
@@ -598,10 +602,12 @@ block content
                     "</div>" +
                     "</div>");
 
-                // Create a layer for each vehicle
-                createLayerById(id);
-
-                //myItems.push("Hola");
+                // Create a layer for each vehicle in case that does not exists
+                var numVehicles = vehiclesJSON.length;
+                var numLayersVehicles = map.getLayers().getArray().length - 2;
+                if(numVehicles != numLayersVehicles){
+                    createLayerById(id);
+                }
             }
 
             $('#vehicles_results').html(myItems.join(''));

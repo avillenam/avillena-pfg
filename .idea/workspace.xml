@@ -5,7 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6d5f1f38-e885-4881-8791-5da2d0a04345" name="Default Changelist" comment="version 1">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/views/map.jade" beforeDir="false" afterPath="$PROJECT_DIR$/views/map.jade" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
@@ -49,8 +48,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/views/map.jade">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="431">
-              <caret line="541" column="25" lean-forward="true" selection-start-line="541" selection-start-column="25" selection-end-line="541" selection-end-column="25" />
+            <state relative-caret-position="347">
+              <caret line="611" column="17" selection-start-line="611" selection-start-column="17" selection-end-line="611" selection-end-column="17" />
             </state>
           </provider>
         </entry>
@@ -118,7 +117,6 @@
       <find>stroke</find>
       <find>ol.proj.get('EPSG:3857')</find>
       <find>respuesta</find>
-      <find>createLayerById</find>
       <find>Obtiene la posición del vehículo:</find>
       <find>visualize</find>
       <find>btn visualize-vehicle</find>
@@ -133,6 +131,7 @@
       <find>visualize-vehicle</find>
       <find>ol.layer</find>
       <find>ol.source</find>
+      <find>createLayerById</find>
     </findStrings>
     <replaceStrings>
       <replace>router</replace>
@@ -285,12 +284,12 @@
       <workItem from="1564151304841" duration="13756000" />
       <workItem from="1564377389688" duration="13707000" />
       <workItem from="1564420976335" duration="4642000" />
-      <workItem from="1564474221028" duration="11570000" />
+      <workItem from="1564474221028" duration="13410000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="282261000" />
+    <option name="totallyTimeSpent" value="284101000" />
   </component>
   <component name="TodoView" selected-index="2">
     <todo-panel id="selected-file">
@@ -303,7 +302,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="1912" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.20073763" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -481,8 +479,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/views/map.jade">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="431">
-          <caret line="541" column="25" lean-forward="true" selection-start-line="541" selection-start-column="25" selection-end-line="541" selection-end-column="25" />
+        <state relative-caret-position="347">
+          <caret line="611" column="17" selection-start-line="611" selection-start-column="17" selection-end-line="611" selection-end-column="17" />
         </state>
       </provider>
     </entry>
