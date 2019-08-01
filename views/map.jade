@@ -24,15 +24,16 @@ block content
             .panel-heading
                 ul.nav.nav-tabs
                     li.active
-                        a#tab-drivers(href='#tab_drivers_results', data-toggle='tab') Conductores
-                    li
                         a#tab-vehicles(href='#tab_vehicles_results', data-toggle='tab') Vehículos
+                    li
+                        a#tab-drivers(href='#tab_drivers_results', data-toggle='tab') Conductores
             .panel-body
                 .tab-content
-                    #tab_drivers_results.tab-pane.fade.in.active
-                        div#drivers_results
-                    #tab_vehicles_results.tab-pane.fade
+                    #tab_vehicles_results.tab-pane.fade.in.active
                         div#vehicles_results
+                    #tab_drivers_results.tab-pane.fade
+                        div#drivers_results
+
 
     // Modal Vehicle
     #formVehicle.modal.fade(tabindex='-1', role='dialog', aria-labelledby='formVehicleLabel')
@@ -597,7 +598,7 @@ block content
                     "<div title='Fuel'><i class='fa fa-gas-pump'></i>" + fuel + "</div>" +
                     "<a title='Delete vehicle' class='deleteIcon delete-vehicle' data-id=" + id + "><i class='fa fa-trash'></i></a>" +
                     "<a title='Edit Vehicle' class='editIcon'><i class='fa fa-edit'></i></a>" +
-                    "<a class='btn visualize-vehicle' title='Visualize vehicle' data-id=" + id + ">Visualize</a>" +
+                    "<a class='btn visualize-vehicle' title='Visualize vehicle' data-id=" + id + "><i class='fas fa-eye'></i></a>" +
                     "<a class='btn zoom-vehicle' title='Zoom to vehicle' data-id=" + id + "><i class='fas fa-bullseye'></i></a>" +
                     "</div>" +
                     "</div>");
@@ -660,7 +661,12 @@ block content
 
         // create a layer for drawing each of the objects
         function showFeatureLayer(id){
-            map.getLayers().getArray()[layerPosition(id)].setVisible(true);
+            var layer = map.getLayers().getArray()[layerPosition(id)];
+            if(layer.getVisible() == true){
+                layer.setVisible(false);
+            }else{
+                layer.setVisible(true);
+            }
         }
 
         function updateFunctions(){
@@ -707,8 +713,16 @@ block content
             //Visualize and zoom to a vehicle
             $('.visualize-vehicle').on('click', function () {
                 var id = $(this).data('id');
+                if($(this).children("i").attr('class')=='fas fa-eye-slash'){
+                    $(this).children("i").removeClass('fa-eye-slash');
+                    $(this).children("i").addClass('fa-eye');
+                }else if($(this).children("i").attr('class')=='fas fa-eye'){
+                    $(this).children("i").removeClass('fa-eye');
+                    $(this).children("i").addClass('fa-eye-slash');
+                }
+
                 //var url = '/position-vehicle/' + id;
-                console.log('Obtiene la posición del vehículo: ' + id);
+                console.log('Muestra la posición del vehículo: ' + id);
 
                 // Call to the function than show the position of the vehicle
                 showFeatureLayer(id);
