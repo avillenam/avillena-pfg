@@ -450,11 +450,34 @@ block content
                 })
             });
 
+            var stroke = new ol.style.Stroke({color: 'black', width: 2});
+            var fill = new ol.style.Fill({color: 'red'});
+            var styles = {
+                'linestring': new ol.style.Style({
+                    stroke: new ol.style.Stroke({
+                        color: 'blue',
+                        width: 3
+                    }),
+                    fill: new ol.style.Fill({
+                        color: 'rgba(0, 0, 255, 0.1)'
+                    })
+                }),
+                'startpoint': new ol.style.Style({
+                    image: new ol.style.RegularShape({
+                        fill: fill,
+                        stroke: stroke,
+                        points: 4,
+                        radius: 10,
+                        radius2: 0,
+                        angle: Math.PI / 4
+                    })
+                })
+            };
             // Layer that house an object
             var layer = new ol.layer.Vector({
                 visible: false,
                 zIndex: 1,
-                style: trackStyle
+                style: styles['linestring']
             });
 
             $.ajax({
@@ -494,6 +517,12 @@ block content
                             features: [feature]
                         });
 
+                        // add start point from linestring geometry
+                        var coordinates = features[0].getGeometry().getCoordinates();
+                        var startPoint = new ol.Feature(new ol.geom.Point(coordinates));
+                        startPoint.setStyle(styles['startpoint']);
+
+                        vectorSource.addFeature(startPoint);
 
                         // set source for the layer
                         layer.setSource(vectorSource);
