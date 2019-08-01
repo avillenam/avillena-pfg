@@ -598,7 +598,7 @@ block content
                     "<div title='Fuel'><i class='fa fa-gas-pump'></i>" + fuel + "</div>" +
                     "<a title='Delete vehicle' class='deleteIcon delete-vehicle' data-id=" + id + "><i class='fa fa-trash'></i></a>" +
                     "<a title='Edit Vehicle' class='editIcon'><i class='fa fa-edit'></i></a>" +
-                    "<a class='btn visualize-vehicle' title='Visualize vehicle' data-id=" + id + "><i class='fas fa-eye'></i></a>" +
+                    "<a class='btn visualize-vehicle' title='Show vehicle' data-id=" + id + "><i class='fas fa-eye'></i></a>" +
                     "<a class='btn zoom-vehicle' title='Zoom to vehicle' data-id=" + id + "><i class='fas fa-bullseye'></i></a>" +
                     "</div>" +
                     "</div>");
@@ -713,12 +713,16 @@ block content
             //Visualize and zoom to a vehicle
             $('.visualize-vehicle').on('click', function () {
                 var id = $(this).data('id');
+
+                // change visualize icon and modify title
                 if($(this).children("i").attr('class')=='fas fa-eye-slash'){
                     $(this).children("i").removeClass('fa-eye-slash');
                     $(this).children("i").addClass('fa-eye');
+                    $(this).children("i").attr('title','Show vehicle');
                 }else if($(this).children("i").attr('class')=='fas fa-eye'){
                     $(this).children("i").removeClass('fa-eye');
                     $(this).children("i").addClass('fa-eye-slash');
+                    $(this).children("i").attr('title', 'Hide vehicle');
                 }
 
                 //var url = '/position-vehicle/' + id;
