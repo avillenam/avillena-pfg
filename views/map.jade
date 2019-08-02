@@ -432,6 +432,68 @@ block content
             return position;
         }
 
+        // animation of last position
+        var duration = 3000;
+        function flash(feature) {
+            var start = new Date().getTime();
+            var listenerKey = map.on('postcompose', animate);
+
+            function animate(event) {
+                var vectorContext = event.vectorContext;
+                var frameState = event.frameState;
+                var flashGeom = feature.getGeometry().clone();
+                var elapsed = frameState.time - start;
+                var elapsedRatio = elapsed / duration;
+                // radius will be 5 at start and 30 at end.
+                var radius = easeOut(elapsedRatio) * 25 + 5;
+                var opacity = easeOut(1 - elapsedRatio);
+
+                var style = new Style({
+                    image: new CircleStyle({
+                        radius: radius,
+                        stroke: new Stroke({
+                            color: 'rgba(255, 0, 0, ' + opacity + ')',
+                            width: 0.25 + opacity
+                        })
+                    })
+                });
+
+                vectorContext.setStyle(style);
+                vectorContext.drawGeometry(flashGeom);
+                if (elapsed > duration) {
+                    unByKey(listenerKey);
+                    return;
+                }
+                // tell OpenLayers to continue postcompose animation
+                map.render();
+            }
+        }
+
+        // styles for each vehicle
+        // TODO: add a function that assign a random color for each vehicle.
+        // se ha de generar al inicio un array con la simbología para cada vehicle para que sea la misma para la misma sesión.
+        var styles = {
+            'linestring': new ol.style.Style({
+                stroke: new ol.style.Stroke({
+                    color: 'blue',
+                    width: 3
+                }),
+                fill: new ol.style.Fill({
+                    color: 'rgba(0, 0, 255, 0.1)'
+                })
+            }),
+            'startpoint': new ol.style.Style({
+                image: new ol.style.RegularShape({
+                    fill: fill,
+                    stroke: stroke,
+                    points: 4,
+                    radius: 10,
+                    radius2: 0,
+                    angle: Math.PI / 4
+                })
+            })
+        };
+
         // creates layer for each vehicle
         function createLayerById(id) {
             console.log('createLayerById: ' + id);
@@ -441,38 +503,9 @@ block content
             console.log('Id: ' + id);
             console.log('Id type: ' + typeof (id));
 
-            // TODO: add styleFunction
-            var trackStyle = new ol.style.Style({
-                stroke: new ol.style.Stroke({
-                    color: 'rgba(0,0,255,1.0)',
-                    width: 3,
-                    lineCap: 'round'
-                })
-            });
-
             var stroke = new ol.style.Stroke({color: 'black', width: 2});
             var fill = new ol.style.Fill({color: 'red'});
-            var styles = {
-                'linestring': new ol.style.Style({
-                    stroke: new ol.style.Stroke({
-                        color: 'blue',
-                        width: 3
-                    }),
-                    fill: new ol.style.Fill({
-                        color: 'rgba(0, 0, 255, 0.1)'
-                    })
-                }),
-                'startpoint': new ol.style.Style({
-                    image: new ol.style.RegularShape({
-                        fill: fill,
-                        stroke: stroke,
-                        points: 4,
-                        radius: 10,
-                        radius2: 0,
-                        angle: Math.PI / 4
-                    })
-                })
-            };
+
             // Layer that house an object
             var layer = new ol.layer.Vector({
                 visible: false,
