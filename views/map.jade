@@ -445,13 +445,13 @@ block content
                 var elapsed = frameState.time - start;
                 var elapsedRatio = elapsed / duration;
                 // radius will be 5 at start and 30 at end.
-                var radius = easeOut(elapsedRatio) * 25 + 5;
-                var opacity = easeOut(1 - elapsedRatio);
+                var radius = ol.easing.easeOut(elapsedRatio) * 25 + 5;
+                var opacity = ol.easing.easeOut(1 - elapsedRatio);
 
-                var style = new Style({
-                    image: new CircleStyle({
+                var style = new ol.style.Style({
+                    image: new ol.style.Circle({
                         radius: radius,
-                        stroke: new Stroke({
+                        stroke: new ol.style.Stroke({
                             color: 'rgba(255, 0, 0, ' + opacity + ')',
                             width: 0.25 + opacity
                         })
@@ -469,6 +469,8 @@ block content
             }
         }
 
+        var stroke = new ol.style.Stroke({color: 'black', width: 2});
+        var fill = new ol.style.Fill({color: 'red'});
         // styles for each vehicle
         // TODO: add a function that assign a random color for each vehicle.
         // se ha de generar al inicio un array con la simbología para cada vehicle para que sea la misma para la misma sesión.
@@ -491,6 +493,16 @@ block content
                     radius2: 0,
                     angle: Math.PI / 4
                 })
+            }),
+            'endpoint': new ol.style.Style({
+                image: new ol.style.RegularShape({
+                    fill: fill,
+                    stroke: stroke,
+                    points: 4,
+                    radius: 10,
+                    radius2: 0,
+                    angle: Math.PI / 4
+                })
             })
         };
 
@@ -503,10 +515,6 @@ block content
             console.log('Id: ' + id);
             console.log('Id type: ' + typeof (id));
 
-            var stroke = new ol.style.Stroke({color: 'black', width: 2});
-            var fill = new ol.style.Fill({color: 'red'});
-
-            // Layer that house an object
             var layer = new ol.layer.Vector({
                 visible: false,
                 zIndex: 1,
@@ -551,11 +559,17 @@ block content
                         });
 
                         // add start point from linestring geometry
-                        var coordinates = features[0].getGeometry().getCoordinates();
-                        var startPoint = new ol.Feature(new ol.geom.Point(coordinates));
+                        var coordinatesStart = features[0].getGeometry().getCoordinates();
+                        var coordinatesEnd = features[i].getGeometry().getCoordinates();
+                        var startPoint = new ol.Feature(new ol.geom.Point(coordinatesStart));
+                        var endPoint = new ol.Feature(new ol.geom.Point(coordinatesEnd));
                         startPoint.setStyle(styles['startpoint']);
+                        endPoint.setStyle(styles['startpoint']);
 
+                        // Add new features to the map
                         vectorSource.addFeature(startPoint);
+                        //vectorSource.addFeature(endPoint);
+                        flash(endPoint);
 
                         // set source for the layer
                         layer.setSource(vectorSource);
@@ -594,7 +608,7 @@ block content
                         console.log("tiene coordenadas el vehículo id: " + id + "?");
                         console.log(data.features);
                         if (data.features != null) {
-                            console.log("Si tiene")
+                            console.log("Si tiene coordenadas")
                             var format = new ol.format.GeoJSON({
                                 defaultDataProjection: 'EPSG:3857'
                             });
@@ -630,7 +644,7 @@ block content
                             console.log("Actualiza source!")
                             layer.setSource(vectorSource);
                         }else {
-                            console.log("No tiene")
+                            console.log("No tiene coordenadas")
                         }
                     }
                 })
