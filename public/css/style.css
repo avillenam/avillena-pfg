@@ -168,6 +168,11 @@ tr {
     font-size: 10px;
 }
 
+#alerts{
+    position: absolute;
+    right: 40px;
+    bottom: 1px;
+}
 .toggleSettings {
     display: block;
     position: absolute;
@@ -305,4 +310,10 @@ tr {
 
 .resultItem i{
     font-size: 15px;
+}
+
+#marker {
+    width: 150px;
+    height: 150px;
+    background: url('../images/bluedot.gif') no-repeat scroll 0% 0% transparent;
 }

@@ -5,6 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6d5f1f38-e885-4881-8791-5da2d0a04345" name="Default Changelist" comment="version 1">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/css/style.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/views/map.jade" beforeDir="false" afterPath="$PROJECT_DIR$/views/map.jade" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
@@ -30,8 +32,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/routes/index.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1649">
-              <caret line="97" column="24" selection-start-line="97" selection-start-column="13" selection-end-line="97" selection-end-column="24" />
+            <state relative-caret-position="296">
+              <caret line="124" column="29" selection-start-line="124" selection-start-column="13" selection-end-line="124" selection-end-column="29" />
             </state>
           </provider>
         </entry>
@@ -39,8 +41,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/queries.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="85">
-              <caret line="5" column="2" selection-start-line="5" selection-start-column="2" selection-end-line="5" selection-end-column="2" />
+            <state relative-caret-position="131">
+              <caret line="223" column="6" selection-start-line="223" selection-start-column="6" selection-end-line="223" selection-end-column="6" />
             </state>
           </provider>
         </entry>
@@ -48,8 +50,11 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/views/map.jade">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="721">
-              <caret line="610" column="61" selection-start-line="610" selection-start-column="61" selection-end-line="610" selection-end-column="61" />
+            <state relative-caret-position="135">
+              <caret line="963" column="61" selection-start-line="963" selection-start-column="28" selection-end-line="963" selection-end-column="61" />
+              <folding>
+                <element signature="e#183#190#1" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -75,8 +80,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/views/layout.jade">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="425">
-              <caret line="25" column="8" selection-start-line="25" selection-start-column="8" selection-end-line="25" selection-end-column="8" />
+            <state relative-caret-position="272">
+              <caret line="16" column="106" selection-start-line="16" selection-start-column="106" selection-end-line="16" selection-end-column="106" />
             </state>
           </provider>
         </entry>
@@ -84,8 +89,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/public/css/style.css">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="4352">
-              <caret line="256" column="1" selection-start-line="256" selection-start-column="1" selection-end-line="256" selection-end-column="1" />
+            <state relative-caret-position="172">
+              <caret line="173" column="16" selection-start-line="173" selection-start-column="16" selection-end-line="173" selection-end-column="16" />
             </state>
           </provider>
         </entry>
@@ -102,36 +107,36 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>conString</find>
-      <find>module</find>
-      <find>root</find>
-      <find>source</find>
-      <find>layer</find>
-      <find>vectorLayer</find>
-      <find>dibujaPosicion</find>
-      <find>stroke</find>
-      <find>ol.proj.get('EPSG:3857')</find>
-      <find>respuesta</find>
-      <find>Obtiene la posición del vehículo:</find>
-      <find>visualize</find>
-      <find>btn visualize-vehicle</find>
-      <find>.btn</find>
-      <find>peticion enviada</find>
-      <find>layerPosition(id);</find>
+      <find>linestring</find>
+      <find>layerPosition</find>
+      <find>setStyle</find>
+      <find>initiali</find>
+      <find>startpoint</find>
+      <find>showFeatureLayer</find>
       <find>tab-vehicles</find>
-      <find>createVehicleHTMLelements</find>
-      <find>Id type:</find>
-      <find>updateFunctions</find>
-      <find>ol.geom</find>
-      <find>ol.layer</find>
-      <find>ol.source</find>
+      <find>ol.Feature</find>
+      <find>updateVehiclesPosition</find>
+      <find>createStyles</find>
+      <find>marker</find>
+      <find>vehiculos creados:</find>
       <find>createLayerById</find>
-      <find>tab-drivers</find>
-      <find>visualiz</find>
+      <find>angle</find>
+      <find>togglesettings</find>
+      <find>toggleSettings</find>
+      <find>alert-success</find>
       <find>visualize-vehicle</find>
-      <find>fill: fill,</find>
-      <find>fill</find>
-      <find>easeout</find>
+      <find>myItems</find>
+      <find>alert</find>
+      <find>alerts</find>
+      <find>vehicles_results</find>
+      <find>createAler</find>
+      <find>\&quot;</find>
+      <find>createaler</find>
+      <find>Icon</find>
+      <find>rotation</find>
+      <find>endpoint</find>
+      <find>style</find>
+      <find>styles</find>
     </findStrings>
     <replaceStrings>
       <replace>router</replace>
@@ -140,6 +145,8 @@
       <replace>ROOT</replace>
       <replace>vehiclesJSON</replace>
       <replace>driversJSON</replace>
+      <replace>layerposition</replace>
+      <replace>'</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -195,13 +202,7 @@
             <path>
               <item name="avillena-pfg" type="b2602c69:ProjectViewProjectNode" />
               <item name="avillena-pfg" type="462c0819:PsiDirectoryNode" />
-              <item name="public" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="avillena-pfg" type="b2602c69:ProjectViewProjectNode" />
-              <item name="avillena-pfg" type="462c0819:PsiDirectoryNode" />
-              <item name="public" type="462c0819:PsiDirectoryNode" />
-              <item name="javascripts" type="462c0819:PsiDirectoryNode" />
+              <item name="views" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -212,9 +213,10 @@
   </component>
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="TODO_SCOPE" value="Project Files" />
+    <property name="TODO_SCOPE" value="Current File" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="D:/PROGRAMACION/pg_node" />
+    <property name="editor.config.ad.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../openlayers-master" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
@@ -285,14 +287,14 @@
       <workItem from="1564377389688" duration="13707000" />
       <workItem from="1564420976335" duration="4642000" />
       <workItem from="1564474221028" duration="20370000" />
-      <workItem from="1564670022843" duration="5011000" />
+      <workItem from="1564670022843" duration="45963000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="297282000" />
+    <option name="totallyTimeSpent" value="338234000" />
   </component>
-  <component name="TodoView" selected-index="2">
+  <component name="TodoView">
     <todo-panel id="selected-file">
       <is-autoscroll-to-source value="true" />
     </todo-panel>
@@ -315,7 +317,7 @@
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="6" weight="0.3289689" />
+      <window_info anchor="bottom" id="TODO" order="6" weight="0.2667758" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="8" weight="0.32936078" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
@@ -328,6 +330,11 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
+    <option name="exactExcludedFiles">
+      <list>
+        <option value="$PROJECT_DIR$/../openlayers-master/node_modules/karma/config.tpl.js" />
+      </list>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="version 1" />
@@ -437,20 +444,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/routes/index.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1649">
-          <caret line="97" column="24" selection-start-line="97" selection-start-column="13" selection-end-line="97" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/queries.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" column="2" selection-start-line="5" selection-start-column="2" selection-end-line="5" selection-end-column="2" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/public/javascripts/constants.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="68">
@@ -465,20 +458,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/views/layout.jade">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="425">
-          <caret line="25" column="8" selection-start-line="25" selection-start-column="8" selection-end-line="25" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/css/style.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4352">
-          <caret line="256" column="1" selection-start-line="256" selection-start-column="1" selection-end-line="256" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/node_modules/ol/Observable.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2091">
@@ -486,10 +465,51 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/public/images/dot.png">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/views/layout.jade">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="16" column="106" selection-start-line="16" selection-start-column="106" selection-end-line="16" selection-end-column="106" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/queries.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="131">
+          <caret line="223" column="6" selection-start-line="223" selection-start-column="6" selection-end-line="223" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/css/style.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="172">
+          <caret line="173" column="16" selection-start-line="173" selection-start-column="16" selection-end-line="173" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/routes/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="296">
+          <caret line="124" column="29" selection-start-line="124" selection-start-column="13" selection-end-line="124" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/node_modules/openlayers/src/ol/feature.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="139">
+          <caret line="241" selection-start-line="241" selection-end-line="241" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/views/map.jade">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="721">
-          <caret line="610" column="61" selection-start-line="610" selection-start-column="61" selection-end-line="610" selection-end-column="61" />
+        <state relative-caret-position="135">
+          <caret line="963" column="61" selection-start-line="963" selection-start-column="28" selection-end-line="963" selection-end-column="61" />
+          <folding>
+            <element signature="e#183#190#1" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
