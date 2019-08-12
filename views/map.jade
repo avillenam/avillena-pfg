@@ -11,11 +11,11 @@ block content
         #popup-content
     div(style="display: none;")
         #marker(title="Marker")
-    div.col-md-1(style="position: absolute; right: 1em; top: 60px;")
+    div.col-md-1(style="position: absolute; right: 1em; bottom: 60px;")
         button.btn.btn-primary.btn-block(type="button" data-toggle="modal" data-target="#formVehicle" style="position: absolute; right: 3em; top:60 px;") Add Vehicle
-    div.col-md-1(style="position: absolute; right: 1em; top: 95px;")
+    div.col-md-1(style="position: absolute; right: 1em; bottom: 95px;")
         button.btn.btn-primary.btn-block(type="button" data-toggle="modal" data-target="#formDriver" style="position: absolute; right: 3em; top:60 px;") Add Driver
-    div.col-md-1(style="position: absolute; right: 1em; top: 130px;")
+    div.col-md-1(style="position: absolute; right: 1em; bottom: 130px;")
         button.btn.btn-primary.btn-block(type="button" data-toggle="modal" data-target="#formVehicleDriver" style="position: absolute; right: 3em; top:60 px;") Vehicle-Driver
 
     a.toggleSettings
@@ -200,11 +200,15 @@ block content
         // });
 
         var osm = new ol.layer.Tile({
+            title: "OSM",
+            baseLayer: true,
             source: new ol.source.OSM()
         });
 
 
         var pnoaWmts = new ol.layer.Tile({
+            title: "PNOA",
+            baseLayer: true,
             opacity: 0.7,
             source: new ol.source.WMTS({
                 url: 'http://www.ign.es/wmts/pnoa-ma',
@@ -248,7 +252,7 @@ block content
 
 
         var map = new ol.Map({
-            layers: [osm, vectorLayer],
+            layers: [osm, pnoaWmts],
             target: 'map',
             controls: ol.control.defaults().extend([
                 new ol.control.ScaleLine({
@@ -263,6 +267,9 @@ block content
                 zoom: 6
             })
         });
+
+        // Add a new Layerswitcher to the map
+        //map.addControl(new ol.control.LayerSwitcherImage());
 
         //var coords = [-3.671180674823532, 40.412316630630755];
 
@@ -790,14 +797,19 @@ block content
 
         // create an alert
         function createAlert(message){
-            var myItems = [];
-            myItems.push("" +
-                "<div class='alert alert-success alert-dismissible' data-auto-dismiss role='alert'>" +
-                    "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>" +
-                    "<div>" + message + "</div>" +
-                "</div>"
-            )
-            $('#alerts').html(myItems.join(''));
+            // var myItems = [];
+            // myItems.push("" +
+            //     "<div class='alert alert-success alert-dismissible' data-auto-dismiss role='alert'>" +
+            //         "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>" +
+            //         "<div>" + message + "</div>" +
+            //     "</div>"
+            // )
+            // $('#alerts').html(myItems.join(''));
+
+            // Control
+            var notification = new ol.control.Notification({});
+            map.addControl(notification);
+            notification.show(message);
         }
         // create a layer for drawing each of the objects
         function showFeatureLayer(id){
@@ -869,6 +881,7 @@ block content
                 var id = $(this).data('id');
                 var url = '/deleteVehicle/' + id;
                 if (confirm('Delete vehicle with id:' + id + '?')) {
+                    // delete driver
                     $.ajax({
                         url: url,
                         type: 'DELETE',
@@ -880,6 +893,8 @@ block content
                             console.log(err);
                         }
                     })
+
+                    // delete vehicle-driver relation
                 }
             });
 
@@ -957,15 +972,15 @@ block content
 
             function blinkPoint() {
                 for (var i = 0; i < numVehicles; i++) {
-                    if (map.getLayers().getArray()[i + 2].getVisible() == true) {
-                        if (styles[i].endpoint.getImage().getOpacity() == 1) {
-                            console.log('apaga')
-                            styles[i].endpoint.getImage().setOpacity(0)
-                            map.getLayers().getArray()[i + 2].getSource().refresh()
-                        } else {
-                            console.log('enciende')
-                            styles[i].endpoint.getImage().setOpacity(1)
-                            map.getLayers().getArray()[i + 2].getSource().refresh()
+                    if(map.getLayers().getArray()[i + 2].getSource() != null){
+                        if (map.getLayers().getArray()[i + 2].getVisible() == true) {
+                            if (styles[i].endpoint.getImage().getOpacity() == 1) {
+                                styles[i].endpoint.getImage().setOpacity(0)
+                                map.getLayers().getArray()[i + 2].getSource().refresh()
+                            } else {
+                                styles[i].endpoint.getImage().setOpacity(1)
+                                map.getLayers().getArray()[i + 2].getSource().refresh()
+                            }
                         }
                     }
                 }
