@@ -11,13 +11,15 @@ block content
         #popup-content
     div(style="display: none;")
         #marker(title="Marker")
+    div.btn-group(role="group" style="position: absolute; right: 3em; top: 60px;")
+        div.btn.btn-default.selected#mapOSM(type="button" style="visibility:visible; background: url(/images/mapOSM.jpg)" onclick="toggleOSMLayer()") OSM
+        div.btn.btn-default#mapPNOA(type="button" style="visibility:visible; background: url(/images/mapPNOA.jpg)" onclick="togglePNOALayer()") PNOA
     div.col-md-1(style="position: absolute; right: 1em; bottom: 60px;")
-        button.btn.btn-primary.btn-block(type="button" data-toggle="modal" data-target="#formVehicle" style="position: absolute; right: 3em; top:60 px;") Add Vehicle
+        a.btn.btn-primary.btn-block(type="button" data-toggle="modal" data-target="#formVehicle" style="position: absolute; right: 3em; top:60 px;") Add Vehicle
     div.col-md-1(style="position: absolute; right: 1em; bottom: 95px;")
-        button.btn.btn-primary.btn-block(type="button" data-toggle="modal" data-target="#formDriver" style="position: absolute; right: 3em; top:60 px;") Add Driver
+        a.btn.btn-primary.btn-block(type="button" data-toggle="modal" data-target="#formDriver" style="position: absolute; right: 3em; top:60 px;") Add Driver
     div.col-md-1(style="position: absolute; right: 1em; bottom: 130px;")
-        button.btn.btn-primary.btn-block(type="button" data-toggle="modal" data-target="#formVehicleDriver" style="position: absolute; right: 3em; top:60 px;") Vehicle-Driver
-
+        a.btn.btn-primary.btn-block(type="button" data-toggle="modal" data-target="#formVehicleDriver" style="position: absolute; right: 3em; top:60 px;") Vehicle-Driver
     a.toggleSettings
         i.fa.fa-bars
     div#alerts
@@ -36,105 +38,7 @@ block content
                         div#vehicles_results
                     #tab_drivers_results.tab-pane.fade
                         div#drivers_results
-    // Modal Vehicle
-    #formVehicle.modal.fade(tabindex='-1', role='dialog', aria-labelledby='formVehicleLabel')
-        .modal-dialog(role='document')
-            .modal-content
-                form(method="post" action="/vehicle")
-                    .modal-header
-                        button.close(type='button', data-dismiss='modal', aria-label='Close')
-                            span(aria-hidden='true') ×
-                        h4#myVehicleLabel.modal-title Add Vehicle
-                    .modal-body
-                        .form-group
-                            label Vehicle type
-                            select.form-control(type="text" name="type")
-                                option(value="Car") Car
-                                option(value="Van") Van
-                                option(value="Truck") Truck
-                                option(value="Bike") Bike
-                                option(value="Motorbike") Motorbike
-                                option(value="Electric Scooter") Electric Scooter
-                        .form-group
-                            label Brand
-                            input.form-control(type="text" name="brand")
-                        .form-group
-                            label Model
-                            input.form-control(type="text" name="model")
-                        .form-group
-                            label Number of passengers
-                            input.form-control(type="number" name="passengers")
-                        .form-group
-                            label Fuel Type
-                            select.form-control(type="text" name="fuel")
-                                option(value="Diesel") Diesel
-                                option(value="Gas") Gas
-                        .form-group
-                            label Available
-                            select.form-control(type="text" name="available")
-                                option(value="true") True
-                                option(value="false") False
-                    .modal-footer
-                        button.btn.btn-default(type='button', data-dismiss='modal') Close
-                        input.btn.btn-primary(type='submit' value="Save")
 
-    // Modal Driver
-    #formDriver.modal.fade(tabindex='-1', role='dialog', aria-labelledby='formDriverLabel')
-        .modal-dialog(role='document')
-            .modal-content
-                form(method="post" action="/driver")
-                    .modal-header
-                        button.close(type='button', data-dismiss='modal', aria-label='Close')
-                            span(aria-hidden='true') ×
-                        h4#myDriverLabel.modal-title Add Driver
-                    .modal-body
-                        .form-group
-                            label Name
-                            input.form-control(type="text" name="name")
-                        .form-group
-                            label Surname
-                            input.form-control(type="text" name="surname")
-                        .form-group
-                            label Birth Date
-                            input.form-control(type="date" name="birthdate")
-                        .form-group
-                            label Genre
-                            select.form-control(type="text" name="genre")
-                                option(value="Male") Male
-                                option(value="Female") Female
-                        .form-group
-                            label Mobile Number
-                            input.form-control(type="tel" name="mobile_number")
-                        .form-group
-                            label Email
-                            input.form-control(type="email" name="email")
-                        .form-group
-                            label Available
-                            select.form-control(type="text" name="available")
-                                option(value="true") True
-                                option(value="false") False
-                    .modal-footer
-                        button.btn.btn-default(type='button', data-dismiss='modal') Close
-                        input.btn.btn-primary(type='submit' value="Save")
-    // Modal Driver
-    #formVehicleDriver.modal.fade(tabindex='-1', role='dialog', aria-labelledby='formVehicleDriverLabel')
-        .modal-dialog(role='document')
-            .modal-content
-                form(method="post" action="/vehicleDriver")
-                    .modal-header
-                        button.close(type='button', data-dismiss='modal', aria-label='Close')
-                            span(aria-hidden='true') ×
-                        h4#myVehicleDriverLabel.modal-title Add Driver
-                    .modal-body
-                        .form-group
-                            label Vehicle
-                            input.form-control(type="text" name="id_vehicle")
-                        .form-group
-                            label Driver
-                            input.form-control(type="text" name="id_driver")
-                    .modal-footer
-                        button.btn.btn-default(type='button', data-dismiss='modal') Close
-                        input.btn.btn-primary(type='submit' value="Save")
     //form.flotante(method="post" action="/coords")
     //    .input-group.flex-nowrap.col-12
     //        .input-group-prepend
@@ -202,6 +106,7 @@ block content
         var osm = new ol.layer.Tile({
             title: "OSM",
             baseLayer: true,
+            visible: true,
             source: new ol.source.OSM()
         });
 
@@ -209,12 +114,30 @@ block content
         var pnoaWmts = new ol.layer.Tile({
             title: "PNOA",
             baseLayer: true,
-            opacity: 0.7,
+            opacity: 1,
+            visible: false,
             source: new ol.source.WMTS({
                 url: 'http://www.ign.es/wmts/pnoa-ma',
                 layer: 'OI.OrthoimageCoverage',
                 matrixSet: 'EPSG:3857',
                 format: 'image/jpeg',
+                projection: projection,
+                tileGrid: tileGrid,
+                style: 'default',
+                wrapX: true
+            })
+        });
+
+        var IGNBaseOrto = new ol.layer.Tile({
+            title: "IGNBaseOrto",
+            baseLayer: true,
+            opacity: 1,
+            visible: false,
+            source: new ol.source.WMTS({
+                url: 'http://www.ign.es/wmts/ign-base',
+                layer: 'IGNBaseOrto',
+                matrixSet: 'EPSG:3857',
+                format: 'image/png',
                 projection: projection,
                 tileGrid: tileGrid,
                 style: 'default',
@@ -252,7 +175,7 @@ block content
 
 
         var map = new ol.Map({
-            layers: [osm, pnoaWmts],
+            layers: [osm, pnoaWmts, IGNBaseOrto],
             target: 'map',
             controls: ol.control.defaults().extend([
                 new ol.control.ScaleLine({
@@ -325,6 +248,10 @@ block content
         function borraPantalla() {
         }
 
+        function capitalizeFirstLetter(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+
         function httpGet(theUrl) {
             var xmlHttp = new XMLHttpRequest();
             xmlHttp.open("GET", theUrl, false); // false for synchronous request
@@ -346,12 +273,13 @@ block content
             for (var i = 0; i < driversJSON.length; i++) {
                 var id = driversJSON[i]['id_driver'];
                 var name = driversJSON[i]['name'];
-                var surname = driversJSON[i]['surname'];
+                var surname = new String(driversJSON[i]['surname']);
                 var birthdate = (new Date(driversJSON[i]['birthdate']));
                 birthdate = birthdate.getDate() + "/" + birthdate.getMonth() + "/" + birthdate.getFullYear();
                 var genre = driversJSON[i]['genre'];
                 var mobile_number = driversJSON[i]['mobile_number'];
                 var email = driversJSON[i]['email'];
+                var available = driversJSON[i]['available'];
 
                 //request Vehicle assigned
                 theUrlVehicle = ROOT + '/vehicleByIdDriver/' + id;
@@ -376,11 +304,19 @@ block content
                     "<div title='Email'><i class='fa fa-at'></i>" + email + "</div>" +
                     "<div title='Vehicle'><i class='fa fa-car-alt'></i>" + id_vehicle + "</div>" +
                     "<a title='Delete driver' class='deleteIcon delete-driver' data-id=" + id + "><i class='fa fa-trash'></i></a>" +
-                    "<a title='Edit Driver' class='editIcon'><i class='fa fa-edit'></i></a>" +
+                    "<a title='Edit Driver' class='editIcon edit-driver' data-toggle='modal' data-target='#editFormDriver' " +
+                    " data-id=" + id + " data-name=" + name + " data-surname=" + surname + " data-birthdate= " + birthdate +
+                    " data-genre=" + genre + " data-mobile_number= " + mobile_number + " data-email=" + email +
+                    " data-available=" + available +
+                    ">" +
+                        "<i class='fa fa-edit'></i>" +
+                    "</a>" +
                     "<a class='btn visualize-driver' data-id=" + id + ">Visualize</a>" +
                     "</div>" +
                     "</div>");
                 //myItems.push("Hola");
+
+                //$("img").attr("width","500");
             }
             $('#drivers_results').html(myItems.join(''));
             console.log('drivers capturados: ')
@@ -401,7 +337,7 @@ block content
             var position = 0;
             for (var i = 0; i < vehiclesJSON.length; i++) {
                 if (vehiclesJSON[i].id_vehicle == id) {
-                    position = i + 2;
+                    position = i + 3;
                 }
             }
             return position;
@@ -510,6 +446,10 @@ block content
         function initializeLayers(){
             for (var i = 0; i < numVehicles; i++) {
                 var id = vehiclesJSON[i]['id_vehicle'];
+
+                //TODO: al ser asincrona esta funcion, hay veces que se desordenan las capas, respecto a los elementos
+                // HTML generados al vuelo.
+                console.log('llama a createLayerById para el id: ' + id);
                 createLayerById(id);
 
                 var layerposition = layerPosition(id);
@@ -694,6 +634,8 @@ block content
             }
         }
 
+
+
         // Creates the HTML elements for each vehicle
         function createVehicleHTMLelements(){
             //vehiclesJSON = getVehicles();
@@ -701,10 +643,21 @@ block content
 
             for (var i = 0; i < vehiclesJSON.length; i++) {
                 var id = vehiclesJSON[i]['id_vehicle'];
+                var type = vehiclesJSON[i]['type'];
                 var brand = vehiclesJSON[i]['brand'];
                 var model = vehiclesJSON[i]['model'];
                 var passengers = vehiclesJSON[i]['passengers'];
                 var fuel = vehiclesJSON[i]['fuel'];
+                var available = vehiclesJSON[i]['available'];
+                var visibility = vehiclesJSON[i]['visibility'];
+
+                // set visibility icon
+                var eye = '';
+                if(visibility == 'false'){
+                    eye = 'fa-eye';
+                } else {
+                    eye = 'fa-eye-slash';
+                }
 
                 //request Driver assigned
                 theUrlDriver = ROOT + '/driverByIdVehicle/' + id;
@@ -720,25 +673,35 @@ block content
                 //create HTML element for each vehicle
                 myItems.push("" +
                     "<div class='resultItem'>" +
-                    "<img class='list-thumbnail' src='/images/bicycle icon.png'>" +
-                    "<div href='#" + id + "' class='details'>" +
-                    "<div class='list-group-item-heading'><i class='fa fa-hashtag'></i>" + id + "</div>" +
-                    "<div title='Driver'><i class='glyphicon glyphicon-user'></i>" + id_driver + "</div>" +
-                    "<div title='Brand, model'><i class='glyphicon glyphicon-triangle-right'></i>" + brand + ", " + model + "</div>" +
-                    "<div title='Passengers'><i class='fa fa-users'></i>" + passengers + "</div>" +
-                    "<div title='Fuel'><i class='fa fa-gas-pump'></i>" + fuel + "</div>" +
-                    "<a title='Delete vehicle' class='deleteIcon delete-vehicle' data-id=" + id + "><i class='fa fa-trash'></i></a>" +
-                    "<a title='Edit Vehicle' class='editIcon'><i class='fa fa-edit'></i></a>" +
-                    "<a class='btn visualize-vehicle' title='Show vehicle' data-id=" + id + "><i class='fas fa-eye'></i></a>" +
-                    "<a class='btn zoom-vehicle' title='Zoom to vehicle' data-id=" + id + "><i class='fas fa-bullseye'></i></a>" +
-                    "</div>" +
+                        "<img class='list-thumbnail' src='/images/bicycle icon.png'>" +
+                        "<div href='#" + id + "' class='details'>" +
+                        "<div class='list-group-item-heading'><i class='fa fa-hashtag'></i>" + id + "</div>" +
+                        "<div title='Driver'><i class='glyphicon glyphicon-user'></i>" + id_driver + "</div>" +
+                        "<div title='Brand, model'><i class='glyphicon glyphicon-triangle-right'></i>" + brand + ", " + model + "</div>" +
+                        "<div title='Passengers'><i class='fa fa-users'></i>" + passengers + "</div>" +
+                        "<div title='Fuel'><i class='fa fa-gas-pump'></i>" + fuel + "</div>" +
+                        "<a title='Delete vehicle' class='deleteIcon delete-vehicle' data-id=" + id + "><i class='fa fa-trash'></i></a>" +
+                        "<a title='Edit Vehicle' class='editIcon edit-vehicle' data-toggle='modal' data-target='#editFormVehicle' " +
+                        " data-id=" + parseInt(id) +
+                        " data-type=" + type +
+                        " data-brand=" + brand +
+                        " data-model=" + model +
+                        " data-passengers=" + passengers +
+                        " data-fuel=" + fuel +
+                        " data-available=" + available +
+                        ">" +
+                        "<i class='fa fa-edit'></i>" +
+                        "</a>" +
+                        "<a class='btn visualize-vehicle' title='Show vehicle' data-id=" + id + "><i class='fas " + eye + "'></i></a>" +
+                        "<a class='btn zoom-vehicle' title='Zoom to vehicle' data-id=" + id + "><i class='fas fa-bullseye'></i></a>" +
+                        "</div>" +
                     "</div>");
 
                 // Create a layer for each vehicle in case that does not exists
                 //var numVehicles = vehiclesJSON.length;
 
                 /*
-                var numLayersVehicles = map.getLayers().getArray().length - 2;
+                var numLayersVehicles = map.getLayers().getArray().length - 3;
                 if(numVehicles != numLayersVehicles){
                     createLayerById(id);
                 }
@@ -829,7 +792,7 @@ block content
                     var last = points.length - 1;
                     var coordinatesEnd = points[last];
                     var endPoint = new ol.Feature(new ol.geom.Point(coordinatesEnd));
-                    var style = styles[layerposition - 2];
+                    var style = styles[layerposition - 3];
                     endPoint.setStyle(style.endpoint);
                     console.log('layer.getVisible(): ' + layer.getVisible());
                     vectorSource.addFeature(endPoint);
@@ -855,6 +818,38 @@ block content
             }
         }
 
+        function toggleOSMLayer(){
+            console.log("activa/desactiva OSM layer");
+            var layerOSM = map.getLayers().getArray()[0];
+            var layerPNOA = map.getLayers().getArray()[1];
+            var IGNBaseOrto = map.getLayers().getArray()[2];
+
+
+            if(layerOSM.getVisible() == false && layerPNOA.getVisible() == true){
+                $("#mapPNOA").removeClass('selected');
+                $("#mapOSM").addClass('selected');
+                layerOSM.setVisible(true);
+                layerPNOA.setVisible(false);
+                IGNBaseOrto.setVisible(false);
+            }
+        }
+
+        function togglePNOALayer() {
+            console.log("activa/desactiva PNOA layer");
+            var layerOSM = map.getLayers().getArray()[0];
+            var layerPNOA = map.getLayers().getArray()[1];
+            var IGNBaseOrto = map.getLayers().getArray()[2];
+
+
+            if(layerOSM.getVisible()==true && layerPNOA.getVisible()==false){
+                $("#mapOSM").removeClass('selected');
+                $("#mapPNOA").addClass('selected');
+                layerOSM.setVisible(false);
+                layerPNOA.setVisible(true);
+                IGNBaseOrto.setVisible(true);
+            }
+        }
+
         function updateFunctions(){
 
             // Delete driver by id
@@ -875,6 +870,48 @@ block content
                     })
                 }
             });
+
+            $(".edit-driver").on('click', function () {
+                console.log('intentando editar un driver');
+                /*
+                console.log('id: ' + $(this).data('id'));
+                console.log('name: ' + $(this).data('name'));
+                console.log('surname: ' + $(this).data('surname'));
+                console.log('birthdate: ' + $(this).data('birthdate'));
+                console.log('genre: ' + $(this).data('genre'));
+                console.log('mobile_number: ' + $(this).data('mobile_number'));
+                console.log('email: ' + $(this).data('email'));
+                console.log('available: ' + $(this).data('available'));
+
+                 */
+                //$('#editFormDriver').modal('toggle');
+                //$('#editFormDriver').modal('show');
+
+                $("#edit-form-id").val($(this).data('id'));
+                $("#edit-form-name").val($(this).data('name'));
+                $("#edit-form-surname").val($(this).data('surname'));
+                $("#edit-form-birthdate").val($(this).data('birthdate'));
+                $("#edit-form-genre").val($(this).data('genre'));
+                $("#edit-form-mobile_number").val($(this).data('mobile_number'));
+                $("#edit-form-email").val($(this).data('email'));
+                $("#edit-form-available").val($(this).data('available'));
+
+            });
+
+            $(".edit-vehicle").on('click', function () {
+                console.log('intentando editar un vehicle');
+                //$('#editFormVehicle').modal('toggle');
+                //$('#editFormVehicle').modal('show');
+
+                $("#edit-vehicle-form-id").val($(this).data('id'));
+                $("#edit-vehicle-form-type").val($(this).data('type'));
+                $("#edit-vehicle-form-brand").val($(this).data('brand'));
+                $("#edit-vehicle-form-model").val($(this).data('model'));
+                $("#edit-vehicle-form-passengers").val($(this).data('passengers'));
+                $("#edit-vehicle-form-fuel").val($(this).data('fuel'));
+                $("#edit-vehicle-form-available").val($(this).data('available'));
+            });
+
 
             // Delete vehicle by id
             $(".delete-vehicle").on('click', function () {
@@ -902,19 +939,27 @@ block content
             //Visualize and zoom to a vehicle
             $('.visualize-vehicle').on('click', function () {
                 var id = $(this).data('id');
+                var pos = layerPosition(id) - 3;
 
                 //TODO: faltaría hacer una comprobación al inicio en la que el icono del ojo sea en función de si la
                 // capa está visibe=true o false. Ya que cada vez que se hace un tab-vehicles se inicializan los elementos HTML
 
+                if(vehiclesJSON[pos].visibility == true){       //if layer is currently visible, set class properly
+                    $(this).children("i").removeClass('fa-eye');
+                    $(this).children("i").addClass('fa-eye-slash');
+                }
+
                 // change visualize icon and modify title
-                if($(this).children("i").attr('class')=='fas fa-eye-slash'){
+                if($(this).children("i").attr('class')=='fas fa-eye-slash'){    //layer is visible, change it to not visible
                     $(this).children("i").removeClass('fa-eye-slash');
                     $(this).children("i").addClass('fa-eye');
                     $(this).children("i").attr('title','Show vehicle');
-                }else if($(this).children("i").attr('class')=='fas fa-eye'){
+                    vehiclesJSON[pos].visibility='false'
+                }else if($(this).children("i").attr('class')=='fas fa-eye'){    //layer is not visible, change it to visible
                     $(this).children("i").removeClass('fa-eye');
                     $(this).children("i").addClass('fa-eye-slash');
                     $(this).children("i").attr('title', 'Hide vehicle');
+                    vehiclesJSON[pos].visibility = 'true'
                 }
 
                 //var url = '/position-vehicle/' + id;
@@ -936,7 +981,7 @@ block content
                     zoomToFeature(source);
                 }
             });
-            console.log('cursor')
+            console.log('cursor');
 
         }
 
@@ -945,7 +990,7 @@ block content
         function applyLayerStyle(id) {
             var layerposition = layerPosition(id);
             var layer = map.getLayers().getArray()[layerposition];
-            layer.setStyle(styles[layerposition - 2]);
+            layer.setStyle(styles[layerposition - 3]);
         }
 
          */
@@ -954,6 +999,11 @@ block content
             // create styles of the vehicles
             vehiclesJSON = getVehicles();
             numVehicles = vehiclesJSON.length;
+
+            // stablish visibility to 'false' in each vehicle element for set the class fa-eye
+            for(var i = 0; i < numVehicles ; i++){
+                vehiclesJSON[i].visibility = 'false';
+            }
 
             // Initialize layer's vehicles
             initializeLayers();
@@ -972,21 +1022,20 @@ block content
 
             function blinkPoint() {
                 for (var i = 0; i < numVehicles; i++) {
-                    if(map.getLayers().getArray()[i + 2].getSource() != null){
-                        if (map.getLayers().getArray()[i + 2].getVisible() == true) {
+                    if(map.getLayers().getArray()[i + 3].getSource() != null){
+                        if (map.getLayers().getArray()[i + 3].getVisible() == true) {
                             if (styles[i].endpoint.getImage().getOpacity() == 1) {
                                 styles[i].endpoint.getImage().setOpacity(0)
-                                map.getLayers().getArray()[i + 2].getSource().refresh()
+                                map.getLayers().getArray()[i + 3].getSource().refresh()
                             } else {
                                 styles[i].endpoint.getImage().setOpacity(1)
-                                map.getLayers().getArray()[i + 2].getSource().refresh()
+                                map.getLayers().getArray()[i + 3].getSource().refresh()
                             }
                         }
                     }
                 }
             map.renderSync();
             }
-
 
             // launch the requests in loop each 2 seconds
             //setInterval(updatePosition, 5000);
@@ -1001,3 +1050,187 @@ block content
         });
 
         //})
+
+    // Modal ADD Vehicle
+    #formVehicle.modal.fade(tabindex='-1', role='dialog', aria-labelledby='formVehicleLabel')
+        .modal-dialog(role='document')
+            .modal-content
+                form(method="post" action="/vehicle")
+                    .modal-header
+                        button.close(type='button', data-dismiss='modal', aria-label='Close')
+                            span(aria-hidden='true') ×
+                        h4#myVehicleLabel.modal-title Add Vehicle
+                    .modal-body
+                        .form-group
+                            label Vehicle type
+                            select.form-control(type="text" name="type")
+                                option(value="Car") Car
+                                option(value="Van") Van
+                                option(value="Truck") Truck
+                                option(value="Bike") Bike
+                                option(value="Motorbike") Motorbike
+                                option(value="Electric Scooter") Electric Scooter
+                        .form-group
+                            label Brand
+                            input.form-control(type="text" name="brand")
+                        .form-group
+                            label Model
+                            input.form-control(type="text" name="model")
+                        .form-group
+                            label Number of passengers
+                            input.form-control(type="number" name="passengers")
+                        .form-group
+                            label Fuel Type
+                            select.form-control(type="text" name="fuel")
+                                option(value="Diesel") Diesel
+                                option(value="Gas") Gas
+                        .form-group
+                            label Available
+                            select.form-control(type="text" name="available")
+                                option(value="true") True
+                                option(value="false") False
+                    .modal-footer
+                        button.btn.btn-default(type='button', data-dismiss='modal') Close
+                        input.btn.btn-primary(type='submit' value="Save")
+
+    // Modal EDIT Vehicle
+    #editFormVehicle.modal.fade(tabindex='-1', role='dialog', aria-labelledby='editFormVehicleLabel')
+        .modal-dialog(role='document')
+            .modal-content
+                form(method="post" action="/editVehicle")
+                    input(type="hidden" id="edit-vehicle-form-id" name="id")
+                    .modal-header
+                        button.close(type='button', data-dismiss='modal', aria-label='Close')
+                            span(aria-hidden='true') ×
+                        h4#myEditVehicleLabel.modal-title Edit Vehicle
+                    .modal-body
+                        .form-group
+                            label Vehicle type
+                            input.form-control(type="text" name="type" id="edit-vehicle-form-type")
+                        .form-group
+                            label Brand
+                            input.form-control(type="text" name="brand" id="edit-vehicle-form-brand")
+                        .form-group
+                            label Model
+                            input.form-control(type="text" name="model" id="edit-vehicle-form-model")
+                        .form-group
+                            label Number of passengers
+                            input.form-control(type="number" name="passengers" id="edit-vehicle-form-passengers")
+                        .form-group
+                            label Fuel Type
+                            select.form-control(type="text" name="fuel" id="edit-vehicle-form-fuel")
+                                option(value="Diesel") Diesel
+                                option(value="Gas") Gas
+                        .form-group
+                            label Available
+                            input.form-control(type="text" name="available" id="edit-vehicle-form-available")
+
+                            //select.form-control(type="text" name="available" id="edit-vehicle-form-available")
+                            //    option(value="true") True
+                            //    option(value="false") False
+                    .modal-footer
+                        button.btn.btn-default(type='button', data-dismiss='modal') Close
+                        input.btn.btn-primary(type='submit' value="Save")
+
+
+    // Modal ADD Driver
+    #formDriver.modal.fade(tabindex='-1', role='dialog', aria-labelledby='formDriverLabel')
+        .modal-dialog(role='document')
+            .modal-content
+                form(method="post" action="/driver")
+                    .modal-header
+                        button.close(type='button', data-dismiss='modal', aria-label='Close')
+                            span(aria-hidden='true') ×
+                        h4#myDriverLabel.modal-title Add Driver
+                    .modal-body
+                        .form-group
+                            label Name
+                            input.form-control(type="text" name="name")
+                        .form-group
+                            label Surname
+                            input.form-control(type="text" name="surname")
+                        .form-group
+                            label Birth Date
+                            input.form-control(type="date" name="birthdate")
+                        .form-group
+                            label Genre
+                            select.form-control(type="text" name="genre")
+                                option(value="Male") Male
+                                option(value="Female") Female
+                        .form-group
+                            label Mobile Number
+                            input.form-control(type="tel" name="mobile_number")
+                        .form-group
+                            label Email
+                            input.form-control(type="email" name="email")
+                        .form-group
+                            label Available
+                            select.form-control(type="text" name="available")
+                                option(value="true") True
+                                option(value="false") False
+                    .modal-footer
+                        button.btn.btn-default(type='button', data-dismiss='modal') Close
+                        input.btn.btn-primary(type='submit' value="Save")
+    // Modal EDIT Driver
+    #editFormDriver.modal.fade(tabindex='-1', role='dialog', aria-labelledby='editFormDriverLabel')
+        .modal-dialog(role='document')
+            .modal-content
+                form(method="post" action="/editDriver")
+                    input(type="hidden" id="edit-form-id" name="id")
+                    .modal-header
+                        button.close(type='button', data-dismiss='modal', aria-label='Close')
+                            span(aria-hidden='true') ×
+                        h4#myEditDriverLabel.modal-title Edit Driver
+                    .modal-body
+                        .form-group
+                            label Name
+                            input.form-control(type="text" name="name" id="edit-form-name")
+                        .form-group
+                            label Surname
+                            input.form-control(type="text" name="surname" id="edit-form-surname")
+                        .form-group
+                            label Birth Date
+                            input.form-control(type="text" name="birthdate" id="edit-form-birthdate")
+                        .form-group
+                            label Genre
+                            input.form-control(type="text" name="genre" id="edit-form-genre")
+
+                            //select.form-control(type="text" name="genre" id="edit-form-genre")
+                            //    option(value="Male") Male
+                            //    option(value="Female") Female
+                        .form-group
+                            label Mobile Number
+                            input.form-control(type="tel" name="mobile_number" id="edit-form-mobile_number")
+                        .form-group
+                            label Email
+                            input.form-control(type="email" name="email" id="edit-form-email")
+                        .form-group
+                            label Available
+                            input.form-control(type="text" name="available" id="edit-form-available")
+
+                            //select.form-control(type="text" name="available" id="edit-form-available")
+                            //    option(value="true") true
+                            //    option(value="false") false
+                    .modal-footer
+                        button.btn.btn-default(type='button', data-dismiss='modal') Close
+                        input.btn.btn-primary(type='submit' value="Save")
+
+    // Modal ADD Vehicle-Driver relation
+    #formVehicleDriver.modal.fade(tabindex='-1', role='dialog', aria-labelledby='formVehicleDriverLabel')
+        .modal-dialog(role='document')
+            .modal-content
+                form(method="post" action="/vehicleDriver")
+                    .modal-header
+                        button.close(type='button', data-dismiss='modal', aria-label='Close')
+                            span(aria-hidden='true') ×
+                        h4#myVehicleDriverLabel.modal-title Add Driver
+                    .modal-body
+                        .form-group
+                            label Vehicle
+                            input.form-control(type="text" name="id_vehicle")
+                        .form-group
+                            label Driver
+                            input.form-control(type="text" name="id_driver")
+                    .modal-footer
+                        button.btn.btn-default(type='button', data-dismiss='modal') Close
+                        input.btn.btn-primary(type='submit' value="Save")

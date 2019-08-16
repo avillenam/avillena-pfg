@@ -99,6 +99,26 @@ const createDriver = (request, response) => {
     //pool.end();
 }
 
+const editDriver = (request, response) => {
+    const {name, surname, birthdate, genre, mobile_number, email, available, id} = request.body;
+    console.log(name + ', ' + surname + ', ' + birthdate + ', ' + genre + ', ' + mobile_number + ', ' + email + ', ' + JSON.parse(available) + ', ' + parseInt(id))
+
+
+    pool.query('UPDATE drivers SET name=$1, surname=$2, birthdate=$3, genre=$4, mobile_number=$5, email=$6, available=$7 WHERE id_driver=$8;',
+        [name, surname, birthdate, genre, mobile_number, email, available, id], (error, results) => {
+            if (error) {
+                throw error
+            }
+
+            console.log(results.rows[0]);
+            response.redirect("/map");
+        })
+
+    //pool.end();
+
+
+}
+
 const getDrivers =  (req, res) => {
     pool.on('error', (err, client) => {
         console.error('Unexpected error on idle client', err)
@@ -169,6 +189,21 @@ const createVehicle = (request, response) => {
             console.log(results.rows[0]);
             response.redirect("/map");
         })
+}
+
+const editVehicle = (request, response) => {
+    const { type, brand, model, passengers, fuel, available, id } = request.body;
+
+    pool.query('UPDATE vehicles SET type=$1, brand=$2, model=$3, passengers=$4, fuel=$5, available=$6 WHERE id_vehicle=$7;',
+        [type, brand, model, passengers, fuel, available, id], (error, results) => {
+            if (error) {
+                throw error
+            }
+
+            console.log(results.rows[0]);
+            response.redirect("/map");
+        })
+
 }
 
 
@@ -287,7 +322,9 @@ const deleteVehicleDriverByIdDriver = (request, response) => {
 module.exports = {
     insertPosition,
     createDriver,
+    editDriver,
     createVehicle,
+    editVehicle,
     getVehicles,
     getVehicleById,
     getDrivers,

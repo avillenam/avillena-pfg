@@ -88,8 +88,14 @@ router.get('/test', function (req, res, next) {
 //Create a driver
 router.post('/driver', db.createDriver);
 
+//Edit driver
+router.post('/editDriver', db.editDriver);
+
 //Create a vehicle
 router.post('/vehicle', db.createVehicle);
+
+//Edit vehicle
+router.post('/editVehicle', db.editVehicle);
 
 //Insert a position
 router.post('/position', db.insertPosition);

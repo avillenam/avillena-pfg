@@ -149,6 +149,37 @@ a {
     box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
 }
 
+.btn-group{
+    border: 1px solid #1f6377;
+    border-radius: 6px;
+}
+
+#mapOSM, #mapPNOA{
+    width: 100px;
+    height: 70px;
+    color: #122b40;
+    font-size: 22px;
+    padding-top: 20px;
+    box-shadow: -1px 1px 5px 1px #2e2e2e!important;
+}
+
+#mapOSM div:hover, #mapPNOA div:hover{
+    box-shadow: 0 1px 3px #2e2e2e inset!important;
+}
+
+#mapOSM div:hover:not(.selected), #mapPNOA div:hover:not(.selected) {
+    border: none;
+}
+
+.selected {
+    position:relative;
+    top: 0px;
+    left: 0px;
+    width: 108px;
+    height: 77px;
+    border: 3px solid #CC0000!important;;
+    margin: 0px;
+}
 .dropdown-menu > li > a {
     display: block;
     padding: 3px 20px;
