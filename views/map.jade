@@ -6,20 +6,23 @@ block content
         div.col-md-4.hidden-xs(style="padding:0px;") Geolocalización de objetos móviles
     .map#map
     #mouse-position
-    #popup.ol-popup
-        a#popup-closer.ol-popup-closer(href='#')
-        #popup-content
+    //#popup.ol-popup
+    //    a#popup-closer.ol-popup-closer(href='#')
+    //    #popup-content
+    //div.loading
+    //    i.fa.fa.fa-spinner.fa-pulse
+    //    "Loading data..."
     div(style="display: none;")
         #marker(title="Marker")
     div.btn-group(role="group" style="position: absolute; right: 3em; top: 60px;")
         div.btn.btn-default.selected#mapOSM(type="button" style="visibility:visible; background: url(/images/mapOSM.jpg)" onclick="toggleOSMLayer()") OSM
         div.btn.btn-default#mapPNOA(type="button" style="visibility:visible; background: url(/images/mapPNOA.jpg)" onclick="togglePNOALayer()") PNOA
     div.col-md-1(style="position: absolute; right: 1em; bottom: 60px;")
-        a.btn.btn-primary.btn-block(type="button" data-toggle="modal" data-target="#formVehicle" style="position: absolute; right: 3em; top:60 px;") Add Vehicle
+        a.btn.btn-primary.btn-block(type="button" data-toggle="modal" data-target="#formVehicle" style="position: absolute; right: 3em; ") Add Vehicle
     div.col-md-1(style="position: absolute; right: 1em; bottom: 95px;")
-        a.btn.btn-primary.btn-block(type="button" data-toggle="modal" data-target="#formDriver" style="position: absolute; right: 3em; top:60 px;") Add Driver
+        a.btn.btn-primary.btn-block(type="button" data-toggle="modal" data-target="#formDriver" style="position: absolute; right: 3em; ") Add Driver
     div.col-md-1(style="position: absolute; right: 1em; bottom: 130px;")
-        a.btn.btn-primary.btn-block(type="button" data-toggle="modal" data-target="#formVehicleDriver" style="position: absolute; right: 3em; top:60 px;") Vehicle-Driver
+        a.btn.btn-primary.btn-block(type="button" data-toggle="modal" data-target="#formVehicleDriver" style="position: absolute; right: 3em; ") Vehicle-Driver
     a.toggleSettings
         i.fa.fa-bars
     div#alerts
@@ -38,6 +41,15 @@ block content
                         div#vehicles_results
                     #tab_drivers_results.tab-pane.fade
                         div#drivers_results
+    p#warning(style='background:#f80; color:#fff; padding:.5em; display:none; float:left;')  Ugh! it&apos;s a bit long!
+        br
+        p "Try to go on searching..."
+    p#notfound(style='background:#f80; color:#fff; padding:.5em; display:none; float:left;') Sorry, there is no route to go there!
+    p#notfound0(style='background:#f80; color:#fff; padding:.5em; display:none; float:left;') You&apos;re allready there!
+    p#result(style='background:#0b0; color:#fff; padding:.5em; display:none; position: absolute; right: 3em; top: 150px') Found it!
+        br
+        p "Distance:"
+        span
 
     //form.flotante(method="post" action="/coords")
     //    .input-group.flex-nowrap.col-12
@@ -65,6 +77,13 @@ block content
         const root = 'http://localhost:3000';
         // const root = 'https://avillena-pfg.herokuapp.com';
         */
+
+        //-------******CONSTANTS*******-------
+        // offsets for vehicles layers
+        const OFFSET_UP = 3;
+        const OFFSET_DOWN = 3;
+
+
         // variable that will house vehicles JSON features
         var vehiclesJSON = {};
         var numVehicles = 0;
@@ -156,6 +175,7 @@ block content
         /**
          * Create an overlay to anchor the popup to the map.
          */
+        /*
         var overlay = new ol.Overlay({
             element: container,
             autoPan: true,
@@ -163,16 +183,39 @@ block content
                 duration: 250
             }
         });
+        */
         /**
          * Add a click handler to hide the popup.
          * @return {boolean} Don't follow the href.
          */
+        /*
         closer.onclick = function () {
             overlay.setPosition(undefined);
             closer.blur();
             return false;
         };
+        */
 
+
+
+        // The vector graph
+        var graph = new ol.source.Vector({
+            url: '/data/main_roads.geojson',
+            format: new ol.format.GeoJSON()
+        });
+        listenerKey = graph.on('change', function () {
+            if (graph.getState() == 'ready') {
+                $('.loading').hide();
+                ol.Observable.unByKey(listenerKey);
+            }
+        });
+        var vector = new ol.layer.Vector({
+            title: 'Graph',
+            source: graph
+        });
+
+        // A layer to draw the result
+        var result = new ol.source.Vector();
 
         var map = new ol.Map({
             layers: [osm, pnoaWmts, IGNBaseOrto],
@@ -183,7 +226,8 @@ block content
                     target: document.getElementById('scale-line')
                 })
             ]),
-            overlays: [overlay],
+            //overlays: [overlay],
+            interactions: ol.interaction.defaults({ altShiftDragRotate:false, pinchRotate:false }),
             view: new ol.View({
                 //center: ol.proj.transform([#{lng}, #{lat}], 'EPSG:4326', 'EPSG:3857'), zoom: 6
                 center: ol.proj.fromLonLat([#{lng}, #{lat}]),
@@ -191,11 +235,120 @@ block content
             })
         });
 
+
+        /*
+        // layer for showing the graph with the geometries of the roads
+        map.addLayer(vector);
+        map.addLayer(new ol.layer.Vector({
+            source: result,
+            style: new ol.style.Style({
+                stroke: new ol.style.Stroke({
+                    width: 2,
+                    color: "#f00"
+                })
+            })
+        }));
+        */
+
+
+
+        // *******DIJKTRA***********
+        // Dijkstra
+        var dijkstra = new ol.graph.Dijskra({
+            source: graph
+        });
+        // Start processing
+        dijkstra.on('start', function (e) {
+            $('#warning').hide();
+            $("#notfound").hide();
+            $("#notfound0").hide();
+            $("#result").hide();
+            result.clear();
+        });
+        // Finish > show the route
+        dijkstra.on('finish', function (e) {
+            $('#warning').hide();
+            result.clear();
+            console.log(e);
+            if (!e.route.length) {
+                if (e.wDistance === -1) $("#notfound0").show();
+                else $("#notfound").show();
+                $("#result").hide();
+            } else {
+                $("#result").show();
+                var t = (e.distance / 1000).toFixed(2) + 'km';
+                $("#result span").html(t);
+            }
+            result.addFeatures(e.route);
+            start = end;
+            popStart.show(start);
+            popEnd.hide();
+        });
+        // Paused > resume
+        dijkstra.on('pause', function (e) {
+            if (e.overflow) {
+                $('#warning').show();
+                dijkstra.resume();
+            } else {
+                // User pause
+            }
+        });
+        // Calculating > show the current "best way"
+        dijkstra.on('calculating', function (e) {
+            if ($('#path').prop('checked')) {
+                var route = dijkstra.getBestWay();
+                result.clear();
+                result.addFeatures(route);
+            }
+        });
+        // Get the real length of the geom
+        dijkstra.getLength = function (geom) {
+            if (geom.getGeometry) {
+                //? return geom.get('km')*1000;
+                geom = geom.getGeometry();
+            }
+            return ol.sphere.getLength(geom)
+        }
+        // Start / end Placemark
+        var popStart = new ol.Overlay.Placemark({popupClass: 'flagv', color: '#080'});
+        map.addOverlay(popStart);
+        var popEnd = new ol.Overlay.Placemark({popupClass: 'flag finish', color: '#000'});
+        map.addOverlay(popEnd);
+        // Manage start / end on click
+        var start, end;
+        // interaction with the map for calculating Dijkstra
+        /*
+        map.on('click', function (e) {
+            if (!start) {
+                start = e.coordinate;
+                popStart.show(start);
+            } else {
+                var se = dijkstra.path(start, e.coordinate);
+                if (se) {
+                    start = se[0];
+                    end = se[1];
+                    popEnd.show(end);
+                }
+            }
+        });
+        */
+
+
+
+
+
+
+
+
+
+
+
         // Add a new Layerswitcher to the map
         //map.addControl(new ol.control.LayerSwitcherImage());
 
         //var coords = [-3.671180674823532, 40.412316630630755];
 
+        // TODO: eliminar al final
         // dibuja Point pasandole una geometria en geográficas
         function dibujaPosicion(coords) {
             var pointPos = new ol.geom.Point(toUtm(coords));
@@ -236,6 +389,7 @@ block content
         /**
          * Add a click handler to the map to render the popup.
          */
+        /*
         map.on('singleclick', function (evt) {
             var coordinate = evt.coordinate;
             var hdms = toGeo(coordinate);
@@ -244,6 +398,8 @@ block content
                 '</code>';
             overlay.setPosition(coordinate);
         });
+
+         */
 
         function borraPantalla() {
         }
@@ -337,62 +493,16 @@ block content
             var position = 0;
             for (var i = 0; i < vehiclesJSON.length; i++) {
                 if (vehiclesJSON[i].id_vehicle == id) {
-                    position = i + 3;
+                    position = i + OFFSET_UP;
                 }
             }
             return position;
         }
 
-
-        function flash(feature) {
-            var start = new Date().getTime();
-            var listenerKey = map.on('postcompose', animate);
-
-            function animate(event) {
-                var vectorContext = event.vectorContext;
-                var frameState = event.frameState;
-                var flashGeom = feature.getGeometry().clone();
-                var elapsed = frameState.time - start;
-                var elapsedRatio = elapsed / duration;
-                // radius will be 5 at start and 30 at end.
-                var radius = ol.easing.easeOut(elapsedRatio) * 25 + 5;
-                var opacity = ol.easing.easeOut(1 - elapsedRatio);
-
-                var style = new ol.style.Style({
-                    image: new ol.style.Circle({
-                        radius: radius,
-                        stroke: new ol.style.Stroke({
-                            color: 'rgba(255, 0, 0, ' + opacity + ')',
-                            width: 0.25 + opacity
-                        })
-                    })
-                });
-
-                vectorContext.setStyle(style);
-                vectorContext.drawGeometry(flashGeom);
-                if (elapsed > duration) {
-                    ol.Observable.unByKey(listenerKey);
-                    return;
-                }
-                // tell OpenLayers to continue postcompose animation
-                map.render();
-            }
-        }
-
         //Style for each vehicle
         var colors = [];
         function generateColor() {
-            /*
-            for(var i = 0; i< numVehicles; i++){
-                console.log('crea el style: ' + i)
-                var R = Math.floor(Math.random() * 256);
-                var G = Math.floor(Math.random() * 256);
-                var B = Math.floor(Math.random() * 256);
-                var color = 'rgba(' + R + ', ' + G + ', ' + B + ', 0.8)';
-
-                //colors.push(color);
-            }
-            */
+            // generate random color for each object
             var R = Math.floor(Math.random() * 256);
             var G = Math.floor(Math.random() * 256);
             var B = Math.floor(Math.random() * 256);
@@ -405,9 +515,8 @@ block content
             var color = generateColor();
             var stroke = new ol.style.Stroke({color: 'black', width: 2});
             var fill = new ol.style.Fill({color: color});
+
             // styles for each vehicle
-            // TODO: add a function that assign a random color for each vehicle.
-            // se ha de generar al inicio un array con la simbología para cada vehicle para que sea la misma para la misma sesión.
             var style = {
                 'linestring': new ol.style.Style({
                     stroke: new ol.style.Stroke({
@@ -455,9 +564,6 @@ block content
                 var layerposition = layerPosition(id);
                 console.log('layerposition: ' + layerposition);
             }
-
-            console.log('creacion de los styles para cada capa')
-            //createStyles(numVehicles);
         }
 
         // extract rotation between two coordinates
@@ -470,27 +576,20 @@ block content
         };
 
 
-        var styles = [];
         // creates layer for each vehicle
+        var styles = [];
         function createLayerById(id) {
             console.log('createLayerById: ' + id);
             var peticionGet = "";
             peticionGet = 'position-vehicle/' + id;
 
             console.log('Id: ' + id);
-            console.log('Id type: ' + typeof (id));
 
             $.ajax({
                 dataType: "json",
                 url: peticionGet,
                 type: 'GET',
                 success: function (data) {
-                    //console.log('datos: ' + JSON.stringify(data));
-
-                    // console.log("data.features: " + data.features);
-                    // console.log("data: " + data);
-                    // console.log(JSON.stringify(data));
-
                     if (data.features != null) {
                         var format = new ol.format.GeoJSON({
                             defaultDataProjection: 'EPSG:3857'
@@ -516,16 +615,23 @@ block content
 
                         var rotation = extractRotation(twoCoordinates);
 
+                        //creates the style for the layer
                         var style = createStyle();
+
+                        //set the rotation for the icon of the current position
                         style.endpoint.getImage().setRotation(-rotation + (Math.PI / 2));
 
+                        //stores the style in the styles array
                         styles.push(style);
+
+                        //creates the lahyer
                         var layer = new ol.layer.Vector({
                             visible: false,
                             zIndex: 1,
                             style: style.linestring
                         });
 
+                        //creates a feature with the coordinates of the linestring
                         var feature = new ol.Feature({
                             geometry: new ol.geom.LineString(lineStringCoords)
                         })
@@ -539,7 +645,6 @@ block content
                         var coordinatesStart = features[0].getGeometry().getCoordinates();
                         var startPoint = new ol.Feature(new ol.geom.Point(coordinatesStart));
                         startPoint.setStyle(style.startpoint);
-                        //startPoint.setStyle(styles['startpoint']);
 
                         // Add new features to the map
                         vectorSource.addFeature(startPoint);
@@ -567,12 +672,12 @@ block content
             })
         }
 
-        //TODO: completar la funcion una vez esté el resto de funciones
+        // update the current position of all the vehicles
         function updateVehiclesPosition(){
-            var vehicles = getVehicles();
+            vehicles = getVehicles();
             var peticionGet = "";
 
-            // loop for obtain position of each vehicle
+            // loop to obtain position of each vehicle
             var numVehicles = vehicles.length;
             for(var i = 0; i < numVehicles ; i++){
                 var id = null;
@@ -591,7 +696,6 @@ block content
                         console.log("tiene coordenadas el vehículo id: " + id + "?");
                         console.log(data.features);
                         if (data.features != null) {
-                            console.log("Si tiene coordenadas")
                             var format = new ol.format.GeoJSON({
                                 defaultDataProjection: 'EPSG:3857'
                             });
@@ -608,14 +712,40 @@ block content
                                 lineStringCoords.push(c);
                             }
 
+                            // get rotation of last two points
+                            var twoCoordinates = lineStringCoords.slice(
+                                lineStringCoords.length - 2,
+                                lineStringCoords.length
+                            );
+
+                            var rotation = extractRotation(twoCoordinates);
+
+                            //creates the style for the layer
+                            var style = styles[layerposition - OFFSET_DOWN];
+
+                            //set the rotation for the icon of the current position
+                            style.endpoint.getImage().setRotation(-rotation + (Math.PI / 2));
+
+                            //update the style in the styles array
+                            styles[layerposition - OFFSET_DOWN] = style;
+
+                            //creates a feature with the coordinates of the linestring
                             var feature = new ol.Feature({
-                                geometry: new ol.geom.Polygon(lineStringCoords)
+                                geometry: new ol.geom.LineString(lineStringCoords)
                             })
 
                             // create new Vector object to house the features
                             var vectorSource = new ol.source.Vector({
                                 features: [feature]
                             });
+
+                            // add start point from linestring geometry
+                            var coordinatesStart = features[0].getGeometry().getCoordinates();
+                            var startPoint = new ol.Feature(new ol.geom.Point(coordinatesStart));
+                            startPoint.setStyle(style.startpoint);
+
+                            // Add new features to the map
+                            vectorSource.addFeature(startPoint);
 
                             // variable for store currrent layer
                             var layer = map.getLayers().getArray()[layerposition];
@@ -624,10 +754,23 @@ block content
                                 console.log('genera una capa nueva, id:' + layerposition)
                                 createLayerById(id);
                             }
+
                             console.log("Actualiza source!")
                             layer.setSource(vectorSource);
+
+                            //update visualization of the layer
+                            drawCurrentIdPosition(id, layer, layerposition);
+
                         }else {
-                            console.log("No tiene coordenadas")
+                            console.log("No tiene coordenadas");
+                            var style = createStyle();
+
+                            styles.push(style);
+                            var layer = new ol.layer.Vector({
+                                visible: false,
+                                zIndex: 1,
+                                style: style.linestring
+                            });
                         }
                     }
                 })
@@ -635,10 +778,8 @@ block content
         }
 
 
-
         // Creates the HTML elements for each vehicle
         function createVehicleHTMLelements(){
-            //vehiclesJSON = getVehicles();
             var myItems = [], $vehicles_results = $('#vehicles_results');
 
             for (var i = 0; i < vehiclesJSON.length; i++) {
@@ -697,16 +838,6 @@ block content
                         "</div>" +
                     "</div>");
 
-                // Create a layer for each vehicle in case that does not exists
-                //var numVehicles = vehiclesJSON.length;
-
-                /*
-                var numLayersVehicles = map.getLayers().getArray().length - 3;
-                if(numVehicles != numLayersVehicles){
-                    createLayerById(id);
-                }
-
-                 */
             }
 
             $('#vehicles_results').html(myItems.join(''));
@@ -760,20 +891,31 @@ block content
 
         // create an alert
         function createAlert(message){
-            // var myItems = [];
-            // myItems.push("" +
-            //     "<div class='alert alert-success alert-dismissible' data-auto-dismiss role='alert'>" +
-            //         "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>" +
-            //         "<div>" + message + "</div>" +
-            //     "</div>"
-            // )
-            // $('#alerts').html(myItems.join(''));
-
             // Control
             var notification = new ol.control.Notification({});
             map.addControl(notification);
             notification.show(message);
         }
+
+        function drawCurrentIdPosition(id, layer, layerposition){
+            console.log('draw position of current point of layer id: ' + id);
+            var vectorSource = layer.getSource();
+            if (vectorSource != null) {
+                var features = vectorSource.getFeatures();
+                var points = features[0].getGeometry().getCoordinates();
+                var last = points.length - 1;
+                var coordinatesEnd = points[last];
+                var endPoint = new ol.Feature(new ol.geom.Point(coordinatesEnd));
+                var style = styles[layerposition - OFFSET_DOWN];
+                endPoint.setStyle(style.endpoint);
+                console.log('layer.getVisible(): ' + layer.getVisible());
+                vectorSource.addFeature(endPoint);
+            } else {
+                // show alert that there is no features
+                createAlert('Vehicle id: ' + id + '  has no position registered!');
+            }
+        }
+
         // create a layer for drawing each of the objects
         function showFeatureLayer(id){
             var layerposition = layerPosition(id);
@@ -783,38 +925,7 @@ block content
             }else{
                 layer.setVisible(true);
 
-                // TODO: loop for showing current position of the vehicle
-                console.log('draw position of current point of layer id: ' + id);
-                var vectorSource = layer.getSource();
-                if(vectorSource != null){
-                    var features = vectorSource.getFeatures();
-                    var points = features[0].getGeometry().getCoordinates();
-                    var last = points.length - 1;
-                    var coordinatesEnd = points[last];
-                    var endPoint = new ol.Feature(new ol.geom.Point(coordinatesEnd));
-                    var style = styles[layerposition - 3];
-                    endPoint.setStyle(style.endpoint);
-                    console.log('layer.getVisible(): ' + layer.getVisible());
-                    vectorSource.addFeature(endPoint);
-                } else{
-                    // show alert that there is no features
-                    createAlert('Vehicle id: ' + id + '  has no position registered!');
-
-                }
-
-                //endPoint.setStyle(styles['endpoint']);
-                /*
-                var pos = ol.proj.fromLonLat(coordinatesEnd);
-                var marker = new ol.Overlay({
-                    position: pos,
-                    positioning: 'center-center',
-                    element: document.getElementById('marker'),
-                    stopEvent: false
-                });
-                map.addOverlay(marker);
-                 */
-
-
+                drawCurrentIdPosition(id, layer, layerposition);
             }
         }
 
@@ -872,20 +983,7 @@ block content
             });
 
             $(".edit-driver").on('click', function () {
-                console.log('intentando editar un driver');
-                /*
-                console.log('id: ' + $(this).data('id'));
-                console.log('name: ' + $(this).data('name'));
-                console.log('surname: ' + $(this).data('surname'));
-                console.log('birthdate: ' + $(this).data('birthdate'));
-                console.log('genre: ' + $(this).data('genre'));
-                console.log('mobile_number: ' + $(this).data('mobile_number'));
-                console.log('email: ' + $(this).data('email'));
-                console.log('available: ' + $(this).data('available'));
-
-                 */
-                //$('#editFormDriver').modal('toggle');
-                //$('#editFormDriver').modal('show');
+                // console.log('intentando editar un driver');
 
                 $("#edit-form-id").val($(this).data('id'));
                 $("#edit-form-name").val($(this).data('name'));
@@ -899,9 +997,7 @@ block content
             });
 
             $(".edit-vehicle").on('click', function () {
-                console.log('intentando editar un vehicle');
-                //$('#editFormVehicle').modal('toggle');
-                //$('#editFormVehicle').modal('show');
+                // console.log('intentando editar un vehicle');
 
                 $("#edit-vehicle-form-id").val($(this).data('id'));
                 $("#edit-vehicle-form-type").val($(this).data('type'));
@@ -930,8 +1026,6 @@ block content
                             console.log(err);
                         }
                     })
-
-                    // delete vehicle-driver relation
                 }
             });
 
@@ -939,10 +1033,7 @@ block content
             //Visualize and zoom to a vehicle
             $('.visualize-vehicle').on('click', function () {
                 var id = $(this).data('id');
-                var pos = layerPosition(id) - 3;
-
-                //TODO: faltaría hacer una comprobación al inicio en la que el icono del ojo sea en función de si la
-                // capa está visibe=true o false. Ya que cada vez que se hace un tab-vehicles se inicializan los elementos HTML
+                var pos = layerPosition(id) - OFFSET_DOWN;
 
                 if(vehiclesJSON[pos].visibility == true){       //if layer is currently visible, set class properly
                     $(this).children("i").removeClass('fa-eye');
@@ -963,7 +1054,7 @@ block content
                 }
 
                 //var url = '/position-vehicle/' + id;
-                console.log('Muestra la posición del vehículo: ' + id);
+                //console.log('Muestra la posición del vehículo: ' + id);
 
                 // Call to the function than show the position of the vehicle
                 showFeatureLayer(id);
@@ -985,19 +1076,9 @@ block content
 
         }
 
-        //Apply style for each layer
-        /*
-        function applyLayerStyle(id) {
-            var layerposition = layerPosition(id);
-            var layer = map.getLayers().getArray()[layerposition];
-            layer.setStyle(styles[layerposition - 3]);
-        }
-
-         */
-
         $(document).ready(function() {
             // create styles of the vehicles
-            vehiclesJSON = getVehicles();
+            vehiclesJSON = getVehicles();   //TODO: aquí es donde falla y altera la posición de los objetos en el array JSON al hacer la llamada a getVehicles
             numVehicles = vehiclesJSON.length;
 
             // stablish visibility to 'false' in each vehicle element for set the class fa-eye
@@ -1013,23 +1094,25 @@ block content
 
 
             // Obtain the drivers and the vehicles from the database
+            console.log('Llamada a getDrivers()')
             getDrivers();
+
+            console.log('Llamada a createVehicleHTMLelements()')
             createVehicleHTMLelements();
 
 
-            // blinking current position
+            // blink current position for visible vehicles
             setInterval(blinkPoint, 500);
-
             function blinkPoint() {
                 for (var i = 0; i < numVehicles; i++) {
-                    if(map.getLayers().getArray()[i + 3].getSource() != null){
-                        if (map.getLayers().getArray()[i + 3].getVisible() == true) {
+                    if(map.getLayers().getArray()[i + OFFSET_UP].getSource() != null){
+                        if (map.getLayers().getArray()[i + OFFSET_UP].getVisible() == true) {
                             if (styles[i].endpoint.getImage().getOpacity() == 1) {
                                 styles[i].endpoint.getImage().setOpacity(0)
-                                map.getLayers().getArray()[i + 3].getSource().refresh()
+                                map.getLayers().getArray()[i + OFFSET_UP].getSource().refresh()
                             } else {
                                 styles[i].endpoint.getImage().setOpacity(1)
-                                map.getLayers().getArray()[i + 3].getSource().refresh()
+                                map.getLayers().getArray()[i + OFFSET_UP].getSource().refresh()
                             }
                         }
                     }
@@ -1038,7 +1121,7 @@ block content
             }
 
             // launch the requests in loop each 2 seconds
-            //setInterval(updatePosition, 5000);
+            setInterval(updatePosition, 2000);
 
             // function that calls the function that update the vehicles's position
             function updatePosition() {
