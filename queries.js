@@ -2,8 +2,8 @@
 var pg = require("pg");
 
 
-//var conString = "postgres://postgres:postgres@localhost:5432/api";
-var conString = "postgres://wzkowhhekyvcbh:dbc37ca58c23fa2edf7ed4af8319e00316de9aaf1defbb8cac1fd86500704f6a@ec2-107-20-173-2.compute-1.amazonaws.com:5432/d2346t6en0926l";
+var conString = "postgres://postgres:postgres@localhost:5432/api";
+//var conString = "postgres://wzkowhhekyvcbh:dbc37ca58c23fa2edf7ed4af8319e00316de9aaf1defbb8cac1fd86500704f6a@ec2-107-20-173-2.compute-1.amazonaws.com:5432/d2346t6en0926l";
 
 /*
 const db = require('./public/javascripts/constants');
@@ -83,11 +83,11 @@ const getPositionByVehicle = (request, response) => {
 
 
 const createDriver = (request, response) => {
-    const {name, surname, birthdate, genre, mobile_number, email, available} = request.body
+    const {email, password, name, surname, birthdate, genre, mobile_number, available} = request.body
 
-    pool.query('INSERT INTO drivers ( name, surname, birthdate, genre, mobile_number, email, available) ' +
-        'VALUES ($1, $2, $3, $4, $5, $6, $7)',
-        [name, surname, birthdate, genre, mobile_number, email, available], (error, results) => {
+    pool.query('INSERT INTO drivers ( email, password, name, surname, birthdate, genre, mobile_number, available) ' +
+        'VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
+        [email, password, name, surname, birthdate, genre, mobile_number, available], (error, results) => {
             if (error) {
                 throw error
             }
@@ -100,12 +100,12 @@ const createDriver = (request, response) => {
 }
 
 const editDriver = (request, response) => {
-    const {name, surname, birthdate, genre, mobile_number, email, available, id} = request.body;
-    console.log(name + ', ' + surname + ', ' + birthdate + ', ' + genre + ', ' + mobile_number + ', ' + email + ', ' + JSON.parse(available) + ', ' + parseInt(id))
+    const {email, password, name, surname, birthdate, genre, mobile_number, available, id} = request.body;
+    console.log(email + ', ' + name + ', ' + surname + ', ' + birthdate + ', ' + genre + ', ' + mobile_number + ', ' + email + ', ' + JSON.parse(available) + ', ' + parseInt(id))
 
 
-    pool.query('UPDATE drivers SET name=$1, surname=$2, birthdate=$3, genre=$4, mobile_number=$5, email=$6, available=$7 WHERE id_driver=$8;',
-        [name, surname, birthdate, genre, mobile_number, email, available, id], (error, results) => {
+    pool.query('UPDATE drivers SET email=$1, password=$2, name=$3, surname=$4, birthdate=$5, genre=$6, mobile_number=$7, available=$8 WHERE id_driver=$9;',
+        [email, password, name, surname, birthdate, genre, mobile_number, available, id], (error, results) => {
             if (error) {
                 throw error
             }
@@ -127,7 +127,7 @@ const getDrivers =  (req, res) => {
 
     pool.connect((err, client, done) => {
         if (err) throw err;
-        client.query('SELECT * FROM drivers ORDER BY id_driver ASC', (err, response) => {
+        client.query('SELECT id_driver, email, name, surname, birthdate, genre, mobile_number, available FROM drivers ORDER BY id_driver ASC', (err, response) => {
             //done();
             if (err) {
                 console.log(err.stack)

@@ -58,7 +58,7 @@ block content
     //        input(type="text" id='identifier' class="form-control" placeholder="Id")
     //    .input-group.flex-nowrap.col-12
     //        .input-group-prepend
-    //            span.input-group-text Coord X
+    //            span.input-group-text Coo/positionrd X
     //        input(type="text" id='coord_x' class="form-control" placeholder="Coord X")
     //    .input-group.flex-nowrap.col-12
     //        .input-group-prepend
@@ -448,16 +448,17 @@ block content
                     id_vehicle = 'Not assigned';
                 }
 
+                //create HTML element for each Driver
                 myItems.push("" +
                     "<div class='resultItem'>" +
                     "<img class='list-thumbnail' src='/images/businessman-310819.svg'>" +
                     "<div href='#" + id + "' class='details'>" +
                     "<div class='list-group-item-heading'><i class='fa fa-hashtag'></i>" + id + "</div>" +
+                    "<div title='Email'><i class='fa fa-at'></i>" + email + "</div>" +
                     "<div title='Driver name'><i class='glyphicon glyphicon-user'></i>" + name + " " + surname + "</div>" +
                     "<div title='Birthdate'><i class='glyphicon glyphicon-calendar'></i>" + birthdate + "</div>" +
                     "<div title='Genre'><i class='fa fa-genderless'></i>" + genre + "</div>" +
                     "<div title='Mobile number'><i class='fa fa-mobile-alt'></i>" + mobile_number + "</div>" +
-                    "<div title='Email'><i class='fa fa-at'></i>" + email + "</div>" +
                     "<div title='Vehicle'><i class='fa fa-car-alt'></i>" + id_vehicle + "</div>" +
                     "<a title='Delete driver' class='deleteIcon delete-driver' data-id=" + id + "><i class='fa fa-trash'></i></a>" +
                     "<a title='Edit Driver' class='editIcon edit-driver' data-toggle='modal' data-target='#editFormDriver' " +
@@ -1227,6 +1228,12 @@ block content
                         h4#myDriverLabel.modal-title Add Driver
                     .modal-body
                         .form-group
+                            label Email
+                            input.form-control(type="email" name="email")
+                        .form-group
+                            label Password
+                            input.form-control(type="password" name="password")
+                        .form-group
                             label Name
                             input.form-control(type="text" name="name")
                         .form-group
@@ -1243,9 +1250,6 @@ block content
                         .form-group
                             label Mobile Number
                             input.form-control(type="tel" name="mobile_number")
-                        .form-group
-                            label Email
-                            input.form-control(type="email" name="email")
                         .form-group
                             label Available
                             select.form-control(type="text" name="available")
@@ -1266,6 +1270,13 @@ block content
                         h4#myEditDriverLabel.modal-title Edit Driver
                     .modal-body
                         .form-group
+                            label Email
+                            input.form-control(type="email" name="email" id="edit-form-email")
+                        //TODO: Añadir comprobación de password
+                        .form-group
+                            label Password
+                            input.form-control(type="password" name="password" id="edit-form-password")
+                        .form-group
                             label Name
                             input.form-control(type="text" name="name" id="edit-form-name")
                         .form-group
@@ -1284,9 +1295,6 @@ block content
                         .form-group
                             label Mobile Number
                             input.form-control(type="tel" name="mobile_number" id="edit-form-mobile_number")
-                        .form-group
-                            label Email
-                            input.form-control(type="email" name="email" id="edit-form-email")
                         .form-group
                             label Available
                             input.form-control(type="text" name="available" id="edit-form-available")
