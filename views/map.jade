@@ -993,7 +993,7 @@ block content
                 $("#edit-form-genre").val($(this).data('genre'));
                 $("#edit-form-mobile_number").val($(this).data('mobile_number'));
                 $("#edit-form-email").val($(this).data('email'));
-                $("#edit-form-available").val($(this).data('available'));
+                $("#edit-form-password").val($(this).data('password'));
 
             });
 
@@ -1250,11 +1250,11 @@ block content
                         .form-group
                             label Mobile Number
                             input.form-control(type="tel" name="mobile_number")
-                        .form-group
-                            label Available
-                            select.form-control(type="text" name="available")
-                                option(value="true") True
-                                option(value="false") False
+                            //.form-group
+                            //    label Available
+                            //    select.form-control(type="text" name="available")
+                            //        option(value="true") True
+                            //        option(value="false") False
                     .modal-footer
                         button.btn.btn-default(type='button', data-dismiss='modal') Close
                         input.btn.btn-primary(type='submit' value="Save")
@@ -1295,9 +1295,9 @@ block content
                         .form-group
                             label Mobile Number
                             input.form-control(type="tel" name="mobile_number" id="edit-form-mobile_number")
-                        .form-group
-                            label Available
-                            input.form-control(type="text" name="available" id="edit-form-available")
+                            //.form-group
+                            //    label Available
+                            //    input.form-control(type="text" name="available" id="edit-form-available")
 
                             //select.form-control(type="text" name="available" id="edit-form-available")
                             //    option(value="true") true

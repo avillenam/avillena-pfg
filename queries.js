@@ -83,11 +83,11 @@ const getPositionByVehicle = (request, response) => {
 
 
 const createDriver = (request, response) => {
-    const {email, password, name, surname, birthdate, genre, mobile_number, available} = request.body
+    const {email, password, name, surname, birthdate, genre, mobile_number} = request.body
 
     pool.query('INSERT INTO drivers ( email, password, name, surname, birthdate, genre, mobile_number, available) ' +
-        'VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
-        [email, password, name, surname, birthdate, genre, mobile_number, available], (error, results) => {
+        'VALUES ($1, $2, $3, $4, $5, $6, $7, true)',
+        [email, password, name, surname, birthdate, genre, mobile_number], (error, results) => {
             if (error) {
                 throw error
             }
@@ -100,12 +100,12 @@ const createDriver = (request, response) => {
 }
 
 const editDriver = (request, response) => {
-    const {email, password, name, surname, birthdate, genre, mobile_number, available, id} = request.body;
-    console.log(email + ', ' + name + ', ' + surname + ', ' + birthdate + ', ' + genre + ', ' + mobile_number + ', ' + email + ', ' + JSON.parse(available) + ', ' + parseInt(id))
+    const {email, password, name, surname, birthdate, genre, mobile_number, id} = request.body;
+    console.log(email + ', ' + name + ', ' + surname + ', ' + birthdate + ', ' + genre + ', ' + mobile_number + ', ' + email + ', ' + parseInt(id))
 
 
-    pool.query('UPDATE drivers SET email=$1, password=$2, name=$3, surname=$4, birthdate=$5, genre=$6, mobile_number=$7, available=$8 WHERE id_driver=$9;',
-        [email, password, name, surname, birthdate, genre, mobile_number, available, id], (error, results) => {
+    pool.query('UPDATE drivers SET email=$1, password=$2, name=$3, surname=$4, birthdate=$5, genre=$6, mobile_number=$7 WHERE id_driver=$8;',
+        [email, password, name, surname, birthdate, genre, mobile_number, id], (error, results) => {
             if (error) {
                 throw error
             }
@@ -282,6 +282,7 @@ const vehicleDriver = (request, response) => {
 
     console.log(request.body);
 
+    //TODO: establecer available del Driver con id_driver = false
     pool.query('INSERT INTO vehicle_driver (id_vehicle, id_driver, date_registry) ' +
         'VALUES ($1, $2, localtimestamp)',
         [id_vehicle, id_driver], (error, results) => {
