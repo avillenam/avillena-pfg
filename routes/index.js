@@ -139,6 +139,10 @@ router.post('/deleteVehicleDriverByIdVehicle/:id_vehicle', db.deleteVehicleDrive
 //Delete vehicleDriver relation by id_driver
 router.post('/deleteVehicleDriverByIdDriver/:id_driver', db.deleteVehicleDriverByIdDriver);
 
+//Login Driver in system
+router.post('/loginDriver', db.loginDriver);
+
+
 router.post('/pos', function (req, res) {
     console.log(res);
     res.send(req.body);

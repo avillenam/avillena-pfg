@@ -13,6 +13,7 @@ const {Pool} = require('pg');
 const pool = new Pool({
     connectionString: conString,
 });
+
 /*
 const pool = new Pool({
     user: 'postgres',
@@ -23,17 +24,18 @@ const pool = new Pool({
 });
 */
 
-function getNow(){
+function getNow() {
     var m = new Date();
     var dateString =
         m.getUTCFullYear() + "/" +
-        ("0" + (m.getUTCMonth()+1)).slice(-2) + "/" +
+        ("0" + (m.getUTCMonth() + 1)).slice(-2) + "/" +
         ("0" + m.getUTCDate()).slice(-2) + " " +
         ("0" + m.getUTCHours()).slice(-2) + ":" +
         ("0" + m.getUTCMinutes()).slice(-2) + ":" +
         ("0" + m.getUTCSeconds()).slice(-2);
     return dateString;
 }
+
 //Query functions
 const insertPosition = (request, response) => {
     //var date_registry = getNow();
@@ -73,12 +75,12 @@ const getPositionByVehicle = (request, response) => {
     // pool.query('SELECT st_astext(the_geom) FROM position WHERE id_vehicle=' + parseInt(request.params.id_vehicle) + ' ORDER BY gid ASC', (error, results) => {
     pool.query("SELECT row_to_json(fc) FROM ( SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) As features FROM ( SELECT 'Feature' As type, ST_AsGeoJSON(lg.the_geom)::json As geometry, id_vehicle, id_driver, origin, destiny, \"comments\", date_registry As properties FROM \"position\" AS lg WHERE id_vehicle=" + parseInt(request.params.id_vehicle) + " ) AS f ) As fc;",
         (error, results) => {
-        if (error) {
-            throw error
-        }
-        response.status(200).json(results.rows[0].row_to_json);
-        console.log(results.rows[0].row_to_json);
-    })
+            if (error) {
+                throw error
+            }
+            response.status(200).json(results.rows[0].row_to_json);
+            console.log(results.rows[0].row_to_json);
+        })
 }
 
 
@@ -119,7 +121,7 @@ const editDriver = (request, response) => {
 
 }
 
-const getDrivers =  (req, res) => {
+const getDrivers = (req, res) => {
     pool.on('error', (err, client) => {
         console.error('Unexpected error on idle client', err)
         process.exit(-1)
@@ -192,7 +194,7 @@ const createVehicle = (request, response) => {
 }
 
 const editVehicle = (request, response) => {
-    const { type, brand, model, passengers, fuel, available, id } = request.body;
+    const {type, brand, model, passengers, fuel, available, id} = request.body;
 
     pool.query('UPDATE vehicles SET type=$1, brand=$2, model=$3, passengers=$4, fuel=$5, available=$6 WHERE id_vehicle=$7;',
         [type, brand, model, passengers, fuel, available, id], (error, results) => {
@@ -251,8 +253,6 @@ const deleteVehicleById = (request, response) => {
         response.status(200).json(results.rows);
         console.log(results.rows[0]);
     });
-
-
 }
 
 
@@ -278,7 +278,7 @@ const getVehicleByIdDriver = (request, response) => {
 }
 
 const vehicleDriver = (request, response) => {
-    const { id_vehicle, id_driver } = request.body;
+    const {id_vehicle, id_driver} = request.body;
 
     console.log(request.body);
 
@@ -318,6 +318,49 @@ const deleteVehicleDriverByIdDriver = (request, response) => {
     });
 }
 
+const loginDriver = (request, response) => {
+    //Method that test if a user is registered in the system
+    // return
+    // code=0 if user incorrect or not exist
+    // code=1 if user and password are correct
+    // code=2 if user is correct and password is incorrect
+    const {email, password} = request.body;
+
+    //console.log(request);
+    console.log("parámetro recibido email: " + email);
+    console.log("parámetro recibido password: " + password);
+
+    console.log("request.body: ")
+    console.log(request.body);
+
+    pool.query('select drivers.email, drivers.password from drivers;', (error, results) => {
+        if (error) {
+            throw error
+        }
+        var respuesta = results.rows;
+        console.log("respuesta: " + respuesta);
+        console.log(typeof (respuesta));
+
+        // Test user and password
+        //loop
+        var code = 0;
+        for (var i = 0; i < respuesta.length; i++) {
+            if (respuesta[i].email == email && respuesta[i].password == password) {
+                code = 1;
+            }else if(respuesta[i].email == email && respuesta[i].password != password){
+                code = 2;
+            }
+        }
+
+        var login_code = new Object();
+        login_code.code = code;
+        //var myString = JSON.stringify(login_code);
+
+
+        response.status(200).json(login_code);
+        //console.log(results.rows[0]);
+    });
+}
 
 
 module.exports = {
@@ -339,5 +382,6 @@ module.exports = {
     deleteVehicleById,
     deleteVehicleDriverByIdVehicle,
     deleteVehicleDriverByIdDriver,
+    loginDriver,
     getTest
 }
