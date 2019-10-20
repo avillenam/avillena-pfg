@@ -140,7 +140,7 @@ router.post('/deleteVehicleDriverByIdVehicle/:id_vehicle', db.deleteVehicleDrive
 router.post('/deleteVehicleDriverByIdDriver/:id_driver', db.deleteVehicleDriverByIdDriver);
 
 //Login Driver in system
-router.post('/loginDriver', db.loginDriver);
+router.get('/loginDriver/:email/:password', db.loginDriver);
 
 
 router.post('/pos', function (req, res) {

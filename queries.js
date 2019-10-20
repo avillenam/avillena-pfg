@@ -324,7 +324,9 @@ const loginDriver = (request, response) => {
     // code=0 if user incorrect or not exist
     // code=1 if user and password are correct
     // code=2 if user is correct and password is incorrect
-    const {email, password} = request.body;
+    var email = request.params.email;
+    var password = request.params.password;
+    //const {email, password} = request.body;
 
     //console.log(request);
     console.log("parámetro recibido email: " + email);
