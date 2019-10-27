@@ -335,7 +335,7 @@ const loginDriver = (request, response) => {
     console.log("request.body: ")
     console.log(request.body);
 
-    pool.query('select drivers.email, drivers.password from drivers;', (error, results) => {
+    pool.query('select drivers.id_driver, drivers.email, drivers.password from drivers;', (error, results) => {
         if (error) {
             throw error
         }
@@ -346,9 +346,11 @@ const loginDriver = (request, response) => {
         // Test user and password
         //loop
         var code = 0;
+        var id_driver = 999;
         for (var i = 0; i < respuesta.length; i++) {
             if (respuesta[i].email == email && respuesta[i].password == password) {
                 code = 1;
+                id_driver = respuesta[i].id_driver;
             }else if(respuesta[i].email == email && respuesta[i].password != password){
                 code = 2;
             }
@@ -356,6 +358,7 @@ const loginDriver = (request, response) => {
 
         var login_code = new Object();
         login_code.code = code;
+        login_code.id_driver = id_driver;
         //var myString = JSON.stringify(login_code);
 
 
