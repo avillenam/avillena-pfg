@@ -87,9 +87,12 @@ const getPositionByVehicle = (request, response) => {
 const createDriver = (request, response) => {
     const {email, password, name, surname, birthdate, genre, mobile_number} = request.body
 
+    console.log(birthdate)
+    console.log()
+
     pool.query('INSERT INTO drivers ( email, password, name, surname, birthdate, genre, mobile_number, available) ' +
-        'VALUES ($1, $2, $3, $4, $5, $6, $7, true)',
-        [email, password, name, surname, TO_DATE(birthdate, 'DD/MM/YYYY'), genre, mobile_number], (error, results) => {
+        'VALUES ($1, $2, $3, $4, TO_DATE($5, \'DD/MM/YYYY\'), $6, $7, true)',
+        [email, password, name, surname, birthdate, genre, mobile_number], (error, results) => {
             if (error) {
                 throw error
             }
