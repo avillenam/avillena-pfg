@@ -89,7 +89,7 @@ const createDriver = (request, response) => {
 
     pool.query('INSERT INTO drivers ( email, password, name, surname, birthdate, genre, mobile_number, available) ' +
         'VALUES ($1, $2, $3, $4, $5, $6, $7, true)',
-        [email, password, name, surname, birthdate, genre, mobile_number], (error, results) => {
+        [email, password, name, surname, TO_DATE(birthdate, 'DD/MM/YYYY'), genre, mobile_number], (error, results) => {
             if (error) {
                 throw error
             }
