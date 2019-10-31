@@ -118,10 +118,7 @@ const editDriver = (request, response) => {
             console.log(results.rows[0]);
             response.redirect("/map");
         })
-
     //pool.end();
-
-
 }
 
 const getDrivers = (req, res) => {
@@ -299,6 +296,54 @@ const vehicleDriver = (request, response) => {
 }
 
 
+const availabilityDriver = (request, response) => {
+    const {id_driver, availability} = request.body;
+    console.log(id_driver + ', ' + availability);
+
+    pool.on('error', (err, client) => {
+        console.error('Unexpected error on idle client', err)
+        process.exit(-1)
+    })
+
+    pool.connect((err, client, done) => {
+        if (err) throw err;
+        client.query('UPDATE drivers SET available=$2 WHERE id_driver=$1;',
+            [id_driver, availability], (error, results) => {
+                if (error) {
+                    throw error
+                }
+
+                console.log(results.rows[0]);
+                response.send({ msg: 'Modificación del atributo \'available\' del conductor id_driver:' + id_driver +  ' a \'' + availability + '\' de manera satisfactoria.'});
+                //response.redirect("/map");
+            });
+        done();
+    })
+}
+
+const availabilityVehicle = (request, response) => {
+    const {id_vehicle, availability} = request.body;
+    console.log(id_vehicle + ', ' + availability);
+
+    pool.on('error', (err, client) => {
+        console.error('Unexpected error on idle client', err)
+        process.exit(-1)
+    })
+
+    pool.connect((err, client, done) => {
+        if (err) throw err;
+        client.query('UPDATE vehicles SET available=$2 WHERE id_vehicle=$1;',
+            [id_vehicle, availability], (error, results) => {
+                if (error) {
+                    throw error
+                }
+
+                console.log(results.rows[0]);
+                response.send({ msg: 'Modificación del atributo \'available\' del vehiculo id_vehicle:' + id_vehicle +  ' a \'' + availability + '\' de manera satisfactoria.'});            });
+        done();
+    })
+}
+
 const deleteVehicleDriverByIdVehicle = (request, response) => {
 // delete relation in 'vehicle_driver' relation
     pool.query('DELETE FROM vehicle_driver WHERE id_vehicle=' + (request.params.id_vehicle).toString() + ';', (error, results) => {
@@ -354,7 +399,7 @@ const loginDriver = (request, response) => {
             if (respuesta[i].email == email && respuesta[i].password == password) {
                 code = 1;
                 id_driver = respuesta[i].id_driver;
-            }else if(respuesta[i].email == email && respuesta[i].password != password){
+            } else if (respuesta[i].email == email && respuesta[i].password != password) {
                 code = 2;
             }
         }
@@ -391,5 +436,7 @@ module.exports = {
     deleteVehicleDriverByIdVehicle,
     deleteVehicleDriverByIdDriver,
     loginDriver,
+    availabilityDriver,
+    availabilityVehicle,
     getTest
 }

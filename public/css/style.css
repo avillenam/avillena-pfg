@@ -306,6 +306,7 @@ tr {
     vertical-align: middle;
     text-decoration: none;
     cursor: pointer;
+    width: auto;
 }
 
 
