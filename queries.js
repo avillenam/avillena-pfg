@@ -2,8 +2,8 @@
 var pg = require("pg");
 
 
-//var conString = "postgres://postgres:postgres@localhost:5432/api";
-var conString = "postgres://wzkowhhekyvcbh:dbc37ca58c23fa2edf7ed4af8319e00316de9aaf1defbb8cac1fd86500704f6a@ec2-107-20-173-2.compute-1.amazonaws.com:5432/d2346t6en0926l";
+var conString = "postgres://postgres:postgres@localhost:5432/api";
+//var conString = "postgres://wzkowhhekyvcbh:dbc37ca58c23fa2edf7ed4af8319e00316de9aaf1defbb8cac1fd86500704f6a@ec2-107-20-173-2.compute-1.amazonaws.com:5432/d2346t6en0926l";
 
 /*
 const db = require('./public/javascripts/constants');
@@ -90,17 +90,39 @@ const createDriver = (request, response) => {
     console.log(birthdate)
     console.log()
 
-    pool.query('INSERT INTO drivers ( email, password, name, surname, birthdate, genre, mobile_number, available) ' +
-        'VALUES ($1, $2, $3, $4, TO_DATE($5, \'DD/MM/YYYY\'), $6, $7, true)',
-        [email, password, name, surname, birthdate, genre, mobile_number], (error, results) => {
-            if (error) {
-                throw error
-            }
-            //response.status(201).send(`Driver added with ID: ${results.rows[0]}`);
-            //console.log(results.rows[0]);
-            console.log(results.rows[0]);
-            response.redirect("/map");
-        })
+    regex = /\d{2}\/\d{2}\/\d{4}/;
+
+    if(regex.test(birthdate)){
+        // formato de fecha para cuando recibe una petición GET de la APP geoloc
+        console.log('formato de fecha: DD/MM/YYYY');
+        pool.query('INSERT INTO drivers ( email, password, name, surname, birthdate, genre, mobile_number, available) ' +
+            'VALUES ($1, $2, $3, $4, TO_DATE($5, \'DD/MM/YYYY\'), $6, $7, true)',
+            [email, password, name, surname, birthdate, genre, mobile_number], (error, results) => {
+                if (error) {
+                    throw error
+                }
+                //response.status(201).send(`Driver added with ID: ${results.rows[0]}`);
+                //console.log(results.rows[0]);
+                console.log(results.rows[0]);
+                response.redirect("/map");
+            })
+    }else{
+        // formato de fecha para cuando recibe una petición GET del cliente web
+        console.log('formato de fecha: YYYY-MM-DD');
+        pool.query('INSERT INTO drivers ( email, password, name, surname, birthdate, genre, mobile_number, available) ' +
+            'VALUES ($1, $2, $3, $4, $5, $6, $7, true)',
+            [email, password, name, surname, birthdate, genre, mobile_number], (error, results) => {
+                if (error) {
+                    throw error
+                }
+                //response.status(201).send(`Driver added with ID: ${results.rows[0]}`);
+                //console.log(results.rows[0]);
+                console.log(results.rows[0]);
+                response.redirect("/map");
+            })
+    }
+
+
     //pool.end();
 }
 
