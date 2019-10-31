@@ -285,7 +285,7 @@ const vehicleDriver = (request, response) => {
 
     console.log(request.body);
 
-    //TODO: establecer available del Driver con id_driver = false
+    //TODO: establecer available=false tanto del Driver con y el Vehicle (creo que esto mejor hacerlo como peticiones POST independientes para cada unod de ellos
     pool.query('INSERT INTO vehicle_driver (id_vehicle, id_driver, date_registry) ' +
         'VALUES ($1, $2, localtimestamp)',
         [id_vehicle, id_driver], (error, results) => {

@@ -133,6 +133,8 @@ router.get('/position-vehicle/:id_vehicle', db.getPositionByVehicle);
 //Insert a vhicle-Driver relation
 router.post('/vehicleDriver', db.vehicleDriver);
 
+// Establece para el Driver available = false
+
 //Delete vehicleDriver relation by id_vehicle
 router.post('/deleteVehicleDriverByIdVehicle/:id_vehicle', db.deleteVehicleDriverByIdVehicle);
 

@@ -18,11 +18,11 @@ block content
         div.btn.btn-default.selected#mapOSM(type="button" style="visibility:visible; background: url(/images/mapOSM.jpg)" onclick="toggleOSMLayer()") OSM
         div.btn.btn-default#mapPNOA(type="button" style="visibility:visible; background: url(/images/mapPNOA.jpg)" onclick="togglePNOALayer()") PNOA
     div.col-md-1(style="position: absolute; right: 1em; bottom: 60px;")
-        a.btn.btn-primary.btn-block(type="button" data-toggle="modal" data-target="#formVehicle" style="position: absolute; right: 3em; ") Add Vehicle
+        a.btn.btn-primary.btn-block(type="button" data-toggle="modal" data-target="#formVehicle" style="position: absolute; right: 3em; ") Añade Vehiculo
     div.col-md-1(style="position: absolute; right: 1em; bottom: 95px;")
-        a.btn.btn-primary.btn-block(type="button" data-toggle="modal" data-target="#formDriver" style="position: absolute; right: 3em; ") Add Driver
+        a.btn.btn-primary.btn-block(type="button" data-toggle="modal" data-target="#formDriver" style="position: absolute; right: 3em; ") Añade Conductor
     div.col-md-1(style="position: absolute; right: 1em; bottom: 130px;")
-        a.btn.btn-primary.btn-block(type="button" data-toggle="modal" data-target="#formVehicleDriver" style="position: absolute; right: 3em; ") Vehicle-Driver
+        a.btn.btn-primary.btn-block(type="button" data-toggle="modal" data-target="#formVehicleDriver" style="position: absolute; right: 3em; ") Vehículo-Conductor
     a.toggleSettings
         i.fa.fa-bars
     div#alerts
@@ -1143,17 +1143,17 @@ block content
                     .modal-header
                         button.close(type='button', data-dismiss='modal', aria-label='Close')
                             span(aria-hidden='true') ×
-                        h4#myVehicleLabel.modal-title Add Vehicle
+                        h4#myVehicleLabel.modal-title Añade Vehículo
                     .modal-body
                         .form-group
                             label Vehicle type
                             select.form-control(type="text" name="type")
-                                option(value="Car") Car
-                                option(value="Van") Van
-                                option(value="Truck") Truck
-                                option(value="Bike") Bike
-                                option(value="Motorbike") Motorbike
-                                option(value="Electric Scooter") Electric Scooter
+                                option(value="Car") Coche
+                                option(value="Van") Furgoneta
+                                option(value="Truck") Camión
+                                option(value="Bike") Bicicleta
+                                option(value="Motorbike") Motocicleta
+                                option(value="Electric Scooter") Scooter Eléctrico
                         .form-group
                             label Brand
                             input.form-control(type="text" name="brand")
@@ -1186,27 +1186,27 @@ block content
                     .modal-header
                         button.close(type='button', data-dismiss='modal', aria-label='Close')
                             span(aria-hidden='true') ×
-                        h4#myEditVehicleLabel.modal-title Edit Vehicle
+                        h4#myEditVehicleLabel.modal-title Editar Vehicle
                     .modal-body
                         .form-group
-                            label Vehicle type
+                            label Tipo de Vehículo
                             input.form-control(type="text" name="type" id="edit-vehicle-form-type")
                         .form-group
-                            label Brand
+                            label Marca
                             input.form-control(type="text" name="brand" id="edit-vehicle-form-brand")
                         .form-group
-                            label Model
+                            label Modelo
                             input.form-control(type="text" name="model" id="edit-vehicle-form-model")
                         .form-group
-                            label Number of passengers
+                            label Número de Pasajeros
                             input.form-control(type="number" name="passengers" id="edit-vehicle-form-passengers")
                         .form-group
-                            label Fuel Type
+                            label Tipo de Comnbustible
                             select.form-control(type="text" name="fuel" id="edit-vehicle-form-fuel")
                                 option(value="Diesel") Diesel
-                                option(value="Gas") Gas
+                                option(value="Gas") Gasolina
                         .form-group
-                            label Available
+                            label Disponible
                             input.form-control(type="text" name="available" id="edit-vehicle-form-available")
 
                             //select.form-control(type="text" name="available" id="edit-vehicle-form-available")
@@ -1234,21 +1234,21 @@ block content
                             label Password
                             input.form-control(type="password" name="password")
                         .form-group
-                            label Name
+                            label Nombre
                             input.form-control(type="text" name="name")
                         .form-group
-                            label Surname
+                            label Apellido
                             input.form-control(type="text" name="surname")
                         .form-group
-                            label Birth Date
+                            label Fecha de nacimiento
                             input.form-control(type="date" name="birthdate")
                         .form-group
-                            label Genre
+                            label Género
                             select.form-control(type="text" name="genre")
-                                option(value="Male") Male
-                                option(value="Female") Female
+                                option(value="Male") Masculino
+                                option(value="Female") Femenino
                         .form-group
-                            label Mobile Number
+                            label Número de móvil
                             input.form-control(type="tel" name="mobile_number")
                             //.form-group
                             //    label Available
@@ -1267,7 +1267,7 @@ block content
                     .modal-header
                         button.close(type='button', data-dismiss='modal', aria-label='Close')
                             span(aria-hidden='true') ×
-                        h4#myEditDriverLabel.modal-title Edit Driver
+                        h4#myEditDriverLabel.modal-title Editar Conductor
                     .modal-body
                         .form-group
                             label Email
@@ -1277,23 +1277,23 @@ block content
                             label Password
                             input.form-control(type="password" name="password" id="edit-form-password")
                         .form-group
-                            label Name
+                            label Nombre
                             input.form-control(type="text" name="name" id="edit-form-name")
                         .form-group
-                            label Surname
+                            label Apellido
                             input.form-control(type="text" name="surname" id="edit-form-surname")
                         .form-group
-                            label Birth Date
+                            label Fecha de nacimiento
                             input.form-control(type="text" name="birthdate" id="edit-form-birthdate")
                         .form-group
-                            label Genre
+                            label Género
                             input.form-control(type="text" name="genre" id="edit-form-genre")
 
                             //select.form-control(type="text" name="genre" id="edit-form-genre")
                             //    option(value="Male") Male
                             //    option(value="Female") Female
                         .form-group
-                            label Mobile Number
+                            label Número de móvil
                             input.form-control(type="tel" name="mobile_number" id="edit-form-mobile_number")
                             //.form-group
                             //    label Available
@@ -1314,14 +1314,15 @@ block content
                     .modal-header
                         button.close(type='button', data-dismiss='modal', aria-label='Close')
                             span(aria-hidden='true') ×
-                        h4#myVehicleDriverLabel.modal-title Add Driver
+                        h4#myVehicleDriverLabel.modal-title Establece relación Conductor-Vehículo
                     .modal-body
+                        // TODO:para cada uno de los siguientes hacer un "select" obteniendolos de una consulta a la base de datos.
                         .form-group
-                            label Vehicle
-                            input.form-control(type="text" name="id_vehicle")
-                        .form-group
-                            label Driver
+                            label Conductor
                             input.form-control(type="text" name="id_driver")
+                        .form-group
+                            label Vehículo
+                            input.form-control(type="text" name="id_vehicle")
                     .modal-footer
                         button.btn.btn-default(type='button', data-dismiss='modal') Close
                         input.btn.btn-primary(type='submit' value="Save")
