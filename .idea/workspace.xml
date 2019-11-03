@@ -3,7 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="6d5f1f38-e885-4881-8791-5da2d0a04345" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/map.jade" beforeDir="false" afterPath="$PROJECT_DIR$/views/map.jade" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/javascripts/constants.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/javascripts/constants.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/queries.js" beforeDir="false" afterPath="$PROJECT_DIR$/queries.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/index.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -20,6 +22,20 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <favorite-branches>
+      <branch-storage>
+        <map>
+          <entry type="REMOTE">
+            <value>
+              <list>
+                <branch-info repo="$PROJECT_DIR$" source="heroku/master" />
+                <branch-info repo="$PROJECT_DIR$" source="heroku/HEAD" />
+              </list>
+            </value>
+          </entry>
+        </map>
+      </branch-storage>
+    </favorite-branches>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
@@ -121,7 +137,9 @@
       <workItem from="1572267244784" duration="2576000" />
       <workItem from="1572281720262" duration="1123000" />
       <workItem from="1572515412590" duration="8026000" />
-      <workItem from="1572542230020" duration="805000" />
+      <workItem from="1572542230020" duration="1868000" />
+      <workItem from="1572544445348" duration="1673000" />
+      <workItem from="1572807360618" duration="598000" />
     </task>
     <task id="LOCAL-00001" summary="version 2.5.1">
       <created>1572271103995</created>
@@ -151,7 +169,14 @@
       <option name="project" value="LOCAL" />
       <updated>1572538967233</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="version 2.6">
+      <created>1572543069864</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1572543069864</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TodoView" selected-index="1">
@@ -200,7 +225,8 @@
     <MESSAGE value="version 2.5.2" />
     <MESSAGE value="version 2.5.3" />
     <MESSAGE value="version 2.5.4" />
-    <option name="LAST_COMMIT_MESSAGE" value="version 2.5.4" />
+    <MESSAGE value="version 2.6" />
+    <option name="LAST_COMMIT_MESSAGE" value="version 2.6" />
   </component>
   <component name="masterDetails">
     <states>

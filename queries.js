@@ -2,8 +2,8 @@
 var pg = require("pg");
 
 
-//var conString = "postgres://postgres:postgres@localhost:5432/api";
-var conString = "postgres://wzkowhhekyvcbh:dbc37ca58c23fa2edf7ed4af8319e00316de9aaf1defbb8cac1fd86500704f6a@ec2-107-20-173-2.compute-1.amazonaws.com:5432/d2346t6en0926l";
+var conString = "postgres://postgres:postgres@localhost:5432/api";
+//var conString = "postgres://wzkowhhekyvcbh:dbc37ca58c23fa2edf7ed4af8319e00316de9aaf1defbb8cac1fd86500704f6a@ec2-107-20-173-2.compute-1.amazonaws.com:5432/d2346t6en0926l";
 
 /*
 const db = require('./public/javascripts/constants');
@@ -313,10 +313,43 @@ const vehicleDriver = (request, response) => {
             }
             //response.status(201).send(`Vehicle added with ID: ${results.rows[0]}`);
             console.log(results.rows[0]);
-            response.redirect("/map");
+
+            var status = new Object();
+            status.code = 'ok';
+            status.id_driver = id_driver;
+            status.id_vehicle = id_vehicle;
+            //var myString = JSON.stringify(login_code);
+
+            response.status(200).json(status);
+            //response.redirect("/map");
         })
 }
 
+const deleteVehicleDriver = (request, response) => {
+    const {id_vehicle, id_driver} = request.body;
+
+    console.log(request.body);
+
+    //TODO: establecer available=false tanto del Driver con y el Vehicle (creo que esto mejor hacerlo como peticiones POST independientes para cada unod de ellos
+    pool.query('DELETE FROM vehicle_driver WHERE id_vehicle=$1 AND id_driver=$2;',
+        [id_vehicle, id_driver], (error, results) => {
+            if (error) {
+                throw error
+            }
+            //response.status(201).send(`Vehicle added with ID: ${results.rows[0]}`);
+            console.log(results.rows[0]);
+
+            // var status = new Object();
+            // status.code = 'ok';
+            // status.id_driver = id_driver;
+            // status.id_vehicle = id_vehicle;
+            //var myString = JSON.stringify(login_code);
+
+            response.send({ msg: 'Eliminación de la relacion conductor(' + id_driver + ') - vehículo(' + id_vehicle + ')  de manera satisfactoria.'});
+            //response.status(200).json(status);
+            //response.redirect("/map");
+        })
+}
 
 const availabilityDriver = (request, response) => {
     const {id_driver, availability} = request.body;
@@ -431,7 +464,6 @@ const loginDriver = (request, response) => {
         login_code.id_driver = id_driver;
         //var myString = JSON.stringify(login_code);
 
-
         response.status(200).json(login_code);
         //console.log(results.rows[0]);
     });
@@ -458,6 +490,7 @@ module.exports = {
     deleteVehicleDriverByIdVehicle,
     deleteVehicleDriverByIdDriver,
     loginDriver,
+    deleteVehicleDriver,
     availabilityDriver,
     availabilityVehicle,
     getTest
