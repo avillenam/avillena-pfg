@@ -326,12 +326,12 @@ const vehicleDriver = (request, response) => {
 }
 
 const deleteVehicleDriver = (request, response) => {
-    const {id_vehicle, id_driver} = request.body;
+    const {id_driver} = request.body;
 
     console.log(request.body);
 
-    pool.query('DELETE FROM vehicle_driver WHERE id_vehicle=$1 AND id_driver=$2;',
-        [id_vehicle, id_driver], (error, results) => {
+    pool.query('DELETE FROM vehicle_driver WHERE id_driver=$1;',
+        [id_driver], (error, results) => {
             if (error) {
                 throw error
             }
@@ -344,7 +344,7 @@ const deleteVehicleDriver = (request, response) => {
             // status.id_vehicle = id_vehicle;
             //var myString = JSON.stringify(login_code);
 
-            response.send({ msg: 'Eliminación de la relacion conductor(' + id_driver + ') - vehículo(' + id_vehicle + ')  de manera satisfactoria.'});
+            response.send({ msg: 'Eliminación de las relaciones conductor(' + id_driver + ') con cualquier vehiculo de manera satisfactoria.'});
             //response.status(200).json(status);
             //response.redirect("/map");
         })
