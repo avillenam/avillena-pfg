@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="6d5f1f38-e885-4881-8791-5da2d0a04345" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/queries.js" beforeDir="false" afterPath="$PROJECT_DIR$/queries.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -137,7 +138,7 @@
       <workItem from="1572542230020" duration="1868000" />
       <workItem from="1572544445348" duration="1673000" />
       <workItem from="1572807360618" duration="732000" />
-      <workItem from="1572885681838" duration="327000" />
+      <workItem from="1572885681838" duration="1728000" />
     </task>
     <task id="LOCAL-00001" summary="version 2.5.1">
       <created>1572271103995</created>
@@ -181,7 +182,14 @@
       <option name="project" value="LOCAL" />
       <updated>1572813167722</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="version 2.6.2">
+      <created>1572886289744</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1572886289744</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TodoView" selected-index="1">
@@ -232,7 +240,8 @@
     <MESSAGE value="version 2.5.4" />
     <MESSAGE value="version 2.6" />
     <MESSAGE value="version 2.6.1" />
-    <option name="LAST_COMMIT_MESSAGE" value="version 2.6.1" />
+    <MESSAGE value="version 2.6.2" />
+    <option name="LAST_COMMIT_MESSAGE" value="version 2.6.2" />
   </component>
   <component name="masterDetails">
     <states>

@@ -304,7 +304,6 @@ const vehicleDriver = (request, response) => {
 
     console.log(request.body);
 
-    //TODO: establecer available=false tanto del Driver con y el Vehicle (creo que esto mejor hacerlo como peticiones POST independientes para cada unod de ellos
     pool.query('INSERT INTO vehicle_driver (id_vehicle, id_driver, date_registry) ' +
         'VALUES ($1, $2, localtimestamp)',
         [id_vehicle, id_driver], (error, results) => {
@@ -320,7 +319,8 @@ const vehicleDriver = (request, response) => {
             status.id_vehicle = id_vehicle;
             //var myString = JSON.stringify(login_code);
 
-            response.status(200).json(status);
+            response.send({ msg: 'Establecida relación conductor (' + id_driver + ') - vehículo(' + id_vehicle + ')  de manera satisfactoria.'});
+            //response.status(200).json(status);
             //response.redirect("/map");
         })
 }
@@ -330,7 +330,6 @@ const deleteVehicleDriver = (request, response) => {
 
     console.log(request.body);
 
-    //TODO: establecer available=false tanto del Driver con y el Vehicle (creo que esto mejor hacerlo como peticiones POST independientes para cada unod de ellos
     pool.query('DELETE FROM vehicle_driver WHERE id_vehicle=$1 AND id_driver=$2;',
         [id_vehicle, id_driver], (error, results) => {
             if (error) {
