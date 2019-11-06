@@ -290,7 +290,7 @@ const getDriverByIdVehicle = (request, response) => {
 
 
 const getVehicleByIdDriver = (request, response) => {
-    pool.query('SELECT a.id_driver, b.id_vehicle, b.brand, b.model, a.date_registry FROM vehicle_driver a, vehicles b WHERE a.id_vehicle=b.id_vehicle AND a.id_driver=' + request.params.id_driver, (error, results) => {
+    pool.query('SELECT a.id_driver, b.id_vehicle, b.type, b.brand, b.model, b.passengers, b.fuel, b.available, a.date_registry FROM vehicle_driver a, vehicles b WHERE a.id_vehicle=b.id_vehicle AND a.id_driver=' + request.params.id_driver, (error, results) => {
         if (error) {
             throw error
         }
@@ -298,6 +298,7 @@ const getVehicleByIdDriver = (request, response) => {
         console.log(results.rows[0]);
     })
 }
+
 
 const vehicleDriver = (request, response) => {
     const {id_vehicle, id_driver} = request.body;
