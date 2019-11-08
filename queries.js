@@ -54,8 +54,8 @@ const insertPosition = (request, response) => {
             if (error) {
                 throw error
             }
-            // response.status(201).send(`Position added with ID: ${results.rows[0]}`);
-            response.json(results.rows[0]);
+            response.status(201).send(`Position added with ID: ${results.rows[0]}`);
+            //response.json(results.rows[0]);
             console.log(results.rows[0]);
         })
     //pool.end();
@@ -371,8 +371,8 @@ const availabilityDriver = (request, response) => {
                 console.log(results.rows[0]);
                 response.send({ msg: 'Modificación del atributo \'available\' del conductor id_driver:' + id_driver +  ' a \'' + availability + '\' de manera satisfactoria.'});
                 //response.redirect("/map");
+                done();
             });
-        done();
     })
 }
 

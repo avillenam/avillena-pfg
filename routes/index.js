@@ -142,11 +142,14 @@ router.post('/driverAvailability', db.availabilityDriver);
 // Establece available para el vehiculo
 router.post('/vehicleAvailability', db.availabilityVehicle);
 
+/*
 //Delete vehicleDriver relation by id_vehicle
 router.post('/deleteVehicleDriverByIdVehicle/:id_vehicle', db.deleteVehicleDriverByIdVehicle);
 
 //Delete vehicleDriver relation by id_driver
 router.post('/deleteVehicleDriverByIdDriver/:id_driver', db.deleteVehicleDriverByIdDriver);
+
+ */
 
 //Login Driver in system
 router.get('/loginDriver/:email/:password', db.loginDriver);
