@@ -54,7 +54,12 @@ const insertPosition = (request, response) => {
             if (error) {
                 throw error
             }
-            response.status(201).send(`Position added with ID: ${results.rows[0]}`);
+
+            var login_code = new Object();
+            login_code.code = 1;
+            response.status(200).json(login_code);
+
+            //response.status(201).send(`Position added with ID: ${results.rows[0]}`);
             //response.json(results.rows[0]);
             console.log(results.rows[0]);
         })
