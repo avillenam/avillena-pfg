@@ -2,7 +2,7 @@
 var pg = require("pg");
 
 
-// var conString = "postgres://postgres:postgres@localhost:5432/api";
+//var conString = "postgres://postgres:postgres@localhost:5432/api";
 var conString = "postgres://wzkowhhekyvcbh:dbc37ca58c23fa2edf7ed4af8319e00316de9aaf1defbb8cac1fd86500704f6a@ec2-107-20-173-2.compute-1.amazonaws.com:5432/d2346t6en0926l";
 
 /*
@@ -78,7 +78,7 @@ const getPositionByDriver = (request, response) => {
 
 const getPositionByVehicle = (request, response) => {
     // pool.query('SELECT st_astext(the_geom) FROM position WHERE id_vehicle=' + parseInt(request.params.id_vehicle) + ' ORDER BY gid ASC', (error, results) => {
-    pool.query("SELECT row_to_json(fc) FROM ( SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) As features FROM ( SELECT 'Feature' As type, ST_AsGeoJSON(lg.the_geom)::json As geometry, id_vehicle, id_driver, origin, destiny, \"comments\", date_registry As properties FROM \"position\" AS lg WHERE id_vehicle=" + parseInt(request.params.id_vehicle) + " ) AS f ) As fc;",
+    pool.query("SELECT row_to_json(fc) FROM ( SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) As features FROM ( SELECT 'Feature' As type, ST_AsGeoJSON(lg.the_geom)::json As geometry, id_vehicle, id_driver, origin, destiny, \"comments\", date_registry As properties FROM \"position\" AS lg WHERE id_vehicle=" + parseInt(request.params.id_vehicle) + " order by date_registry ASC) AS f ) As fc;",
         (error, results) => {
             if (error) {
                 throw error
@@ -295,12 +295,12 @@ const getDriverByIdVehicle = (request, response) => {
 
 
 const getVehicleByIdDriver = (request, response) => {
-    pool.query('SELECT a.id_driver, b.id_vehicle, b.type, b.brand, b.model, b.passengers, b.fuel, b.available, a.date_registry FROM vehicle_driver a, vehicles b WHERE a.id_vehicle=b.id_vehicle AND a.id_driver=' + request.params.id_driver, (error, results) => {
+    pool.query('SELECT a.id_driver, b.id_vehicle, b.type, b.brand, b.model, b.passengers, b.fuel, b.available FROM vehicle_driver a, vehicles b WHERE a.id_vehicle=b.id_vehicle AND a.id_driver=' + request.params.id_driver, (error, results) => {
         if (error) {
             throw error
         }
-        response.status(200).json(results.rows[0]);
-        console.log(results.rows[0]);
+        response.status(200).json(results.rows);
+        console.log(results.rows);
     })
 }
 

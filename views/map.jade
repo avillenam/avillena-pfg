@@ -422,11 +422,15 @@ block content
             // http request to obtain the drivers
             var driversJSON = JSON.parse(httpGet(theUrl));
 
+            console.log('driversJSON: ' + JSON.stringify(driversJSON));
+
             //variables for house the items
             var myItems = [], $drivers_results = $('#drivers_results');
 
             // Loop for creating each element in the viewer panel
             for (var i = 0; i < driversJSON.length; i++) {
+                console.log('i: ' + i);
+
                 var id = driversJSON[i]['id_driver'];
                 var name = driversJSON[i]['name'];
                 var surname = new String(driversJSON[i]['surname']);
@@ -439,14 +443,24 @@ block content
 
                 //request Vehicle assigned
                 theUrlVehicle = ROOT + '/vehicleByIdDriver/' + id;
-                var resVehicleAssigned = JSON.parse(httpGet(theUrlVehicle));
+                var response =  httpGet(theUrlVehicle);
+                console.log('Ha hecho la peticion: ' + theUrlVehicle );
+                console.log('response: ' + response );
+                var resVehicleAssigned = JSON.parse(response);
+                console.log('resVehicleAssigned: ' + resVehicleAssigned);
+                console.log('resVehicleAssigned: ' + JSON.stringify(resVehicleAssigned));
+                console.log('resVehicleAssigned.length: ' + resVehicleAssigned.length);
                 var id_vehicle;
                 if (resVehicleAssigned.length == !0) {
+                    console.log('resVehicleAssigned.length == !0');
                     var vehicle = resVehicleAssigned[0];
                     id_vehicle = vehicle['id_vehicle'] + ': ' + vehicle['brand'] + ' ' + vehicle['model'];
+                    console.log(id_vehicle);
                 } else {
                     id_vehicle = 'Not assigned';
+                    console.log(id_vehicle);
                 }
+
 
                 //create HTML element for each Driver
                 myItems.push("" +
