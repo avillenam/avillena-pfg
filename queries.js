@@ -67,7 +67,7 @@ const insertPosition = (request, response) => {
 }
 
 const getPositionByDriver = (request, response) => {
-    pool.query('SELECT * FROM position WHERE driver=' + parseInt(request.params.id_driver) + ' ORDER BY gid ASC', (error, results) => {
+    pool.query('SELECT * FROM position WHERE id_driver=' + parseInt(request.params.id_driver) + ' ORDER BY gid ASC', (error, results) => {
         if (error) {
             throw error
         }
