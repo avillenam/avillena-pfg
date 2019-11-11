@@ -444,7 +444,7 @@ block content
                 //request Vehicle assigned
                 theUrlVehicle = ROOT + '/vehicleByIdDriver/' + id;
                 var response =  httpGet(theUrlVehicle);
-                console.log('Ha hecho la peticion: ' + theUrlVehicle );
+                console.log('Ha hecho la petición: ' + theUrlVehicle );
                 console.log('response: ' + response );
                 var resVehicleAssigned = JSON.parse(response);
                 console.log('resVehicleAssigned: ' + resVehicleAssigned);
@@ -457,7 +457,7 @@ block content
                     id_vehicle = vehicle['id_vehicle'] + ': ' + vehicle['brand'] + ' ' + vehicle['model'];
                     console.log(id_vehicle);
                 } else {
-                    id_vehicle = 'Not assigned';
+                    id_vehicle = 'No asignado.';
                     console.log(id_vehicle);
                 }
 
@@ -469,13 +469,13 @@ block content
                     "<div href='#" + id + "' class='details'>" +
                     "<div class='list-group-item-heading'><i class='fa fa-hashtag'></i>" + id + "</div>" +
                     "<div title='Email'><i class='fa fa-at'></i>" + email + "</div>" +
-                    "<div title='Driver name'><i class='glyphicon glyphicon-user'></i>" + name + " " + surname + "</div>" +
-                    "<div title='Birthdate'><i class='glyphicon glyphicon-calendar'></i>" + birthdate + "</div>" +
-                    "<div title='Genre'><i class='fa fa-genderless'></i>" + genre + "</div>" +
-                    "<div title='Mobile number'><i class='fa fa-mobile-alt'></i>" + mobile_number + "</div>" +
-                    "<div title='Vehicle'><i class='fa fa-car-alt'></i>" + id_vehicle + "</div>" +
-                    "<a title='Delete driver' class='deleteIcon delete-driver' data-id=" + id + "><i class='fa fa-trash'></i></a>" +
-                    "<a title='Edit Driver' class='editIcon edit-driver' data-toggle='modal' data-target='#editFormDriver' " +
+                    "<div title='Nombre de conductor'><i class='glyphicon glyphicon-user'></i>" + name + " " + surname + "</div>" +
+                    "<div title='Fecha de nacimiento'><i class='glyphicon glyphicon-calendar'></i>" + birthdate + "</div>" +
+                    "<div title='Género'><i class='fa fa-genderless'></i>" + genre + "</div>" +
+                    "<div title='Número de móvil'><i class='fa fa-mobile-alt'></i>" + mobile_number + "</div>" +
+                    "<div title='Vehículo'><i class='fa fa-car-alt'></i>" + id_vehicle + "</div>" +
+                    "<a title='Eliminar conductor' class='deleteIcon delete-driver' data-id=" + id + "><i class='fa fa-trash'></i></a>" +
+                    "<a title='Editar conductor' class='editIcon edit-driver' data-toggle='modal' data-target='#editFormDriver' " +
                     " data-id=" + id + " data-name=" + name + " data-surname=" + surname + " data-birthdate= " + birthdate +
                     " data-genre=" + genre + " data-mobile_number= " + mobile_number + " data-email=" + email +
                     " data-available=" + available +
@@ -490,7 +490,7 @@ block content
                 //$("img").attr("width","500");
             }
             $('#drivers_results').html(myItems.join(''));
-            console.log('drivers capturados: ')
+            console.log('Conductores capturados: ')
             console.log(driversJSON);
             updateFunctions();
         }
@@ -573,7 +573,7 @@ block content
 
                 //TODO: al ser asincrona esta funcion, hay veces que se desordenan las capas, respecto a los elementos
                 // HTML generados al vuelo.
-                console.log('llama a createLayerById para el id: ' + id);
+                console.log('Llama a createLayerById para el id: ' + id);
                 createLayerById(id);
 
                 var layerposition = layerPosition(id);
@@ -597,7 +597,6 @@ block content
             console.log('createLayerById: ' + id);
             var peticionGet = "";
             peticionGet = 'position-vehicle/' + id;
-
             console.log('Id: ' + id);
 
             $.ajax({
@@ -630,23 +629,23 @@ block content
 
                         var rotation = extractRotation(twoCoordinates);
 
-                        //creates the style for the layer
+                        // creates the style for the layer
                         var style = createStyle();
 
-                        //set the rotation for the icon of the current position
+                        // set the rotation for the icon of the current position
                         style.endpoint.getImage().setRotation(-rotation + (Math.PI / 2));
 
-                        //stores the style in the styles array
+                        // stores the style in the styles array
                         styles.push(style);
 
-                        //creates the lahyer
+                        // creates the layer
                         var layer = new ol.layer.Vector({
                             visible: false,
                             zIndex: 1,
                             style: style.linestring
                         });
 
-                        //creates a feature with the coordinates of the linestring
+                        // creates a feature with the coordinates of the linestring
                         var feature = new ol.Feature({
                             geometry: new ol.geom.LineString(lineStringCoords)
                         })
@@ -700,7 +699,7 @@ block content
                 var layerposition = layerPosition(id);
                 console.log("i: " + i + ", id: " + id);
                 GETrequest = 'position-vehicle/' + id;
-                console.log("lanza petición: " + GETrequest);
+                console.log("Lanza petición: " + GETrequest);
                 $.ajax({
                     async: false,
                     cache: false,
@@ -708,7 +707,7 @@ block content
                     url: GETrequest,
                     type: 'GET',
                     success: function (data) {
-                        console.log("tiene coordenadas el vehículo id: " + id + "?");
+                        console.log("Tiene coordenadas el vehículo id: " + id + "?");
                         console.log(data.features);
                         if (data.features != null) {
                             var format = new ol.format.GeoJSON({
@@ -735,16 +734,16 @@ block content
 
                             var rotation = extractRotation(twoCoordinates);
 
-                            //creates the style for the layer
+                            // creates the style for the layer
                             var style = styles[layerposition - OFFSET_DOWN];
 
-                            //set the rotation for the icon of the current position
+                            // set the rotation for the icon of the current position
                             style.endpoint.getImage().setRotation(-rotation + (Math.PI / 2));
 
-                            //update the style in the styles array
+                            // update the style in the styles array
                             styles[layerposition - OFFSET_DOWN] = style;
 
-                            //creates a feature with the coordinates of the linestring
+                            // creates a feature with the coordinates of the linestring
                             var feature = new ol.Feature({
                                 geometry: new ol.geom.LineString(lineStringCoords)
                             })
@@ -766,7 +765,7 @@ block content
                             var layer = map.getLayers().getArray()[layerposition];
 
                             if(layer == undefined){
-                                console.log('genera una capa nueva, id:' + layerposition)
+                                console.log('Genera una capa nueva, id:' + layerposition)
                                 createLayerById(id);
                             }
 
@@ -823,7 +822,7 @@ block content
                     var driver = resDriverAssigned[0];
                     id_driver = driver['id_driver'] + ': ' + driver['name'] + ' ' + driver['surname'];
                 } else {
-                    id_driver = 'Not assigned';
+                    id_driver = 'No asignado.';
                 }
 
                 //create HTML element for each vehicle
@@ -832,12 +831,12 @@ block content
                         "<img class='list-thumbnail' src='/images/bicycle icon.png'>" +
                         "<div href='#" + id + "' class='details'>" +
                         "<div class='list-group-item-heading'><i class='fa fa-hashtag'></i>" + id + "</div>" +
-                        "<div title='Driver'><i class='glyphicon glyphicon-user'></i>" + id_driver + "</div>" +
-                        "<div title='Brand, model'><i class='glyphicon glyphicon-triangle-right'></i>" + brand + ", " + model + "</div>" +
-                        "<div title='Passengers'><i class='fa fa-users'></i>" + passengers + "</div>" +
+                        "<div title='Conductor'><i class='glyphicon glyphicon-user'></i>" + id_driver + "</div>" +
+                        "<div title='Marca, modelo'><i class='glyphicon glyphicon-triangle-right'></i>" + brand + ", " + model + "</div>" +
+                        "<div title='Pasageros'><i class='fa fa-users'></i>" + passengers + "</div>" +
                         "<div title='Fuel'><i class='fa fa-gas-pump'></i>" + fuel + "</div>" +
-                        "<a title='Delete vehicle' class='deleteIcon delete-vehicle' data-id=" + id + "><i class='fa fa-trash'></i></a>" +
-                        "<a title='Edit Vehicle' class='editIcon edit-vehicle' data-toggle='modal' data-target='#editFormVehicle' " +
+                        "<a title='Borrar vehiculo' class='deleteIcon delete-vehicle' data-id=" + id + "><i class='fa fa-trash'></i></a>" +
+                        "<a title='Editar Vehiculo' class='editIcon edit-vehicle' data-toggle='modal' data-target='#editFormVehicle' " +
                         " data-id=" + parseInt(id) +
                         " data-type=" + type +
                         " data-brand=" + brand +
@@ -852,7 +851,6 @@ block content
                         "<a class='btn zoom-vehicle' title='Zoom to vehicle' data-id=" + id + "><i class='fas fa-bullseye'></i></a>" +
                         "</div>" +
                     "</div>");
-
             }
 
             $('#vehicles_results').html(myItems.join(''));
@@ -864,7 +862,7 @@ block content
 
 
         function lanzaPeticionDrivers() {
-            console.log('peticion enviada')
+            console.log('Peticion enviada')
             peticion_http = new XMLHttpRequest();
             peticion_http.open('GET', ROOT + '/getDrivers/', true);
             peticion_http.send(null);
@@ -913,7 +911,7 @@ block content
         }
 
         function drawCurrentIdPosition(id, layer, layerposition){
-            console.log('draw position of current point of layer id: ' + id);
+            console.log('dibujar posición del punto actual de la capa con id: ' + id);
             var vectorSource = layer.getSource();
             if (vectorSource != null) {
                 var features = vectorSource.getFeatures();
@@ -927,7 +925,7 @@ block content
                 vectorSource.addFeature(endPoint);
             } else {
                 // show alert that there is no features
-                createAlert('Vehicle id: ' + id + '  has no position registered!');
+                createAlert('¡El vehicle id: ' + id + '  no tiene posiciones registradas!');
             }
         }
 
@@ -945,7 +943,7 @@ block content
         }
 
         function toggleOSMLayer(){
-            console.log("activa/desactiva OSM layer");
+            console.log("activa/desactiva capa OSM");
             var layerOSM = map.getLayers().getArray()[0];
             var layerPNOA = map.getLayers().getArray()[1];
             var IGNBaseOrto = map.getLayers().getArray()[2];
@@ -961,7 +959,7 @@ block content
         }
 
         function togglePNOALayer() {
-            console.log("activa/desactiva PNOA layer");
+            console.log("activa/desactiva capa PNOA");
             var layerOSM = map.getLayers().getArray()[0];
             var layerPNOA = map.getLayers().getArray()[1];
             var IGNBaseOrto = map.getLayers().getArray()[2];
@@ -982,12 +980,12 @@ block content
             $(".delete-driver").on('click', function () {
                 var id = $(this).data('id');
                 var url = '/deleteDriver/' + id;
-                if (confirm('Delete driver with id:' + id + '?')) {
+                if (confirm('¿Delete conductor con id:' + id + '?')) {
                     $.ajax({
                         url: url,
                         type: 'DELETE',
                         success: function (result) {
-                            console.log('Deleting Driver with id:' + id);
+                            console.log('Borrando conductor con id:' + id);
                             window.location.href = '/map';
                         },
                         error: function (err) {
@@ -1028,13 +1026,13 @@ block content
             $(".delete-vehicle").on('click', function () {
                 var id = $(this).data('id');
                 var url = '/deleteVehicle/' + id;
-                if (confirm('Delete vehicle with id:' + id + '?')) {
+                if (confirm('¿Borrar vehículo con id:' + id + '?')) {
                     // delete driver
                     $.ajax({
                         url: url,
                         type: 'DELETE',
                         success: function (result) {
-                            console.log('Deleting Vehicle with id:' + id);
+                            console.log('Borrando Vehiculo con id:' + id);
                             window.location.href = '/map';
                         },
                         error: function (err) {
@@ -1068,10 +1066,7 @@ block content
                     vehiclesJSON[pos].visibility = 'true'
                 }
 
-                //var url = '/position-vehicle/' + id;
-                //console.log('Muestra la posición del vehículo: ' + id);
-
-                // Call to the function than show the position of the vehicle
+                // Llamada a la función que muestra la posición del vehículo
                 showFeatureLayer(id);
 
             });
@@ -1112,7 +1107,7 @@ block content
             console.log('Llamada a getDrivers()')
             getDrivers();
 
-            console.log('Llamada a createVehicleHTMLelements()')
+            console.log('Llamada a createVehicleHTMLelements()');
             createVehicleHTMLelements();
 
 
@@ -1142,7 +1137,7 @@ block content
             function updatePosition() {
                 var d = new Date();
                 updateVehiclesPosition();
-                console.log('Update position at: ' + d.toLocaleTimeString());
+                console.log('Actualizar posición en: ' + d.toLocaleTimeString());
             }
 
         });
@@ -1162,12 +1157,12 @@ block content
                         .form-group
                             label Tipo de Vehículo
                             select.form-control(type="text" name="type")
-                                option(value="Car") Coche
-                                option(value="Van") Furgoneta
-                                option(value="Truck") Camión
-                                option(value="Bike") Bicicleta
-                                option(value="Motorbike") Motocicleta
-                                option(value="Electric Scooter") Scooter Eléctrico
+                                option(value="Coche") Coche
+                                option(value="Furgoneta") Furgoneta
+                                option(value="Camión") Camión
+                                option(value="Bicicleta") Bicicleta
+                                option(value="Motocicleta") Motocicleta
+                                option(value="Scooter Eléctrico") Scooter Eléctrico
                         .form-group
                             label Marca
                             input.form-control(type="text" name="brand")
@@ -1181,26 +1176,26 @@ block content
                             label Tipo de combustible
                             select.form-control(type="text" name="fuel")
                                 option(value="Diesel") Diesel
-                                option(value="Gas") Gasolina
+                                option(value="Gasolina") Gasolina
                         .form-group
                             label Disponible
                             select.form-control(type="text" name="available")
                                 option(value="true") True
                                 option(value="false") False
                     .modal-footer
-                        button.btn.btn-default(type='button', data-dismiss='modal') Close
-                        input.btn.btn-primary(type='submit' value="Save")
+                        button.btn.btn-default(type='button', data-dismiss='modal') Cerrar
+                        input.btn.btn-primary(type='submit' value="Guardar")
 
-    // Modal EDIT Vehicle
+    // Modal EDITAR Vehiculo
     #editFormVehicle.modal.fade(tabindex='-1', role='dialog', aria-labelledby='editFormVehicleLabel')
         .modal-dialog(role='document')
             .modal-content
                 form(method="post" action="/editVehicle")
                     input(type="hidden" id="edit-vehicle-form-id" name="id")
                     .modal-header
-                        button.close(type='button', data-dismiss='modal', aria-label='Close')
+                        button.close(type='button', data-dismiss='modal', aria-label='Cerrar')
                             span(aria-hidden='true') ×
-                        h4#myEditVehicleLabel.modal-title Editar Vehicle
+                        h4#myEditVehicleLabel.modal-title Editar Vehiculo
                     .modal-body
                         .form-group
                             label Tipo de Vehículo
@@ -1218,7 +1213,7 @@ block content
                             label Tipo de Comnbustible
                             select.form-control(type="text" name="fuel" id="edit-vehicle-form-fuel")
                                 option(value="Diesel") Diesel
-                                option(value="Gas") Gasolina
+                                option(value="Gasolina") Gasolina
                         .form-group
                             label Disponible
                             input.form-control(type="text" name="available" id="edit-vehicle-form-available")
@@ -1228,16 +1223,16 @@ block content
                             //    option(value="false") False
                     .modal-footer
                         button.btn.btn-default(type='button', data-dismiss='modal') Close
-                        input.btn.btn-primary(type='submit' value="Save")
+                        input.btn.btn-primary(type='submit' value="Guardar")
 
 
-    // Modal ADD Driver
+    // Modal AÑADIR Conductor
     #formDriver.modal.fade(tabindex='-1', role='dialog', aria-labelledby='formDriverLabel')
         .modal-dialog(role='document')
             .modal-content
                 form(method="post" action="/driver")
                     .modal-header
-                        button.close(type='button', data-dismiss='modal', aria-label='Close')
+                        button.close(type='button', data-dismiss='modal', aria-label='Cerrar')
                             span(aria-hidden='true') ×
                         h4#myDriverLabel.modal-title Add Driver
                     .modal-body
@@ -1259,8 +1254,8 @@ block content
                         .form-group
                             label Género
                             select.form-control(type="text" name="genre")
-                                option(value="Male") Masculino
-                                option(value="Female") Femenino
+                                option(value="Masculino") Masculino
+                                option(value="Femenino") Femenino
                         .form-group
                             label Número de móvil
                             input.form-control(type="tel" name="mobile_number")
@@ -1270,8 +1265,8 @@ block content
                             //        option(value="true") True
                             //        option(value="false") False
                     .modal-footer
-                        button.btn.btn-default(type='button', data-dismiss='modal') Close
-                        input.btn.btn-primary(type='submit' value="Save")
+                        button.btn.btn-default(type='button', data-dismiss='modal') Cerrar
+                        input.btn.btn-primary(type='submit' value="Guardar")
     // Modal EDIT Driver
     #editFormDriver.modal.fade(tabindex='-1', role='dialog', aria-labelledby='editFormDriverLabel')
         .modal-dialog(role='document')
