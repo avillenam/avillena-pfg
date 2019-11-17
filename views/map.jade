@@ -29,7 +29,7 @@ block content
     div#tools
         header.logoHeader Panel de búsqueda
             span(style="position:absolute; right:2em;")
-                button.btn-xs.btn.btn-warning(type='button' onclick="limpiaFiltros()" title="limpiar filtros de búsqueda") Limpiar campos
+                button.btn-xs.btn.btn-warning(type='button' onclick="limpiaFiltros()" title="limpiar filtros de búsqueda") Limpiar filtros
         .panel.with-nav-tabs.panel-default
             .panel-heading
                 ul.nav.nav-tabs
@@ -478,21 +478,20 @@ block content
         }
 
         function getDrivers() {
-            // request to be launched
+            // consulta a lanzarse
             theUrl = ROOT + '/getDrivers';
 
-            // http request to obtain the drivers
+            // petición http para obtener los conductores
             var driversJSON = JSON.parse(httpGet(theUrl));
 
-            console.log('driversJSON: ' + JSON.stringify(driversJSON));
+            //console.log('driversJSON: ' + JSON.stringify(driversJSON));
 
-            //variables for house the items
+            //Variables para alojar los items
             var myItems = [], $drivers_results = $('#drivers_results');
 
-            // Loop for creating each element in the viewer panel
+            // Buclque para crear cada elemento en el panel del visualizador
             for (var i = 0; i < driversJSON.length; i++) {
-                console.log('i: ' + i);
-
+                //console.log('i: ' + i);
                 var id = driversJSON[i]['id_driver'];
                 var name = driversJSON[i]['name'];
                 var surname = new String(driversJSON[i]['surname']);
@@ -503,31 +502,70 @@ block content
                 var email = driversJSON[i]['email'];
                 var available = driversJSON[i]['available'];
 
-                //request Vehicle assigned
+                // Petición de vehículo asignado
                 theUrlVehicle = ROOT + '/vehicleByIdDriver/' + id;
                 var response =  httpGet(theUrlVehicle);
                 console.log('Ha hecho la petición: ' + theUrlVehicle );
-                console.log('response: ' + response );
+                //console.log('response: ' + response );
                 var resVehicleAssigned = JSON.parse(response);
-                console.log('resVehicleAssigned: ' + resVehicleAssigned);
-                console.log('resVehicleAssigned: ' + JSON.stringify(resVehicleAssigned));
-                console.log('resVehicleAssigned.length: ' + resVehicleAssigned.length);
+                //console.log('resVehicleAssigned: ' + resVehicleAssigned);
+                //console.log('resVehicleAssigned: ' + JSON.stringify(resVehicleAssigned));
+                //console.log('resVehicleAssigned.length: ' + resVehicleAssigned.length);
+                // variable para establecer el icono del tipo de vehículo asignado. Por defecto: 'coche'
+                var vehicle_mini_icon = 'f5de';
                 var id_vehicle;
                 if (resVehicleAssigned.length == !0) {
-                    console.log('resVehicleAssigned.length == !0');
+                    //console.log('resVehicleAssigned.length == !0');
                     var vehicle = resVehicleAssigned[0];
                     id_vehicle = vehicle['id_vehicle'] + ': ' + vehicle['brand'] + ' ' + vehicle['model'];
-                    console.log(id_vehicle);
+                    var vehicle_type = vehicle['type'];
+                    //console.log(id_vehicle);
                 } else {
                     id_vehicle = 'No asignado.';
-                    console.log(id_vehicle);
+                    //console.log(id_vehicle);
                 }
 
+                // Icono para el tipo de género
+                var gender_icon;
+                switch (genre) {
+                    case 'Masculino':
+                        gender_icon = 'masculino_icon.png';
+                        break;
+                    case 'Femenino':
+                        gender_icon = 'femenino_icon.png';
+                        break;
+                    default:
+                        gender_icon = 'interrogacion_icon.png';
+                }
 
-                //create HTML element for each Driver
+                // Icono para el tipo de vehículo asignado
+                switch (vehicle_type) {
+                    case 'Coche':
+                        vehicle_mini_icon = 'f5de';
+                        break;
+                    case 'Furgoneta':
+                        vehicle_mini_icon = 'f5b6';
+                        break;
+                    case 'Camión':
+                        vehicle_mini_icon = 'f0d1';
+                        break;
+                    case 'Bicicleta':
+                        vehicle_mini_icon = 'f206';
+                        break;
+                    case 'Motocicleta':
+                        vehicle_mini_icon = 'f21c';
+                        break;
+                    case 'Scooter Eléctrico':
+                        vehicle_mini_icon = 'f0e7';
+                        break;
+                    default:
+                        vehicle_mini_icon = 'f5de'
+                }
+
+                // Crea un elemento por cada conductor
                 myItems.push("" +
                     "<div class='resultItem'>" +
-                    "<img class='list-thumbnail' src='/images/businessman-310819.svg'>" +
+                    "<img class='list-thumbnail' src='/images/" + gender_icon + "'>" +
                     "<div href='#" + id + "' class='details'>" +
                     "<div class='list-group-item-heading'><i class='fa fa-hashtag'></i>" + id + "</div>" +
                     "<div title='Email'><i class='fa fa-at'></i>" + email + "</div>" +
@@ -535,7 +573,7 @@ block content
                     "<div title='Fecha de nacimiento'><i class='glyphicon glyphicon-calendar'></i>" + birthdate + "</div>" +
                     "<div title='Género'><i class='fa fa-genderless'></i>" + genre + "</div>" +
                     "<div title='Número de móvil'><i class='fa fa-mobile-alt'></i>" + mobile_number + "</div>" +
-                    "<div title='Vehículo'><i class='fa fa-car-alt'></i>" + id_vehicle + "</div>" +
+                    "<div title='Vehículo'><i class='fa'>&#x" + vehicle_mini_icon + "</i>" + id_vehicle + "</div>" +
                     "<a title='Eliminar conductor' class='deleteIcon delete-driver' data-id=" + id + "><i class='fa fa-trash'></i></a>" +
                     "<a title='Editar conductor' class='editIcon edit-driver' data-toggle='modal' data-target='#editFormDriver' " +
                     " data-id=" + id + " data-name=" + name + " data-surname=" + surname + " data-birthdate= " + birthdate +
@@ -547,25 +585,23 @@ block content
                     "<a class='btn visualize-driver' data-id=" + id + ">Visualize</a>" +
                     "</div>" +
                     "</div>");
-                //myItems.push("Hola");
 
-                //$("img").attr("width","500");
             }
             $('#drivers_results').html(myItems.join(''));
-            console.log('Conductores capturados: ')
-            console.log(driversJSON);
+            //console.log('Conductores capturados: ')
+            //console.log(driversJSON);
             updateFunctions();
         }
 
-        // Obtain all vehicles
+        // Obtiene todos los vehículos
         function getVehicles() {
-            console.log('peticion enviada');
+            //console.log('peticion enviada');
             theUrl = ROOT + '/getVehicles';
             vehiclesJSON = JSON.parse(httpGet(theUrl));
             return vehiclesJSON;
         }
 
-        // return the layer position depending of the position
+        // Devuelve la posición de la capa según el 'id' del vehículo
         function layerPosition(id) {
             var position = 0;
             for (var i = 0; i < vehiclesJSON.length; i++) {
@@ -576,7 +612,7 @@ block content
             return position;
         }
 
-        //Style for each vehicle
+        // Estilo para cada vehñiculo
         var colors = [];
         function generateColor() {
             // generate random color for each object
@@ -585,15 +621,17 @@ block content
             var B = Math.floor(Math.random() * 256);
             var color = 'rgba(' + R + ', ' + G + ', ' + B + ', 0.8)';
             return color;
-            console.log('array styles creado: ' + styles.length + ' styles');
+            //console.log('array styles creado: ' + styles.length + ' styles');
         }
 
+        // Función que crea un estilo con un estilo aleatorio para cada vehículo
+        // TODO: crear un color aleatorio pero de un array con colores preestablecidos, ya que algunos que crea esta función no se ven muy bien en el mapa
         function createStyle(){
             var color = generateColor();
             var stroke = new ol.style.Stroke({color: 'black', width: 2});
             var fill = new ol.style.Fill({color: color});
 
-            // styles for each vehicle
+            // Estilo para cada vehículo
             var style = {
                 'linestring': new ol.style.Style({
                     stroke: new ol.style.Stroke({
@@ -628,22 +666,22 @@ block content
         }
 
 
-        // Initialize layers for each vehicle
+        // Inicializa las capas para cada vehículo
         function initializeLayers(){
             for (var i = 0; i < numVehicles; i++) {
                 var id = vehiclesJSON[i]['id_vehicle'];
 
                 //TODO: al ser asincrona esta funcion, hay veces que se desordenan las capas, respecto a los elementos
                 // HTML generados al vuelo.
-                console.log('Llama a createLayerById para el id: ' + id);
+                //console.log('Llama a createLayerById para el id: ' + id);
                 createLayerById(id);
 
                 var layerposition = layerPosition(id);
-                console.log('layerposition: ' + layerposition);
+                //console.log('layerposition: ' + layerposition);
             }
         }
 
-        // extract rotation between two coordinates
+        // Extrae la rotación entre dos coordenadas
         var extractRotation = function extractRotation(twoCoordinates) {
             var start = twoCoordinates[0];
             var end = twoCoordinates[1];
@@ -653,13 +691,13 @@ block content
         };
 
 
-        // creates layer for each vehicle
+        // Crea una cpa para cada vehículo
         var styles = [];
         function createLayerById(id) {
-            console.log('createLayerById: ' + id);
+            //console.log('createLayerById: ' + id);
             var peticionGet = "";
             peticionGet = 'position-vehicle/' + id;
-            console.log('Id: ' + id);
+            //console.log('Id: ' + id);
 
             $.ajax({
                 dataType: "json",
@@ -676,56 +714,81 @@ block content
                             featureProjection: 'EPSG:3857'
                         });
 
-                        // create a Polygon from points of the vehicle
+                        // Crea un Polygono a partir de los puntos del vehículo
                         var lineStringCoords = [];
                         for (var i in features) {
                             var c = features[i].getGeometry().getCoordinates();
                             lineStringCoords.push(c);
                         }
 
-                        // get rotation of last two points
+                        // Obtiene la rotación de los últimos dos puntos
                         var twoCoordinates = lineStringCoords.slice(
                             lineStringCoords.length - 2,
                             lineStringCoords.length
                         );
 
+                        // almacena en la variable 'rotation' el angulo entre dos puntos
                         var rotation = extractRotation(twoCoordinates);
 
-                        // creates the style for the layer
+                        // Crea el estilo para la capa
                         var style = createStyle();
 
-                        // set the rotation for the icon of the current position
+                        // Establece la rotación para el icono de 'posición actual'
                         style.endpoint.getImage().setRotation(-rotation + (Math.PI / 2));
 
-                        // stores the style in the styles array
+                        // Almacena el estilo en el array de estilos
                         styles.push(style);
 
-                        // creates the layer
+                        // Crea la capa
                         var layer = new ol.layer.Vector({
                             visible: false,
                             zIndex: 1,
                             style: style.linestring
                         });
 
-                        // creates a feature with the coordinates of the linestring
+                        // TODO: dibujar splines en vez de LineString (https://openlayers.org/en/latest/examples/turf.html?q=turf)
+                        // http://jsfiddle.net/ntkuqe2a/
+                        // Crea una entidad con las coordenadas del LineString
+
                         var feature = new ol.Feature({
                             geometry: new ol.geom.LineString(lineStringCoords)
                         })
 
-                        // create new Vector object to house the features
+                        console.log('feature geometry');
+                        console.log(feature);
+
+                        /*
+                        // Introduce la librería turf
+                        var curved = turf.bezier(feature);
+
+                        console.log('curved geometry');
+                        console.log(curved);
+                        */
+
+                        // Crea un nuevo objeto Vector para alojar las entidades
                         var vectorSource = new ol.source.Vector({
                             features: [feature]
                         });
 
-                        // add start point from linestring geometry
+                        /*
+                        var feature = new ol.Feature({
+                            geometry: new ol.geom.LineString(lineStringCoords)
+                        })
+
+                        // Crea un nuevo objeto Vector para alojar las entidades
+                        var vectorSource = new ol.source.Vector({
+                            features: [feature]
+                        });
+                         */
+                        // Añade un punto de inicio de la geometría LineString
                         var coordinatesStart = features[0].getGeometry().getCoordinates();
                         var startPoint = new ol.Feature(new ol.geom.Point(coordinatesStart));
                         startPoint.setStyle(style.startpoint);
 
-                        // Add new features to the map
+                        // Añade las nuevas entidades al mapa
                         vectorSource.addFeature(startPoint);
 
-                        // set source for the layer
+                        // Establece la fuente para la capa
                         layer.setSource(vectorSource);
 
                     } else{
@@ -739,7 +802,7 @@ block content
                         });
                     }
 
-                    // add the layer to the map
+                    // Añade la capa al mapa
                     map.addLayer(layer);
                 },
                 error: function (err) {
@@ -748,20 +811,20 @@ block content
             })
         }
 
-        // update the current position of all the vehicles
+        // Actualiza la posición actual de todos los vehículos
         function updateVehiclesPosition(){
             vehicles = getVehicles();
             var peticionGet = "";
 
-            // loop to obtain position of each vehicle
+            // Bucle para obtener la posición de cada vehículo
             var numVehicles = vehicles.length;
             for(var i = 0; i < numVehicles ; i++){
                 var id = null;
                 id = vehicles[i].id_vehicle;
                 var layerposition = layerPosition(id);
-                console.log("i: " + i + ", id: " + id);
+                //console.log("i: " + i + ", id: " + id);
                 GETrequest = 'position-vehicle/' + id;
-                console.log("Lanza petición: " + GETrequest);
+                //console.log("Lanza petición: " + GETrequest);
                 $.ajax({
                     async: false,
                     cache: false,
@@ -769,8 +832,8 @@ block content
                     url: GETrequest,
                     type: 'GET',
                     success: function (data) {
-                        console.log("Tiene coordenadas el vehículo id: " + id + "?");
-                        console.log(data.features);
+                        //console.log("Tiene coordenadas el vehículo id: " + id + "?");
+                        //console.log(data.features);
                         if (data.features != null) {
                             var format = new ol.format.GeoJSON({
                                 defaultDataProjection: 'EPSG:3857'
@@ -829,18 +892,18 @@ block content
                             var layer = map.getLayers().getArray()[layerposition];
 
                             if(layer == undefined){
-                                console.log('Genera una capa nueva, id:' + layerposition)
+                                //console.log('Genera una capa nueva, id:' + layerposition)
                                 createLayerById(id);
                             }
 
-                            console.log("Actualiza source!")
+                            //console.log("Actualiza source!")
                             layer.setSource(vectorSource);
 
                             // Actualiza la visualización de la capa
                             drawCurrentIdPosition(id, layer, layerposition);
 
                         }else {
-                            console.log("No tiene coordenadas");
+                            //console.log("No tiene coordenadas");
                             var style = createStyle();
 
                             styles.push(style);
@@ -889,10 +952,36 @@ block content
                     id_driver = 'No asignado.';
                 }
 
+                // Icono para el tipo de vehículo
+                var type_icon;
+                switch (type){
+                    case 'Coche':
+                        type_icon = 'car_icon.png';
+                        break;
+                    case 'Furgoneta':
+                        type_icon = 'van_icon.png';
+                        break;
+                    case 'Camión':
+                        type_icon = 'truck_icon.png';
+                        break;
+                    case 'Bicicleta':
+                        type_icon = 'bicycle_icon.png';
+                        break;
+                    case 'Motocicleta':
+                        type_icon = 'motorbike_icon.png';
+                        break;
+                    case 'Scooter Eléctrico':
+                        type_icon = 'electric_scooter_icon.png';
+                        break;
+                    default:
+                        type_icon = 'car_icon.png'
+                }
+
+
                 // Crea elementos HTML para cada vehículo
                 myItems.push("" +
                     "<div class='resultItem'>" +
-                        "<img class='list-thumbnail' src='/images/bicycle icon.png'>" +
+                        "<img class='list-thumbnail' src='/images/" + type_icon + "'>" +
                         "<div href='#" + id + "' class='details'>" +
                         "<div class='list-group-item-heading'><i class='fa fa-hashtag'></i>" + id + "</div>" +
                         "<div title='Conductor'><i class='glyphicon glyphicon-user'></i>" + id_driver + "</div>" +
@@ -918,14 +1007,14 @@ block content
             }
 
             $('#vehicles_results').html(myItems.join(''));
-            console.log('vehiculos creados: ')
-            console.log(vehiclesJSON);
+            //console.log('vehiculos creados: ')
+            //console.log(vehiclesJSON);
             updateFunctions();
         }
 
         // Función que solicita todos los vehículos almacenados en la BD
         function lanzaPeticionDrivers() {
-            console.log('Peticion enviada')
+            //console.log('Peticion enviada')
             peticion_http = new XMLHttpRequest();
             peticion_http.open('GET', ROOT + '/getDrivers/', true);
             peticion_http.send(null);
@@ -975,7 +1064,7 @@ block content
 
         // Función que dibuja la posición de la capa con el identificador especificado
         function drawCurrentIdPosition(id, layer, layerposition){
-            console.log('dibujar posición del punto actual de la capa con id: ' + id);
+            //console.log('dibujar posición del punto actual de la capa con id: ' + id);
             var vectorSource = layer.getSource();
             if (vectorSource != null) {
                 var features = vectorSource.getFeatures();
@@ -985,7 +1074,7 @@ block content
                 var endPoint = new ol.Feature(new ol.geom.Point(coordinatesEnd));
                 var style = styles[layerposition - OFFSET_DOWN];
                 endPoint.setStyle(style.endpoint);
-                console.log('layer.getVisible(): ' + layer.getVisible());
+                //console.log('layer.getVisible(): ' + layer.getVisible());
                 vectorSource.addFeature(endPoint);
             } else {
                 // muestra una alerta que indica si no hay posiciones registradas para el vhículo con id especificado
@@ -1006,7 +1095,7 @@ block content
         }
 
         function toggleOSMLayer(){
-            console.log("activa/desactiva capa OSM");
+            //console.log("activa/desactiva capa OSM");
             var layerOSM = map.getLayers().getArray()[0];
             var layerPNOA = map.getLayers().getArray()[1];
             var IGNBaseOrto = map.getLayers().getArray()[2];
@@ -1022,7 +1111,7 @@ block content
         }
 
         function togglePNOALayer() {
-            console.log("activa/desactiva capa PNOA");
+            //console.log("activa/desactiva capa PNOA");
             var layerOSM = map.getLayers().getArray()[0];
             var layerPNOA = map.getLayers().getArray()[1];
             var IGNBaseOrto = map.getLayers().getArray()[2];
@@ -1146,7 +1235,24 @@ block content
                     zoomToFeature(source);
                 }
             });
-            console.log('cursor');
+            //console.log('cursor');
+
+        }
+
+        function limpiaFiltros() {
+            $("#fecha_desde").val("");
+            $("#fecha_hasta").val("");
+
+
+            //Fechas por defecto
+            var ahora = new Date();
+            var fecha_ini = '20190901';  // fecha inicio 1 de septiembre de 2019
+            var fecha_fin = '' + ahora.getFullYear() + (ahora.getMonth() + 1) + ahora.getDate();  // fecha hasta hoy
+
+            peticion_http = new XMLHttpRequest();
+            theUrl = ROOT + '/time/' + fecha_ini + '/' + fecha_fin;
+            peticion_http.open('GET', theUrl, true);
+            peticion_http.send(null);
 
         }
 
@@ -1164,10 +1270,10 @@ block content
             initializeLayers();
 
             // Obtiene los conductores y los vehículos de la base de datos
-            console.log('Llamada a getDrivers()')
+            //console.log('Llamada a getDrivers()')
             getDrivers();
 
-            console.log('Llamada a createVehicleHTMLelements()');
+            //console.log('Llamada a createVehicleHTMLelements()');
             createVehicleHTMLelements();
 
 
@@ -1197,7 +1303,7 @@ block content
             function updatePosition() {
                 var d = new Date();
                 updateVehiclesPosition();
-                console.log('Actualizar posición en: ' + d.toLocaleTimeString());
+                //console.log('Actualizar posición en: ' + d.toLocaleTimeString());
             }
 
         });
@@ -1237,6 +1343,8 @@ block content
                             select.form-control(type="text" name="fuel")
                                 option(value="Diesel") Diesel
                                 option(value="Gasolina") Gasolina
+                                option(value="Electricidad") Electricidad
+                                option(value="Sin combustible") Sin combustible
                         .form-group
                             label Disponible
                             select.form-control(type="text" name="available")
@@ -1274,6 +1382,8 @@ block content
                             select.form-control(type="text" name="fuel" id="edit-vehicle-form-fuel")
                                 option(value="Diesel") Diesel
                                 option(value="Gasolina") Gasolina
+                                option(value="Electricidad") Electricidad
+                                option(value="Sin combustible") Sin combustible
                         .form-group
                             label Disponible
                             input.form-control(type="text" name="available" id="edit-vehicle-form-available")

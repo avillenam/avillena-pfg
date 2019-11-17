@@ -1,13 +1,13 @@
 //var Pool = require("pg").Pool;
 var pg = require("pg");
 
+//var conString = "postgres://postgres:postgres@localhost:5432/api";
+var conString = "postgres://wzkowhhekyvcbh:dbc37ca58c23fa2edf7ed4af8319e00316de9aaf1defbb8cac1fd86500704f6a@ec2-107-20-173-2.compute-1.amazonaws.com:5432/d2346t6en0926l";
+
 //Fechas por defecto
 var ahora = new Date();
 var fecha_ini = '20190901';  // fecha inicio 1 de septiembre de 2019
 var fecha_fin = '' + ahora.getFullYear() + (ahora.getMonth() + 1) + ahora.getDate();  // fecha hasta hoy
-
-//var conString = "postgres://postgres:postgres@localhost:5432/api";
-var conString = "postgres://wzkowhhekyvcbh:dbc37ca58c23fa2edf7ed4af8319e00316de9aaf1defbb8cac1fd86500704f6a@ec2-107-20-173-2.compute-1.amazonaws.com:5432/d2346t6en0926l";
 
 /*
 const db = require('./public/javascripts/constants');
@@ -82,7 +82,7 @@ const getPositionByDriver = (request, response) => {
 
 const getPositionByVehicle = (request, response) => {
     // pool.query('SELECT st_astext(the_geom) FROM position WHERE id_vehicle=' + parseInt(request.params.id_vehicle) + ' ORDER BY gid ASC', (error, results) => {
-    pool.query("SELECT row_to_json(fc) FROM ( SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) As features FROM ( SELECT 'Feature' As type, ST_AsGeoJSON(lg.the_geom)::json As geometry, id_vehicle, id_driver, origin, destiny, \"comments\", date_registry As properties FROM \"position\" AS lg WHERE id_vehicle=" + parseInt(request.params.id_vehicle) + " AND date_registry between to_date('" + fecha_ini + "','YYYYMMDD') and to_date('" + fecha_fin + "','YYYYMMDD')  order by date_registry ASC) AS f ) As fc;",
+    pool.query("SELECT row_to_json(fc) FROM ( SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) As features FROM ( SELECT 'Feature' As type, ST_AsGeoJSON(lg.the_geom)::json As geometry, id_vehicle, id_driver, origin, destiny, comments, date_registry As properties FROM position AS lg WHERE id_vehicle=" + parseInt(request.params.id_vehicle) + " AND TO_DATE(TO_CHAR(date_registry, 'DDMMYYYY'),'DDMMYYYY') between to_date('" + fecha_ini + "','YYYYMMDD') and to_date('" + fecha_fin + "','YYYYMMDD')  order by date_registry ASC) AS f ) As fc;",
     //pool.query("SELECT row_to_json(fc) FROM ( SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) As features FROM ( SELECT 'Feature' As type, ST_AsGeoJSON(lg.the_geom)::json As geometry, id_vehicle, id_driver, origin, destiny, \"comments\", date_registry As properties FROM \"position\" AS lg WHERE id_vehicle=" + parseInt(request.params.id_vehicle) + " order by date_registry ASC) AS f ) As fc;",
         (error, results) => {
             if (error) {
@@ -330,9 +330,10 @@ const vehicleDriver = (request, response) => {
             status.id_vehicle = id_vehicle;
             //var myString = JSON.stringify(login_code);
 
-            response.send({ msg: 'Establecida relación conductor (' + id_driver + ') - vehículo(' + id_vehicle + ')  de manera satisfactoria.'});
+            //response.send({ msg: 'Establecida relación conductor (' + id_driver + ') - vehículo(' + id_vehicle + ')  de manera satisfactoria.'});
             //response.status(200).json(status);
-            //response.redirect("/map");
+            //response.status(200);
+            response.redirect("/map");
         })
 }
 
