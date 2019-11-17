@@ -243,8 +243,8 @@ tr {
 }
 
 .logoHeader {
-    padding: 15px 10px 12px 52px;
-    height: 34px;
+    padding: 5px 5px 5px 50px;
+    height: 40px;
     position: relative;
 }
 .details>div>:first-child {

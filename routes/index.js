@@ -4,7 +4,7 @@ var bodyParser = require('body-parser');
 
 const db = require('../queries');
 
-// var pg = require("pg");
+// var pg = require("pg");position-vehicle
 // var conString = "postgres://postgres:postgres@localhost:5432/api";
 // var conString = "postgres://wzkowhhekyvcbh:dbc37ca58c23fa2edf7ed4af8319e00316de9aaf1defbb8cac1fd86500704f6a@ec2-107-20-173-2.compute-1.amazonaws.com:5432/d2346t6en0926l";
 
@@ -141,6 +141,10 @@ router.post('/driverAvailability', db.availabilityDriver);
 
 // Establece available para el vehiculo
 router.post('/vehicleAvailability', db.availabilityVehicle);
+
+// Establece la fecha de registro que se quiere mostrar
+router.get('/time/:fecha_ini/:fecha_fin', db.dateRegistryToShow);
+
 
 /*
 //Delete vehicleDriver relation by id_vehicle
