@@ -50,15 +50,15 @@ block content
                             div.group
                                 h5 Fecha de registro
                                 div.panel-body
-                                    div.form-group(autocomplete="off")
+                                    div.form-group
                                         div.advanced-calendar-label
                                             label Fecha inicial:
                                             p.input-group
-                                                input#fecha_desde.datepicker.form-control(type="text" placeholder="Desde")
+                                                input#fecha_desde.datepicker.form-control(type="text" placeholder="Desde" autocomplete="off")
                                         div.advanced-calendar-label
                                             label Fecha final:
                                             p.input-group
-                                                input#fecha_hasta.datepicker.form-control(type="text" placeholder="Hasta")
+                                                input#fecha_hasta.datepicker.form-control(type="text" placeholder="Hasta" autocomplete="off")
     p#warning(style='background:#f80; color:#fff; padding:.5em; display:none; float:left;')  Ugh! it&apos;s a bit long!
         br
         p "Try to go on searching..."
