@@ -48,15 +48,15 @@ block content
                     #tab_filtros.tab-pane.fade
                         div#filtros
                             div.group
-                                h5 Fecha de registro
+                                h4 Fecha de registro
                                 div.panel-body
                                     div.form-group
                                         div.advanced-calendar-label
-                                            label Fecha inicial:
+                                            label Desde:
                                             p.input-group
                                                 input#fecha_desde.datepicker.form-control(type="text" placeholder="Desde" autocomplete="off")
                                         div.advanced-calendar-label
-                                            label Fecha final:
+                                            label Hasta:
                                             p.input-group
                                                 input#fecha_hasta.datepicker.form-control(type="text" placeholder="Hasta" autocomplete="off")
     p#warning(style='background:#f80; color:#fff; padding:.5em; display:none; float:left;')  Ugh! it&apos;s a bit long!
@@ -396,6 +396,13 @@ block content
                 peticion_http.open('GET', theUrl , true);
                 peticion_http.send(null);
             }
+
+            // Cambiar la simbología en función del día
+            // https://viglino.github.io/ol-ext/examples/style/map.style.gpxline.html
+
+            //Actualiza mapa
+            updateVehiclesPosition();
+
         }
 
 
@@ -748,6 +755,7 @@ block content
 
                         // TODO: dibujar splines en vez de LineString (https://openlayers.org/en/latest/examples/turf.html?q=turf)
                         // http://jsfiddle.net/ntkuqe2a/
+                        // https://viglino.github.io/ol-ext/examples/geom/map.geom.cspline.html
                         // Crea una entidad con las coordenadas del LineString
 
                         var feature = new ol.Feature({
@@ -870,6 +878,7 @@ block content
 
                             // TODO: dibujar splines en vez de LineString (https://openlayers.org/en/latest/examples/turf.html?q=turf)
                             // http://jsfiddle.net/ntkuqe2a/
+                            // https://viglino.github.io/ol-ext/examples/geom/map.geom.cspline.html
                             // creates a feature with the coordinates of the linestring
                             var feature = new ol.Feature({
                                 geometry: new ol.geom.LineString(lineStringCoords)
