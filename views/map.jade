@@ -734,6 +734,23 @@ block content
                             lineStringCoords.length
                         );
 
+                        console.log('lineStringCoords del vehículo id: ' + id);
+                        console.log(lineStringCoords);
+
+                        var line = {
+                            "type": "Feature",
+                            "properties": {
+                                "stroke": "#f00"
+                            },
+                            "geometry": {
+                                "type": "LineString",
+                                "coordinates": lineStringCoords
+                            }
+                        };
+
+                        console.log('line');
+                        console.log(line);
+
                         // almacena en la variable 'rotation' el angulo entre dos puntos
                         var rotation = extractRotation(twoCoordinates);
 
@@ -758,25 +775,27 @@ block content
                         // https://viglino.github.io/ol-ext/examples/geom/map.geom.cspline.html
                         // Crea una entidad con las coordenadas del LineString
 
+                        var curved = turf.bezier(line);
+                        curved.properties = {stroke: '#0f0'};
+                        var geojsonObject = {
+                            "type": "FeatureCollection",
+                            "features": [line, curved]
+                        };
+
+                        // Crea un nuevo objeto Vector para alojar las entidades
+                        var vectorSource = new ol.source.Vector({
+                            features: (new ol.format.GeoJSON()).readFeatures(geojsonObject, {featureProjection: 'EPSG:3857'})
+                        });
+
+                        /*
                         var feature = new ol.Feature({
                             geometry: new ol.geom.LineString(lineStringCoords)
                         })
 
                         console.log('feature geometry');
                         console.log(feature);
-
-                        /*
-                        // Introduce la librería turf
-                        var curved = turf.bezier(feature);
-
-                        console.log('curved geometry');
-                        console.log(curved);
                         */
 
-                        // Crea un nuevo objeto Vector para alojar las entidades
-                        var vectorSource = new ol.source.Vector({
-                            features: [feature]
-                        });
 
                         /*
                         var feature = new ol.Feature({
@@ -1306,7 +1325,7 @@ block content
             }
 
             // lanza las peticiones en bucle cada 5 segundos
-            setInterval(updatePosition, 5000);
+            //setInterval(updatePosition, 5000);
 
             // Función que llama la función que actualiza la posicion de los vehículos
             function updatePosition() {
