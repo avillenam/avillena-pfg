@@ -779,12 +779,12 @@ block content
                         curved.properties = {stroke: '#0f0'};
                         var geojsonObject = {
                             "type": "FeatureCollection",
-                            "features": [line, curved]
+                            // "features": [line, curved]
+                            "features": [curved]
                         };
 
                         curved.properties = { tension: 1,
-                                            pointsPerSeg: 100,
-                                            normalize: true};
+                                            pointsPerSeg: 100};
 
                         // Crea un nuevo objeto Vector para alojar las entidades
                         var vectorSource = new ol.source.Vector({
@@ -903,6 +903,25 @@ block content
                             // http://jsfiddle.net/ntkuqe2a/
                             // https://viglino.github.io/ol-ext/examples/geom/map.geom.cspline.html
                             // creates a feature with the coordinates of the linestring
+                            var curved = turf.bezier(line);
+                            curved.properties = {stroke: '#0f0'};
+                            var geojsonObject = {
+                                "type": "FeatureCollection",
+                                // "features": [line, curved]
+                                "features": [curved]
+                            };
+
+                            curved.properties = {
+                                tension: 1,
+                                pointsPerSeg: 100
+                            };
+
+                            // Crea un nuevo objeto Vector para alojar las entidades
+                            var vectorSource = new ol.source.Vector({
+                                features: (new ol.format.GeoJSON()).readFeatures(geojsonObject)
+                            });
+
+                            /*
                             var feature = new ol.Feature({
                                 geometry: new ol.geom.LineString(lineStringCoords)
                             })
@@ -911,6 +930,8 @@ block content
                             var vectorSource = new ol.source.Vector({
                                 features: [feature]
                             });
+
+                            */
 
                             // Añade punto de inicio a partir de la geometría linestring
                             var coordinatesStart = features[0].getGeometry().getCoordinates();
@@ -1329,7 +1350,7 @@ block content
             }
 
             // lanza las peticiones en bucle cada 5 segundos
-            //setInterval(updatePosition, 5000);
+            setInterval(updatePosition, 5000);
 
             // Función que llama la función que actualiza la posicion de los vehículos
             function updatePosition() {
