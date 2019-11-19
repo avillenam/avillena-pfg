@@ -782,9 +782,13 @@ block content
                             "features": [line, curved]
                         };
 
+                        curved.properties = { tension: 1,
+                                            pointsPerSeg: 100,
+                                            normalize: true};
+
                         // Crea un nuevo objeto Vector para alojar las entidades
                         var vectorSource = new ol.source.Vector({
-                            features: (new ol.format.GeoJSON()).readFeatures(geojsonObject, {featureProjection: 'EPSG:3857'})
+                            features: (new ol.format.GeoJSON()).readFeatures(geojsonObject)
                         });
 
                         /*
