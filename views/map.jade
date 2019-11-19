@@ -776,11 +776,11 @@ block content
                         // https://viglino.github.io/ol-ext/examples/geom/map.geom.cspline.html
                         // Crea una entidad con las coordenadas del LineString
 
-                        var curved = turf.bezier(line);
+                        var curved = turf.bezierSpline(line,{ sharpness: .5 });
                         // curved.properties = {stroke: '#0f0'};
 
-                        curved.properties = { tension: 1,
-                            pointsPerSeg: 100};
+                        // curved.properties = { tension: 1,
+                        //     pointsPerSeg: 100};
 
                         // Objeto geoJSON FeaatureCollection ya spline
                         var geojsonObject = {
@@ -920,13 +920,13 @@ block content
                             // http://jsfiddle.net/ntkuqe2a/
                             // https://viglino.github.io/ol-ext/examples/geom/map.geom.cspline.html
                             // creates a feature with the coordinates of the linestring
-                            var curved = turf.bezier(line);
+                            var curved = turf.bezierSpline(line,{ sharpness: .5 });
                             // curved.properties = {stroke: '#0f0'};
 
-                            curved.properties = {
-                                tension: 1,
-                                pointsPerSeg: 100
-                            };
+                            // curved.properties = {
+                            //     tension: 1,
+                            //     pointsPerSeg: 100
+                            // };
 
                             // Objeto geoJSON FeaatureCollection ya spline
                             var geojsonObject = {
