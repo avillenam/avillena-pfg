@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="6d5f1f38-e885-4881-8791-5da2d0a04345" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/map.jade" beforeDir="false" afterPath="$PROJECT_DIR$/views/map.jade" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -34,8 +33,17 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/views/map.jade">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="348">
-              <caret line="748" column="29" lean-forward="true" selection-start-line="748" selection-start-column="29" selection-end-line="748" selection-end-column="29" />
+            <state relative-caret-position="-536">
+              <caret line="849" column="62" lean-forward="true" selection-start-line="849" selection-start-column="62" selection-end-line="849" selection-end-column="62" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/views/layout.jade">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="340">
+              <caret line="20" column="61" selection-start-line="20" selection-start-column="61" selection-end-line="20" selection-end-column="61" />
             </state>
           </provider>
         </entry>
@@ -76,9 +84,9 @@
       <find>ol.interaction</find>
       <find>style</find>
       <find>Style</find>
-      <find>turf</find>
       <find>motor</find>
       <find>5000</find>
+      <find>turf</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -102,9 +110,10 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/routes/index.js" />
+        <option value="$PROJECT_DIR$/views/layout.jade" />
+        <option value="$PROJECT_DIR$/views/map.jade" />
         <option value="$PROJECT_DIR$/queries.js" />
         <option value="$PROJECT_DIR$/public/javascripts/constants.js" />
-        <option value="$PROJECT_DIR$/views/map.jade" />
       </list>
     </option>
   </component>
@@ -271,7 +280,7 @@
       <workItem from="1573240655433" duration="7581000" />
       <workItem from="1573579703488" duration="3125000" />
       <workItem from="1573909740381" duration="19301000" />
-      <workItem from="1574057177474" duration="8924000" />
+      <workItem from="1574057177474" duration="11131000" />
     </task>
     <task id="LOCAL-00001" summary="version 2.5.1">
       <created>1572271103995</created>
@@ -420,11 +429,25 @@
       <option name="project" value="LOCAL" />
       <updated>1574146711224</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="version 2.9.2">
+      <created>1574147444695</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1574147444695</updated>
+    </task>
+    <task id="LOCAL-00023" summary="version 2.9.3">
+      <created>1574148753469</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1574148753469</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="8924000" />
+    <option name="totallyTimeSpent" value="11131000" />
   </component>
   <component name="TodoView" selected-index="1">
     <todo-panel id="selected-file">
@@ -437,7 +460,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info id="npm" side_tool="true" />
       <window_info id="Favorites" side_tool="true" />
@@ -526,7 +548,9 @@
     <MESSAGE value="version 2.8.5" />
     <MESSAGE value="version 2.9" />
     <MESSAGE value="version 2.9.1" />
-    <option name="LAST_COMMIT_MESSAGE" value="version 2.9.1" />
+    <MESSAGE value="version 2.9.2" />
+    <MESSAGE value="version 2.9.3" />
+    <option name="LAST_COMMIT_MESSAGE" value="version 2.9.3" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/.gitignore">
@@ -549,6 +573,13 @@
     <entry file="file://$PROJECT_DIR$/public/images/masculino_icon.png">
       <provider selected="true" editor-type-id="images" />
     </entry>
+    <entry file="file://$PROJECT_DIR$/views/layout.jade">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="340">
+          <caret line="20" column="61" selection-start-line="20" selection-start-column="61" selection-end-line="20" selection-end-column="61" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/queries.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="85">
@@ -568,8 +599,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/views/map.jade">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="348">
-          <caret line="748" column="29" lean-forward="true" selection-start-line="748" selection-start-column="29" selection-end-line="748" selection-end-column="29" />
+        <state relative-caret-position="-536">
+          <caret line="849" column="62" lean-forward="true" selection-start-line="849" selection-start-column="62" selection-end-line="849" selection-end-column="62" />
         </state>
       </provider>
     </entry>
