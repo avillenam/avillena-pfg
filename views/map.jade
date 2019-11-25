@@ -695,8 +695,9 @@ block content
                         radius: 10,
                         angle: Math.PI / 4
                     })
-                }),
-                'singlepoint': new ol.style.Style({
+                })
+                /*
+                ,'singlepoint': new ol.style.Style({
                     image: new ol.style.Circle({
                         radius: 5,
                         //fill: new ol.style.Fill({color: 'black'}),
@@ -706,6 +707,8 @@ block content
                         })
                     })
                 })
+
+                 */
             };
             return style;
         }
@@ -863,12 +866,14 @@ block content
                         vectorSource.addFeature(startPoint);
 
                         // Añade los puntos intermedios a la línea
+                        /*
                         for (var i in lineStringCoords) {
                             //console.log('Punto: ' + i + ', ' + lineStringCoords[i]);
                             var point = new ol.Feature(new ol.geom.Point(lineStringCoords[i]));
                             point.setStyle(style.singlepoint);
                             vectorSource.addFeature(point);
                         }
+                         */
 
                         // Establece la fuente para la capa
                         layer.setSource(vectorSource);
@@ -997,12 +1002,15 @@ block content
                             vectorSource.addFeature(startPoint);
 
                             // Añade los puntos intermedios a la línea
+                            /*
                             for (var i in lineStringCoords) {
                                 //console.log('Punto: ' + i + ', ' + lineStringCoords[i]);
                                 var point = new ol.Feature(new ol.geom.Point(lineStringCoords[i]));
                                 point.setStyle(style.singlepoint);
                                 vectorSource.addFeature(point);
                             }
+
+                             */
                             // Variable para almacenar la capa actual
                             var layer = map.getLayers().getArray()[layerposition];
 
