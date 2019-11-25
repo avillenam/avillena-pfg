@@ -59,6 +59,7 @@ block content
                                             label Hasta:
                                             p.input-group
                                                 input#fecha_hasta.datepicker.form-control(type="text" placeholder="Hasta" autocomplete="off")
+                                        button.btn.btn-success(type='button' onclick="fechaRegistroHoy()" title="Registro hoy") Fecha de Registro HOY
     p#warning(style='background:#f80; color:#fff; padding:.5em; display:none; float:left;')  Ugh! it&apos;s a bit long!
         br
         p "Try to go on searching..."
@@ -96,15 +97,19 @@ block content
         // const root = 'https://avillena-pfg.herokuapp.com';
         */
 
-        //-------******CONSTANTS*******-------
-        // offsets for vehicles layers
+        //-------******CONSTANTES*******-------
+        // offsets para las capas de vehículos
         const OFFSET_UP = 3;
         const OFFSET_DOWN = 3;
 
 
-        // variable that will house vehicles JSON features
+        // Variable que alojará las entidades 'Vehicle' en JSON
         var vehiclesJSON = {};
         var numVehicles = 0;
+
+        // Variable que alojará las entidades 'Driver' en JSON
+        var driversJSON = {};
+        var numDrivers = 0;
 
         var projection = ol.proj.get('EPSG:3857');
         var projectionExtent = projection.getExtent();
@@ -405,8 +410,19 @@ block content
 
         }
 
+        // establecer como fecha de registro a mostrar 'Hoy'
+        function fechaRegistroHoy(){
+            console.log('Lanzamiento de fechaRegistroHoy()')
+            var today = new Date();
+            var dd = today.getDate();
+            var mm = today.getMonth() + 1; //Enero es 0
+            var year = today.getFullYear();
 
+            $("#fecha_desde").val(year + '/' + mm + '/' + dd);
+            $("#fecha_hasta").val(year + '/' + mm + '/' + dd);
 
+            lanzaPeticionFecha();
+        }
 
 
 
@@ -489,7 +505,8 @@ block content
             theUrl = ROOT + '/getDrivers';
 
             // petición http para obtener los conductores
-            var driversJSON = JSON.parse(httpGet(theUrl));
+            driversJSON = JSON.parse(httpGet(theUrl));
+            numDrivers = driversJSON.length;
 
             //console.log('driversJSON: ' + JSON.stringify(driversJSON));
 
@@ -497,7 +514,7 @@ block content
             var myItems = [], $drivers_results = $('#drivers_results');
 
             // Buclque para crear cada elemento en el panel del visualizador
-            for (var i = 0; i < driversJSON.length; i++) {
+            for (var i = 0; i < numDrivers; i++) {
                 //console.log('i: ' + i);
                 var id = driversJSON[i]['id_driver'];
                 var name = driversJSON[i]['name'];
@@ -512,7 +529,7 @@ block content
                 // Petición de vehículo asignado
                 theUrlVehicle = ROOT + '/vehicleByIdDriver/' + id;
                 var response =  httpGet(theUrlVehicle);
-                console.log('Ha hecho la petición: ' + theUrlVehicle );
+                //console.log('Ha hecho la petición: ' + theUrlVehicle );
                 //console.log('response: ' + response );
                 var resVehicleAssigned = JSON.parse(response);
                 //console.log('resVehicleAssigned: ' + resVehicleAssigned);
@@ -526,9 +543,11 @@ block content
                     var vehicle = resVehicleAssigned[0];
                     id_vehicle = vehicle['id_vehicle'] + ': ' + vehicle['brand'] + ' ' + vehicle['model'];
                     var vehicle_type = vehicle['type'];
+                    var visibility = vehicle['visibility'];
                     //console.log(id_vehicle);
                 } else {
                     id_vehicle = 'No asignado.';
+                    var visibility = false;
                     //console.log(id_vehicle);
                 }
 
@@ -569,6 +588,14 @@ block content
                         vehicle_mini_icon = 'f5de'
                 }
 
+                // Establece el icono de visibilidad
+                var eye = '';
+                if (visibility == 'false') {
+                    eye = 'fa-eye';
+                } else {
+                    eye = 'fa-eye-slash';
+                }
+
                 // Crea un elemento por cada conductor
                 myItems.push("" +
                     "<div class='resultItem'>" +
@@ -589,7 +616,8 @@ block content
                     ">" +
                         "<i class='fa fa-edit'></i>" +
                     "</a>" +
-                    "<a class='btn visualize-driver' data-id=" + id + ">Visualize</a>" +
+                    "<a class='btn visualize-vehicle' title='Mostrar vehículo asociado' data-id=" + id + "><i class='fas " + eye + "'></i></a>" +
+                    "<a class='btn zoom-vehicle' title='Zoom a vehículo asociado' data-id=" + id + "><i class='fas fa-bullseye'></i></a>" +
                     "</div>" +
                     "</div>");
 
@@ -666,6 +694,16 @@ block content
                         points: 4,
                         radius: 10,
                         angle: Math.PI / 4
+                    })
+                }),
+                'singlepoint': new ol.style.Style({
+                    image: new ol.style.Circle({
+                        radius: 5,
+                        //fill: new ol.style.Fill({color: 'black'}),
+                        stroke: new ol.style.Stroke({
+                            color: color,
+                            width: 1.5
+                        })
                     })
                 })
             };
@@ -824,6 +862,14 @@ block content
                         // Añade las nuevas entidades al mapa
                         vectorSource.addFeature(startPoint);
 
+                        // Añade los puntos intermedios a la línea
+                        for (var i in lineStringCoords) {
+                            //console.log('Punto: ' + i + ', ' + lineStringCoords[i]);
+                            var point = new ol.Feature(new ol.geom.Point(lineStringCoords[i]));
+                            point.setStyle(style.singlepoint);
+                            vectorSource.addFeature(point);
+                        }
+
                         // Establece la fuente para la capa
                         layer.setSource(vectorSource);
 
@@ -942,18 +988,6 @@ block content
                                 features: (new ol.format.GeoJSON()).readFeatures(geojsonObject)
                             });
 
-                            /*
-                            var feature = new ol.Feature({
-                                geometry: new ol.geom.LineString(lineStringCoords)
-                            })
-
-                            // Crea un nuevo objeto Vector para alojar las entidades
-                            var vectorSource = new ol.source.Vector({
-                                features: [feature]
-                            });
-
-                            */
-
                             // Añade punto de inicio a partir de la geometría linestring
                             var coordinatesStart = features[0].getGeometry().getCoordinates();
                             var startPoint = new ol.Feature(new ol.geom.Point(coordinatesStart));
@@ -962,6 +996,13 @@ block content
                             // Añade nuevas entidades al mapa
                             vectorSource.addFeature(startPoint);
 
+                            // Añade los puntos intermedios a la línea
+                            for (var i in lineStringCoords) {
+                                //console.log('Punto: ' + i + ', ' + lineStringCoords[i]);
+                                var point = new ol.Feature(new ol.geom.Point(lineStringCoords[i]));
+                                point.setStyle(style.singlepoint);
+                                vectorSource.addFeature(point);
+                            }
                             // Variable para almacenar la capa actual
                             var layer = map.getLayers().getArray()[layerposition];
 
@@ -1074,8 +1115,8 @@ block content
                         ">" +
                         "<i class='fa fa-edit'></i>" +
                         "</a>" +
-                        "<a class='btn visualize-vehicle' title='Show vehicle' data-id=" + id + "><i class='fas " + eye + "'></i></a>" +
-                        "<a class='btn zoom-vehicle' title='Zoom to vehicle' data-id=" + id + "><i class='fas fa-bullseye'></i></a>" +
+                        "<a class='btn visualize-vehicle' title='Mostrar vehículo' data-id=" + id + "><i class='fas " + eye + "'></i></a>" +
+                        "<a class='btn zoom-vehicle' title='Zoom a vehículo' data-id=" + id + "><i class='fas fa-bullseye'></i></a>" +
                         "</div>" +
                     "</div>");
             }
@@ -1283,12 +1324,12 @@ block content
                 if($(this).children("i").attr('class')=='fas fa-eye-slash'){    // capa es 'visible', la cambia a 'no visible'
                     $(this).children("i").removeClass('fa-eye-slash');
                     $(this).children("i").addClass('fa-eye');
-                    $(this).children("i").attr('title','Show vehicle');
+                    $(this).children("i").attr('title','Mostrar vehículo');
                     vehiclesJSON[pos].visibility='false'
                 }else if($(this).children("i").attr('class')=='fas fa-eye'){    // capa es 'no visible', la cambia a 'visible'
                     $(this).children("i").removeClass('fa-eye');
                     $(this).children("i").addClass('fa-eye-slash');
-                    $(this).children("i").attr('title', 'Hide vehicle');
+                    $(this).children("i").attr('title', 'Ocultar vehículo');
                     vehiclesJSON[pos].visibility = 'true'
                 }
 
@@ -1335,7 +1376,7 @@ block content
             vehiclesJSON = getVehicles();   //TODO: aquí es donde falla y altera la posición de los objetos en el array JSON al hacer la llamada a getVehicles
             numVehicles = vehiclesJSON.length;
 
-            // Establece la visibilidad a 'false' en cada elemento de tipo 'vehñiculo para establecer la clase 'fa-eye'
+            // Establece la visibilidad a 'false' en cada elemento de tipo 'vehículo para establecer la clase 'fa-eye'
             for(var i = 0; i < numVehicles ; i++){
                 vehiclesJSON[i].visibility = 'false';
             }
@@ -1375,7 +1416,7 @@ block content
 
             // Función que llama la función que actualiza la posicion de los vehículos
             function updatePosition() {
-                var d = new Date();
+                //var d = new Date();
                 updateVehiclesPosition();
                 //console.log('Actualizar posición en: ' + d.toLocaleTimeString());
             }
@@ -1422,8 +1463,8 @@ block content
                         .form-group
                             label Disponible
                             select.form-control(type="text" name="available")
-                                option(value="true") True
-                                option(value="false") False
+                                option(value="true") Verdadero
+                                option(value="false") Falso
                     .modal-footer
                         button.btn.btn-default(type='button', data-dismiss='modal') Cerrar
                         input.btn.btn-primary(type='submit' value="Guardar")

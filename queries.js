@@ -1,7 +1,7 @@
 //var Pool = require("pg").Pool;
 var pg = require("pg");
 
-// var conString = "postgres://postgres:postgres@localhost:5432/api";
+//var conString = "postgres://postgres:postgres@localhost:5432/api";
 var conString = "postgres://wzkowhhekyvcbh:dbc37ca58c23fa2edf7ed4af8319e00316de9aaf1defbb8cac1fd86500704f6a@ec2-107-20-173-2.compute-1.amazonaws.com:5432/d2346t6en0926l";
 
 //Fechas por defecto
@@ -89,7 +89,7 @@ const getPositionByVehicle = (request, response) => {
                 throw error
             }
             response.status(200).json(results.rows[0].row_to_json);
-            console.log(results.rows[0].row_to_json);
+            //console.log(results.rows[0].row_to_json);
         })
 }
 
