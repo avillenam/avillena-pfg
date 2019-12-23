@@ -51,9 +51,9 @@ const insertPosition = (request, response) => {
     // console.log(typeof (coord_x));
     // console.log(typeof (coord_y));
 
-    pool.query('INSERT INTO position (id_vehicle, id_driver, coord_x, coord_y, origin, destiny, comments, date_registry, the_geom, accuracy, address, speed) ' +
-        'VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, localtimestamp, ' +
-        'st_geometryfromtext(\'POINT(' + coord_x + ' ' + coord_y + ')\',4326), round($8::numeric, 2))',
+    pool.query('INSERT INTO position (id_vehicle, id_driver, coord_x, coord_y, origin, destiny, comments, accuracy, address, speed, date_registry, the_geom) ' +
+        'VALUES ($1, $2, $3, $4, $5, $6, $7, round($8::numeric, 2), $9, round($10::numeric, 2), localtimestamp, ' +
+        'st_geometryfromtext(\'POINT(' + coord_x + ' ' + coord_y + ')\',4326))',
         [id_vehicle, id_driver, coord_x, coord_y, origin, destiny, comments, accuracy, address, speed], (error, results) => {
             if (error) {
                 throw error
