@@ -44,7 +44,7 @@ function getNow() {
 const insertPosition = (request, response) => {
     //var date_registry = getNow();
     //to_timestamp('2019/06/20 17:15:27','YYYY/MM/DD HH24:MI:SS');
-    const {id_vehicle, id_driver, coord_x, coord_y, origin, destiny, comments, accuracy} = request.body;
+    const {id_vehicle, id_driver, coord_x, coord_y, origin, destiny, comments, accuracy, address, speed} = request.body;
     console.log(request.body);
     // console.log(coord_x);
     // console.log(coord_y);
@@ -52,9 +52,9 @@ const insertPosition = (request, response) => {
     // console.log(typeof (coord_y));
 
     pool.query('INSERT INTO position (id_vehicle, id_driver, coord_x, coord_y, origin, destiny, comments, date_registry, the_geom, accuracy) ' +
-        'VALUES ($1, $2, $3, $4, $5, $6, $7, localtimestamp, ' +
+        'VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, localtimestamp, ' +
         'st_geometryfromtext(\'POINT(' + coord_x + ' ' + coord_y + ')\',4326), round($8::numeric, 2))',
-        [id_vehicle, id_driver, coord_x, coord_y, origin, destiny, comments, accuracy], (error, results) => {
+        [id_vehicle, id_driver, coord_x, coord_y, origin, destiny, comments, accuracy, address, speed], (error, results) => {
             if (error) {
                 throw error
             }
