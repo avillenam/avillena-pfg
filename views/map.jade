@@ -14,9 +14,9 @@ block content
     //    "Loading data..."
     div(style="display: none;")
         #marker(title="Marker")
-    div.btn-group(role="group" style="position: absolute; right: 3em; top: 60px;")
-        div.btn.btn-default.selected#mapOSM(type="button" style="visibility:visible; background: url(/images/mapOSM.jpg)" onclick="toggleOSMLayer()") OSM
-        div.btn.btn-default#mapPNOA(type="button" style="visibility:visible; background: url(/images/mapPNOA.jpg)" onclick="togglePNOALayer()") PNOA
+    //div.btn-group(role="group" style="position: absolute; right: 3em; top: 60px;")
+    //    div.btn.btn-default.selected#mapOSM(type="button" style="visibility:visible; background: url(/images/mapOSM.jpg)" onclick="toggleOSMLayer()") OSM
+    //    div.btn.btn-default#mapPNOA(type="button" style="visibility:visible; background: url(/images/mapPNOA.jpg)" onclick="togglePNOALayer()") PNOA
     div.col-md-1(style="position: absolute; right: 1em; bottom: 60px;")
         a.btn.btn-primary.btn-block(type="button" data-toggle="modal" data-target="#formVehicle" style="position: absolute; right: 3em; ") Añade Vehiculo
     div.col-md-1(style="position: absolute; right: 1em; bottom: 95px;")
@@ -27,9 +27,8 @@ block content
         i.fa.fa-bars
     div#alerts
     div#tools
-        header.logoHeader Panel de búsqueda
-            span(style="position:absolute; right:2em;")
-                button.btn-xs.btn.btn-warning(type='button' onclick="limpiaFiltros()" title="limpiar filtros de búsqueda") Limpiar filtros
+        header.logoHeader
+                h3 Panel de búsqueda
         .panel.with-nav-tabs.panel-default
             .panel-heading
                 ul.nav.nav-tabs
@@ -39,10 +38,22 @@ block content
                         a#tab-drivers(href='#tab_drivers_results', data-toggle='tab') Conductores
                     li
                         a#tab-filtros(href='#tab_filtros', data-toggle='tab') Filtros
+                    li
+                        a#tab-info(href='#tab_info', data-toggle='tab') Info
+                    li
+                        a#tab-rutas(href='#tab_rutas', data-toggle='tab') Rutas
             .panel-body
                 .tab-content
                     #tab_vehicles_results.tab-pane.fade.in.active
-                        div#vehicles_results
+                        div.p-0.card-body
+                            table.table-dashboard.mb-0.table.table-borderless.vehicles-table#tabla-vehiculos
+                                thead.bg-light
+                                    tr
+                                        th Icono
+                                        th Nº
+                                        th Vehículo
+                                        th Velocidad
+                                tbody#vehicles_results
                     #tab_drivers_results.tab-pane.fade
                         div#drivers_results
                     #tab_filtros.tab-pane.fade
@@ -60,6 +71,8 @@ block content
                                             p.input-group
                                                 input#fecha_hasta.datepicker.form-control(type="text" placeholder="Hasta" autocomplete="off")
                                         button.btn.btn-success(type='button' onclick="fechaRegistroHoy()" title="Registro hoy") Fecha de Registro HOY
+                                    span(style="right:2em;")
+                                        button.btn-xs.btn.btn-warning(type='button' onclick="limpiaFiltros()" title="limpiar filtros de búsqueda") Limpiar filtros
     p#warning(style='background:#f80; color:#fff; padding:.5em; display:none; float:left;')  Ugh! it&apos;s a bit long!
         br
         p "Try to go on searching..."
@@ -97,95 +110,16 @@ block content
         // const root = 'https://avillena-pfg.herokuapp.com';
         */
 
-        //-------******CONSTANTES*******-------
-        // offsets para las capas de vehículos
-        const OFFSET_UP = 3;
-        const OFFSET_DOWN = 3;
-
-
         // Variable que alojará las entidades 'Vehicle' en JSON
         var vehiclesJSON = {};
         var numVehicles = 0;
+        var ultimasPosicionesVehiculos = {};
 
         // Variable que alojará las entidades 'Driver' en JSON
         var driversJSON = {};
         var numDrivers = 0;
 
-        var projection = ol.proj.get('EPSG:3857');
-        var projectionExtent = projection.getExtent();
-        var size = ol.extent.getWidth(projectionExtent) / 256;
-        var resolutions = new Array(14);
-        var matrixIds = new Array(14);
-        for (var z = 0; z < 22; ++z) {
-            // generate resolutions and matrixIds arrays for this WMTS
-            resolutions[z] = size / Math.pow(2, z);
-            matrixIds[z] = z;
-        };
 
-        var styleFunction = function (id) {
-            return styles[id];
-        };
-
-        var tileGrid = new ol.tilegrid.WMTS({
-            origin: ol.extent.getTopLeft(projectionExtent),
-            resolutions: resolutions,
-            matrixIds: matrixIds
-        });
-
-
-        // Layer for draw single vector features
-        const source = new ol.source.Vector;
-        var vectorLayer = new ol.layer.Vector({
-            source: source
-        });
-
-        // var wmsSource = new TileWMS({
-        //     url: 'http://ows.mundialis.de/services/service?',
-        //     params: {'LAYERS': 'TOPO-OSM-WMS'},
-        //     crossOrigin: 'anonymous'
-        // });
-
-        var osm = new ol.layer.Tile({
-            title: "OSM",
-            baseLayer: true,
-            visible: true,
-            source: new ol.source.OSM()
-        });
-
-
-        var pnoaWmts = new ol.layer.Tile({
-            title: "PNOA",
-            baseLayer: true,
-            opacity: 1,
-            visible: false,
-            source: new ol.source.WMTS({
-                url: 'http://www.ign.es/wmts/pnoa-ma',
-                layer: 'OI.OrthoimageCoverage',
-                matrixSet: 'EPSG:3857',
-                format: 'image/jpeg',
-                projection: projection,
-                tileGrid: tileGrid,
-                style: 'default',
-                wrapX: true
-            })
-        });
-
-        var IGNBaseOrto = new ol.layer.Tile({
-            title: "IGNBaseOrto",
-            baseLayer: true,
-            opacity: 1,
-            visible: false,
-            source: new ol.source.WMTS({
-                url: 'http://www.ign.es/wmts/ign-base',
-                layer: 'IGNBaseOrto',
-                matrixSet: 'EPSG:3857',
-                format: 'image/png',
-                projection: projection,
-                tileGrid: tileGrid,
-                style: 'default',
-                wrapX: true
-            })
-        });
 
         /**
          * Elements that make up the popup.
@@ -219,8 +153,6 @@ block content
         };
         */
 
-
-
         // The vector graph
         var graph = new ol.source.Vector({
             url: '/data/main_roads.geojson',
@@ -241,14 +173,15 @@ block content
         var result = new ol.source.Vector();
 
         var map = new ol.Map({
-            layers: [osm, pnoaWmts, IGNBaseOrto],
             target: 'map',
             controls: ol.control.defaults().extend([
                 new ol.control.ScaleLine({
                     className: 'ol-scale-line',
                     target: document.getElementById('scale-line')
-                })
+                }),
+                new ol.control.LayerPopup()
             ]),
+            layers: [pnoaWmts, osm, americano, interministerial, olistat, sigpac, IGNBaseOrto],
             //overlays: [overlay],
             interactions: ol.interaction.defaults({ altShiftDragRotate:false, pinchRotate:false }),
             view: new ol.View({
@@ -406,7 +339,7 @@ block content
             // https://viglino.github.io/ol-ext/examples/style/map.style.gpxline.html
 
             //Actualiza mapa
-            updateVehiclesPosition();
+            //updateVehiclesPosition();
 
         }
 
@@ -486,19 +419,6 @@ block content
 
          */
 
-        function borraPantalla() {
-        }
-
-        function capitalizeFirstLetter(string) {
-            return string.charAt(0).toUpperCase() + string.slice(1);
-        }
-
-        function httpGet(theUrl) {
-            var xmlHttp = new XMLHttpRequest();
-            xmlHttp.open("GET", theUrl, false); // false for synchronous request
-            xmlHttp.send(null);
-            return xmlHttp.responseText;
-        }
 
         function getDrivers() {
             // consulta a lanzarse
@@ -599,7 +519,7 @@ block content
                 // Crea un elemento por cada conductor
                 myItems.push("" +
                     "<div class='resultItem'>" +
-                    "<img class='list-thumbnail' src='/images/" + gender_icon + "'>" +
+                    "<img class='list-thumbnail' src='/images/" + gender_icon + "' width='50'>" +
                     "<div href='#" + id + "' class='details'>" +
                     "<div class='list-group-item-heading'><i class='fa fa-hashtag'></i>" + id + "</div>" +
                     "<div title='Email'><i class='fa fa-at'></i>" + email + "</div>" +
@@ -625,16 +545,10 @@ block content
             $('#drivers_results').html(myItems.join(''));
             //console.log('Conductores capturados: ')
             //console.log(driversJSON);
-            updateFunctions();
+            //updateFunctions();
         }
 
-        // Obtiene todos los vehículos
-        function getVehicles() {
-            //console.log('peticion enviada');
-            theUrl = ROOT + '/getVehicles';
-            vehiclesJSON = JSON.parse(httpGet(theUrl));
-            return vehiclesJSON;
-        }
+
 
         // Devuelve la posición de la capa según el 'id' del vehículo
         function layerPosition(id) {
@@ -647,31 +561,8 @@ block content
             return position;
         }
 
-        // Estilo para cada vehículo
-        var colors = ['#F0F8FF', '#FAEBD7', '#00FFFF', '#7FFFD4', '#F0FFFF', '#F5F5DC', '#FFE4C4',
-            '#000000', '#FFEBCD', '#0000FF', '#8A2BE2', '#A52A2A', '#DEB887', '#5F9EA0', '#7FFF00',
-            '#D2691E', '#FF7F50', '#6495ED', '#FFF8DC', '#DC143C', '#00FFFF', '#00008B', '#008B8B',
-            '#B8860B', '#A9A9A9', '#006400', '#BDB76B', '#8B008B', '#556B2F', '#FF8C00', '#9932CC',
-            '#8B0000', '#E9967A', '#8FBC8F', '#483D8B', '#2F4F4F', '#00CED1', '#9400D3', '#FF1493',
-            '#00BFFF', '#696969', '#1E90FF', '#B22222', '#FFFAF0', '#228B22', '#FF00FF', '#DCDCDC',
-            '#F8F8FF', '#FFD700', '#DAA520', '#808080', '#008000', '#ADFF2F', '#F0FFF0', '#FF69B4',
-            '#CD5C5C', '#4B0082', '#FFFFF0', '#F0E68C', '#E6E6FA', '#FFF0F5', '#7CFC00', '#FFFACD',
-            '#ADD8E6', '#F08080', '#E0FFFF', '#FAFAD2', '#90EE90', '#D3D3D3', '#FFB6C1', '#FFA07A',
-            '#20B2AA', '#87CEFA', '#778899', '#B0C4DE', '#FFFFE0', '#00FF00', '#32CD32', '#FAF0E6',
-            '#FF00FF', '#800000', '#66CDAA', '#0000CD', '#BA55D3', '#9370D8', '#3CB371', '#7B68EE',
-            '#00FA9A', '#48D1CC', '#C71585', '#191970', '#F5FFFA', '#FFE4E1', '#FFE4B5', '#FFDEAD',
-            '#000080', '#FDF5E6', '#808000', '#688E23', '#FFA500', '#FF4500', '#DA70D6', '#EEE8AA',
-            '#98FB98', '#AFEEEE', '#D87093', '#FFEFD5', '#FFDAB9', '#CD853F', '#FFC0CB', '#DDA0DD',
-            '#B0E0E6', '#800080', '#FF0000', '#BC8F8F', '#4169E1', '#8B4513', '#FA8072', '#F4A460',
-            '#2E8B57', '#FFF5EE', '#A0522D', '#C0C0C0', '#87CEEB', '#6A5ACD', '#708090', '#FFFAFA',
-            '#00FF7F', '#4682B4', '#D2B48C', '#008080', '#D8BFD8', '#FF6347', '#40E0D0', '#EE82EE',
-            '#F5DEB3', '#FFFFFF', '#F5F5F5', '#FFFF00', '#9ACD32'];
-        function generateColor() {
-            // generate random color for each object
-            var R = Math.floor(Math.random() * 256);
-            return colors[Math.floor(Math.random() * colors.length)];
-            //console.log('array styles creado: ' + styles.length + ' styles');
-        }
+
+
         /*
         function generateColor() {
             // generate random color for each object
@@ -754,14 +645,7 @@ block content
             }
         }
 
-        // Extrae la rotación entre dos coordenadas
-        var extractRotation = function extractRotation(twoCoordinates) {
-            var start = twoCoordinates[0];
-            var end = twoCoordinates[1];
-            var dx = end[0] - start[0];
-            var dy = end[1] - start[1];
-            return Math.atan2(dy, dx);
-        };
+
 
 
         // Crea una cpa para cada vehículo
@@ -832,7 +716,7 @@ block content
 
                         // Crea la capa
                         var layer = new ol.layer.Vector({
-                            visible: false,
+                            visible: true,
                             zIndex: 1,
                             style: style.linestring
                         });
@@ -851,8 +735,8 @@ block content
                         // Objeto geoJSON FeaatureCollection ya spline
                         var geojsonObject = {
                             "type": "FeatureCollection",
-                            "features": [line, curved]
-                            //"features": [curved]
+                            //"features": [line, curved]
+                            "features": [line]
                         };
 
 
@@ -947,12 +831,12 @@ block content
                         //console.log(data.features);
                         if (data.features != null) {
                             var format = new ol.format.GeoJSON({
-                                defaultDataProjection: 'EPSG:3857'
+                                //defaultDataProjection: 'EPSG:3857'
                             });
 
                             var features = format.readFeatures(data, {
-                                dataProjection: 'EPSG:4326',
-                                featureProjection: 'EPSG:3857'
+                                //dataProjection: 'EPSG:4326',
+                                //featureProjection: 'EPSG:3857'
                             });
 
                             // Crea un Polygon a partir de puntos del vehículo
@@ -1006,8 +890,8 @@ block content
                             // Objeto geoJSON FeaatureCollection ya spline
                             var geojsonObject = {
                                 "type": "FeatureCollection",
-                                "features": [line, curved]
-                                //"features": [curved]
+                                //"features": [line, curved]
+                                "features": [line]
                             };
 
 
@@ -1070,23 +954,13 @@ block content
         function createVehicleHTMLelements(){
             var myItems = [], $vehicles_results = $('#vehicles_results');
 
-            for (var i = 0; i < vehiclesJSON.length; i++) {
-                var id = vehiclesJSON[i]['id_vehicle'];
-                var type = vehiclesJSON[i]['type'];
-                var brand = vehiclesJSON[i]['brand'];
-                var model = vehiclesJSON[i]['model'];
-                var passengers = vehiclesJSON[i]['passengers'];
-                var fuel = vehiclesJSON[i]['fuel'];
-                var available = vehiclesJSON[i]['available'];
-                var visibility = vehiclesJSON[i]['visibility'];
-
-                // Establece el icono de visibilidad
-                var eye = '';
-                if(visibility == 'false'){
-                    eye = 'fa-eye';
-                } else {
-                    eye = 'fa-eye-slash';
-                }
+            for (var i = 0; i < ultimasPosicionesVehiculos.features.length; i++) {
+                var feature = ultimasPosicionesVehiculos.features[i].properties;
+                var id = feature['id_vehicle'];
+                var type = feature['vehicleType'];
+                var available = feature['available'];
+                var matricula = feature['matricula'];
+                var velocidad = feature['speed'];
 
                 // Petición del conductor asignado
                 theUrlDriver = ROOT + '/driverByIdVehicle/' + id;
@@ -1127,30 +1001,20 @@ block content
 
                 // Crea elementos HTML para cada vehículo
                 myItems.push("" +
-                    "<div class='resultItem'>" +
-                        "<img class='list-thumbnail' src='/images/" + type_icon + "'>" +
-                        "<div href='#" + id + "' class='details'>" +
-                        "<div class='list-group-item-heading'><i class='fa fa-hashtag'></i>" + id + "</div>" +
-                        "<div title='Conductor'><i class='glyphicon glyphicon-user'></i>" + id_driver + "</div>" +
-                        "<div title='Marca, modelo'><i class='glyphicon glyphicon-triangle-right'></i>" + brand + ", " + model + "</div>" +
-                        "<div title='Pasageros'><i class='fa fa-users'></i>" + passengers + "</div>" +
-                        "<div title='Fuel'><i class='fa fa-gas-pump'></i>" + fuel + "</div>" +
-                        "<a title='Borrar vehiculo' class='deleteIcon delete-vehicle' data-id=" + id + "><i class='fa fa-trash'></i></a>" +
-                        "<a title='Editar Vehiculo' class='editIcon edit-vehicle' data-toggle='modal' data-target='#editFormVehicle' " +
-                        " data-id=" + parseInt(id) +
-                        " data-type=" + type +
-                        " data-brand=" + brand +
-                        " data-model=" + model +
-                        " data-passengers=" + passengers +
-                        " data-fuel=" + fuel +
-                        " data-available=" + available +
-                        ">" +
-                        "<i class='fa fa-edit'></i>" +
-                        "</a>" +
-                        "<a class='btn visualize-vehicle' title='Mostrar vehículo' data-id=" + id + "><i class='fas " + eye + "'></i></a>" +
-                        "<a class='btn zoom-vehicle' title='Zoom a vehículo' data-id=" + id + "><i class='fas fa-bullseye'></i></a>" +
-                        "</div>" +
-                    "</div>");
+                    "<tr>" +
+                        "<td class='align-items-center align-middle' title='Icono'>"+
+                            "<img class='list-thumbnail' src='/images/" + type_icon + "' width=\"50\">" +
+                        "</td>"+
+                        "<td class='align-middle' title='Número'>" + id + "</td>" +
+                        "<td class='align-middle'>" +
+                            "<div>" +
+                                "<h4 class='mb-1 font-weight-semi-bold' title='Matrícula vehículo'>" + matricula + "</h4>" +
+                                "<p class='mb-0' title='Conductor'>"+ id_driver + "</p>" +
+                            "</div>" +
+                        "</td>" +
+                        "<td class='align-middle' title='Velocidad'>" + velocidad + " km/h</td>" +
+                    "</tr>");
+
             }
 
             $('#vehicles_results').html(myItems.join(''));
@@ -1384,6 +1248,14 @@ block content
             });
             //console.log('cursor');
 
+            // Marca y selecciona el elemento de la tabla de vehículos
+            $('#tabla-vehiculos tbody tr').click(function () {
+                $(this).addClass('bg-success').siblings().removeClass('bg-success');
+                var id = $(this).find("td[title='Número']").text();
+                //$(this).find("td>img").css("filter","hue-rotate(180deg)");
+                console.log('Elemento seleccionado: ' + id);
+            });
+
         }
 
         function limpiaFiltros() {
@@ -1405,28 +1277,28 @@ block content
 
         $(document).ready(function() {
             // Crea estilos para los vehículos
-            vehiclesJSON = getVehicles();   //TODO: aquí es donde falla y altera la posición de los objetos en el array JSON al hacer la llamada a getVehicles
+            vehiclesJSON = getVehicles();
             numVehicles = vehiclesJSON.length;
 
-            // Establece la visibilidad a 'false' en cada elemento de tipo 'vehículo para establecer la clase 'fa-eye'
-            for(var i = 0; i < numVehicles ; i++){
-                vehiclesJSON[i].visibility = 'false';
-            }
+            // Obtiene las últimas posiciones de todos los vehículos y los dibuja en el mapa
+            ultimasPosicionesVehiculos = obtienePosicionActualVehiculos(vehiclesJSON);
+
+            //Crea la capa Vector para albergar las posiciones de los vehículos
+            creaCapaPosicionVehiculos(ultimasPosicionesVehiculos);
 
             // Inicializa las capas de los vehículos
-            initializeLayers();
+            //initializeLayers();
 
             // Obtiene los conductores y los vehículos de la base de datos
-            //console.log('Llamada a getDrivers()')
             getDrivers();
 
             //console.log('Llamada a createVehicleHTMLelements()');
             createVehicleHTMLelements();
 
-
             // Destello de la posicion actual de los vehículos visibles
-            setInterval(blinkPoint, 500);
+            //setInterval(blinkPoint, 500);
             function blinkPoint() {
+                /*
                 for (var i = 0; i < numVehicles; i++) {
                     if(map.getLayers().getArray()[i + OFFSET_UP].getSource() != null){
                         if (map.getLayers().getArray()[i + OFFSET_UP].getVisible() == true) {
@@ -1441,214 +1313,24 @@ block content
                     }
                 }
             map.renderSync();
+                */
             }
 
             // lanza las peticiones en bucle cada 5 segundos
-            setInterval(updatePosition, 5000);
+            //setInterval(updatePosition, 5000);
 
             // Función que llama la función que actualiza la posicion de los vehículos
+            /*
             function updatePosition() {
                 //var d = new Date();
                 updateVehiclesPosition();
                 //console.log('Actualizar posición en: ' + d.toLocaleTimeString());
             }
 
+             */
+
         });
 
-        //})
-
-    // Modal ADD Vehicle
-    #formVehicle.modal.fade(tabindex='-1', role='dialog', aria-labelledby='formVehicleLabel')
-        .modal-dialog(role='document')
-            .modal-content
-                form(method="post" action="/vehicle")
-                    .modal-header
-                        button.close(type='button', data-dismiss='modal', aria-label='Close')
-                            span(aria-hidden='true') ×
-                        h4#myVehicleLabel.modal-title Añade Vehículo
-                    .modal-body
-                        .form-group
-                            label Tipo de Vehículo
-                            select.form-control(type="text" name="type")
-                                option(value="Coche") Coche
-                                option(value="Furgoneta") Furgoneta
-                                option(value="Camión") Camión
-                                option(value="Bicicleta") Bicicleta
-                                option(value="Motocicleta") Motocicleta
-                                option(value="Scooter Eléctrico") Scooter Eléctrico
-                        .form-group
-                            label Marca
-                            input.form-control(type="text" name="brand")
-                        .form-group
-                            label Modelo
-                            input.form-control(type="text" name="model")
-                        .form-group
-                            label Número de pasajeros
-                            input.form-control(type="number" name="passengers")
-                        .form-group
-                            label Tipo de combustible
-                            select.form-control(type="text" name="fuel")
-                                option(value="Diesel") Diesel
-                                option(value="Gasolina") Gasolina
-                                option(value="Electricidad") Electricidad
-                                option(value="Sin combustible") Sin combustible
-                        .form-group
-                            label Disponible
-                            select.form-control(type="text" name="available")
-                                option(value="true") Verdadero
-                                option(value="false") Falso
-                    .modal-footer
-                        button.btn.btn-default(type='button', data-dismiss='modal') Cerrar
-                        input.btn.btn-primary(type='submit' value="Guardar")
-
-    // Modal EDITAR Vehiculo
-    #editFormVehicle.modal.fade(tabindex='-1', role='dialog', aria-labelledby='editFormVehicleLabel')
-        .modal-dialog(role='document')
-            .modal-content
-                form(method="post" action="/editVehicle")
-                    input(type="hidden" id="edit-vehicle-form-id" name="id")
-                    .modal-header
-                        button.close(type='button', data-dismiss='modal', aria-label='Cerrar')
-                            span(aria-hidden='true') ×
-                        h4#myEditVehicleLabel.modal-title Editar Vehiculo
-                    .modal-body
-                        .form-group
-                            label Tipo de Vehículo
-                            input.form-control(type="text" name="type" id="edit-vehicle-form-type")
-                        .form-group
-                            label Marca
-                            input.form-control(type="text" name="brand" id="edit-vehicle-form-brand")
-                        .form-group
-                            label Modelo
-                            input.form-control(type="text" name="model" id="edit-vehicle-form-model")
-                        .form-group
-                            label Número de Pasajeros
-                            input.form-control(type="number" name="passengers" id="edit-vehicle-form-passengers")
-                        .form-group
-                            label Tipo de Comnbustible
-                            select.form-control(type="text" name="fuel" id="edit-vehicle-form-fuel")
-                                option(value="Diesel") Diesel
-                                option(value="Gasolina") Gasolina
-                                option(value="Electricidad") Electricidad
-                                option(value="Sin combustible") Sin combustible
-                        .form-group
-                            label Disponible
-                            input.form-control(type="text" name="available" id="edit-vehicle-form-available")
-
-                            //select.form-control(type="text" name="available" id="edit-vehicle-form-available")
-                            //    option(value="true") True
-                            //    option(value="false") False
-                    .modal-footer
-                        button.btn.btn-default(type='button', data-dismiss='modal') Close
-                        input.btn.btn-primary(type='submit' value="Guardar")
 
 
-    // Modal AÑADIR Conductor
-    #formDriver.modal.fade(tabindex='-1', role='dialog', aria-labelledby='formDriverLabel')
-        .modal-dialog(role='document')
-            .modal-content
-                form(method="post" action="/driver")
-                    .modal-header
-                        button.close(type='button', data-dismiss='modal', aria-label='Cerrar')
-                            span(aria-hidden='true') ×
-                        h4#myDriverLabel.modal-title Add Driver
-                    .modal-body
-                        .form-group
-                            label Email
-                            input.form-control(type="email" name="email")
-                        .form-group
-                            label Contraseña
-                            input.form-control(type="password" name="password")
-                        .form-group
-                            label Nombre
-                            input.form-control(type="text" name="name")
-                        .form-group
-                            label Apellido
-                            input.form-control(type="text" name="surname")
-                        .form-group
-                            label Fecha de nacimiento
-                            input.form-control(type="date" name="birthdate")
-                        .form-group
-                            label Género
-                            select.form-control(type="text" name="genre")
-                                option(value="Masculino") Masculino
-                                option(value="Femenino") Femenino
-                        .form-group
-                            label Número de móvil
-                            input.form-control(type="tel" name="mobile_number")
-                            //.form-group
-                            //    label Available
-                            //    select.form-control(type="text" name="available")
-                            //        option(value="true") True
-                            //        option(value="false") False
-                    .modal-footer
-                        button.btn.btn-default(type='button', data-dismiss='modal') Cerrar
-                        input.btn.btn-primary(type='submit' value="Guardar")
-    // Modal EDIT Driver
-    #editFormDriver.modal.fade(tabindex='-1', role='dialog', aria-labelledby='editFormDriverLabel')
-        .modal-dialog(role='document')
-            .modal-content
-                form(method="post" action="/editDriver")
-                    input(type="hidden" id="edit-form-id" name="id")
-                    .modal-header
-                        button.close(type='button', data-dismiss='modal', aria-label='Close')
-                            span(aria-hidden='true') ×
-                        h4#myEditDriverLabel.modal-title Editar Conductor
-                    .modal-body
-                        .form-group
-                            label Email
-                            input.form-control(type="email" name="email" id="edit-form-email")
-                        //TODO: Añadir comprobación de password
-                        .form-group
-                            label Contraseña
-                            input.form-control(type="password" name="password" id="edit-form-password")
-                        .form-group
-                            label Nombre
-                            input.form-control(type="text" name="name" id="edit-form-name")
-                        .form-group
-                            label Apellido
-                            input.form-control(type="text" name="surname" id="edit-form-surname")
-                        .form-group
-                            label Fecha de nacimiento
-                            input.form-control(type="text" name="birthdate" id="edit-form-birthdate")
-                        .form-group
-                            label Género
-                            input.form-control(type="text" name="genre" id="edit-form-genre")
 
-                            //select.form-control(type="text" name="genre" id="edit-form-genre")
-                            //    option(value="Male") Male
-                            //    option(value="Female") Female
-                        .form-group
-                            label Número de móvil
-                            input.form-control(type="tel" name="mobile_number" id="edit-form-mobile_number")
-                            //.form-group
-                            //    label Available
-                            //    input.form-control(type="text" name="available" id="edit-form-available")
-
-                            //select.form-control(type="text" name="available" id="edit-form-available")
-                            //    option(value="true") true
-                            //    option(value="false") false
-                    .modal-footer
-                        button.btn.btn-default(type='button', data-dismiss='modal') Close
-                        input.btn.btn-primary(type='submit' value="Save")
-
-    // Modal ADD Vehicle-Driver relation
-    #formVehicleDriver.modal.fade(tabindex='-1', role='dialog', aria-labelledby='formVehicleDriverLabel')
-        .modal-dialog(role='document')
-            .modal-content
-                form(method="post" action="/vehicleDriver")
-                    .modal-header
-                        button.close(type='button', data-dismiss='modal', aria-label='Close')
-                            span(aria-hidden='true') ×
-                        h4#myVehicleDriverLabel.modal-title Establece relación Conductor-Vehículo
-                    .modal-body
-                        // TODO:para cada uno de los siguientes hacer un "select" obteniendolos de una consulta a la base de datos.
-                        .form-group
-                            label Conductor
-                            input.form-control(type="text" name="id_driver")
-                        .form-group
-                            label Vehículo
-                            input.form-control(type="text" name="id_vehicle")
-                    .modal-footer
-                        button.btn.btn-default(type='button', data-dismiss='modal') Close
-                        input.btn.btn-primary(type='submit' value="Save")

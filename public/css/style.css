@@ -1,9 +1,13 @@
 html, body {
     height: 100%;
     margin: 0;
-    font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+    font: 12px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
+.ol-zoom{
+    left: unset !important;
+    right: 0.5em;
+}
 
 #map {
     position: absolute;
@@ -196,7 +200,7 @@ a {
 }
 
 tr {
-    font-size: 10px;
+    font-size: 12px;
 }
 
 #alerts{
@@ -207,8 +211,8 @@ tr {
 .toggleSettings {
     display: block;
     position: absolute;
-    left: 40px;
-    top: 60px;
+    left: 0px;
+    top: 50px;
     color: #fff;
     background: #22232d;
     border-radius: 40px;
@@ -226,10 +230,14 @@ tr {
     z-index: 1;
     color: #868fa0;
     position: fixed;
-    left: 40px;
-    top: 60px;
+    left: 0px;
+    top: 50px;
     box-shadow: 0 2px 5px #000;
     display: none;
+}
+
+.ol-layerswitcher-popup{
+    top: 4.5em !important;
 }
 
 .toggleSettings i {
@@ -243,7 +251,7 @@ tr {
 }
 
 .logoHeader {
-    padding: 5px 5px 5px 50px;
+    padding: 0px 5px 0px 50px;
     height: 40px;
     position: relative;
 }
@@ -315,21 +323,21 @@ tr {
 }
 
 .resultItem {
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     position: relative;
     -webkit-transition: all .4s ease;
     transition: all .4s ease;
-    padding: 10px;
+    padding: 5px;
     background: hsla(0,0%,100%,.05);
     align-items: center;
 }
 
 .resultItem>:first-child {
-    width: 110px;
+    /*width: 60px;*/
 }
 
 .resultItem>* {
-    width: calc(100% - 140px);
+    /*width: calc(100% - 140px);*/
     margin-right: 0;
     display: inline-block;
     vertical-align: top;
@@ -341,7 +349,7 @@ tr {
 }
 
 .resultItem i{
-    font-size: 15px;
+    font-size: 10px;
 }
 
 #marker {
@@ -366,4 +374,39 @@ tr {
 .loading .fa {
     vertical-align: middle;
     font-size: 1.5em;
+}
+
+.mb-0, .my-0 {
+    margin-bottom: 0!important;
+}
+
+.mb-1, .my-1 {
+    margin-bottom: .25rem!important;
+}
+
+.table {
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+.align-items-center {
+    -webkit-box-align: center!important;
+    align-items: center!important;
+}
+
+.align-middle {
+    vertical-align: middle!important;
+}
+
+.font-weight-semi-bold {
+    font-weight: 600!important;
+}
+
+.vehicles-table > tbody > tr:hover > td,
+.vehicles-table > tbody > tr:hover > th {
+    background-color: #CFF5FF;
 }

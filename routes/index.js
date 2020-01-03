@@ -83,52 +83,59 @@ router.get('/test', function (req, res, next) {
     })
 });
 
+//********************************************************
 //Interaction with database through GET, POST, PUT, DELETE
-
-//Create a driver
+//********************************************************
+//Crea un conductor
 router.post('/driver', db.createDriver);
 
-//Edit driver
+//Edita conductor
 router.post('/editDriver', db.editDriver);
 
-//Create a vehicle
+//Crea un vehículo
 router.post('/vehicle', db.createVehicle);
 
-//Edit vehicle
+//Edita Vehículo
 router.post('/editVehicle', db.editVehicle);
 
-//Insert a position
+//Inserta una posición
 router.post('/position', db.insertPosition);
 
-//Select vehicles
+//Selecciona vehículos
 router.get('/getVehicles', db.getVehicles);
 
-//Select vehicle by id_vehicle
+//Selecciona vehículo por id_vehicle
 router.get('/vehicle/:id_vehicle', db.getVehicleById);
 
-//Delete vehicle by id_driver
+//Elimina vehículo por id_driver
 router.delete('/deleteVehicle/:id_vehicle', db.deleteVehicleById);
 
-//Select driver by id_vehicle
+//Selecciona conductor por id_vehicle
 router.get('/driverByIdVehicle/:id_vehicle', db.getDriverByIdVehicle);
 
-//Select drivers
+//Seleccioma conmductores
 router.get('/getDrivers', db.getDrivers);
 
-//Select driver by id_driver
+//Selecciona conductor por id_driver
 router.get('/driver/:id_driver', db.getDriverById);
 
-//Delete driver by id_driver
+//Elimina conductor por id_driver
 router.delete('/deleteDriver/:id_driver', db.deleteDriverById);
 
-//Select vehicle by id_driver
+//Selecciona vehículo a través de id_driver
 router.get('/vehicleByIdDriver/:id_driver', db.getVehicleByIdDriver);
 
-//Get position by driver
+//Obtiene la posicion de un conductor
 router.get('/position-driver/:id_driver', db.getPositionByDriver);
 
-//Select position of vehicle
+//Selecciona la posicion de un vehículo
 router.get('/position-vehicle/:id_vehicle', db.getPositionByVehicle);
+
+//Obtiene los dos últimos puntos para un id_vehicle dado
+router.get('/getLastPositionByVehicle/:id_vehicle', db.getLastPositionByVehicle);
+
+//Obtiene el último punto, con sus atributos, para un id_vehicle dado
+router.get('/getCurrentPointByVehicle/:id_vehicle', db.getCurrentPointByVehicle);
 
 //Establecer relación driver-vehicle
 router.post('/vehicleDriver', db.vehicleDriver);
@@ -145,19 +152,8 @@ router.post('/vehicleAvailability', db.availabilityVehicle);
 // Establece la fecha de registro que se quiere mostrar
 router.get('/time/:fecha_ini/:fecha_fin', db.dateRegistryToShow);
 
-
-/*
-//Delete vehicleDriver relation by id_vehicle
-router.post('/deleteVehicleDriverByIdVehicle/:id_vehicle', db.deleteVehicleDriverByIdVehicle);
-
-//Delete vehicleDriver relation by id_driver
-router.post('/deleteVehicleDriverByIdDriver/:id_driver', db.deleteVehicleDriverByIdDriver);
-
- */
-
 //Login Driver in system
 router.get('/loginDriver/:email/:password', db.loginDriver);
-
 
 router.post('/pos', function (req, res) {
     console.log(res);

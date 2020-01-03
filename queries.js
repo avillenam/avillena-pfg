@@ -82,7 +82,7 @@ const getPositionByDriver = (request, response) => {
 
 const getPositionByVehicle = (request, response) => {
     // pool.query('SELECT st_astext(the_geom) FROM position WHERE id_vehicle=' + parseInt(request.params.id_vehicle) + ' ORDER BY gid ASC', (error, results) => {
-    pool.query("SELECT row_to_json(fc) FROM ( SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) As features FROM ( SELECT 'Feature' As type, ST_AsGeoJSON(lg.the_geom)::json As geometry, id_vehicle, id_driver, origin, destiny, comments, date_registry As properties FROM position AS lg WHERE id_vehicle=" + parseInt(request.params.id_vehicle) + " AND TO_DATE(TO_CHAR(date_registry, 'DDMMYYYY'),'DDMMYYYY') between to_date('" + fecha_ini + "','YYYYMMDD') and to_date('" + fecha_fin + "','YYYYMMDD')  order by date_registry ASC) AS f ) As fc;",
+    pool.query("SELECT row_to_json(fc) FROM ( SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) As features FROM ( SELECT 'Feature' As type, ST_AsGeoJSON(lg.the_geom)::json As geometry, id_vehicle, id_driver, origin, destiny, comments, date_registry, accuracy, address, speed FROM position AS lg WHERE id_vehicle=" + parseInt(request.params.id_vehicle) + " AND TO_DATE(TO_CHAR(date_registry, 'DDMMYYYY'),'DDMMYYYY') between to_date('" + fecha_ini + "','YYYYMMDD') and to_date('" + fecha_fin + "','YYYYMMDD')  order by date_registry ASC) AS f ) As fc;",
     //pool.query("SELECT row_to_json(fc) FROM ( SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) As features FROM ( SELECT 'Feature' As type, ST_AsGeoJSON(lg.the_geom)::json As geometry, id_vehicle, id_driver, origin, destiny, \"comments\", date_registry As properties FROM \"position\" AS lg WHERE id_vehicle=" + parseInt(request.params.id_vehicle) + " order by date_registry ASC) AS f ) As fc;",
         (error, results) => {
             if (error) {
@@ -92,6 +92,34 @@ const getPositionByVehicle = (request, response) => {
             //console.log(results.rows[0].row_to_json);
         })
 }
+
+const getLastPositionByVehicle = (request, response) => {
+    // pool.query('SELECT st_astext(the_geom) FROM position WHERE id_vehicle=' + parseInt(request.params.id_vehicle) + ' ORDER BY gid ASC', (error, results) => {
+    //pool.query("SELECT row_to_json(f) FROM (SELECT " + parseInt(request.params.id_vehicle) + " as id_vehicle, ST_AsGeoJSON(ST_Multi(ST_Union(fc.the_geom)))::json AS geometry FROM (SELECT * from position WHERE id_vehicle=" + parseInt(request.params.id_vehicle) +" ORDER BY date_registry DESC LIMIT 2) AS fc)AS f;",
+    pool.query("SELECT row_to_json(f) FROM (SELECT " + parseInt(request.params.id_vehicle) + " as id_vehicle, ST_AsGeoJSON(ST_Multi(ST_Union(ST_Transform(fc.the_geom,3857))))::json AS geometry FROM (SELECT * from position WHERE id_vehicle=" + parseInt(request.params.id_vehicle) +" ORDER BY date_registry DESC LIMIT 2) AS fc)AS f;",
+        //pool.query("SELECT row_to_json(fc) FROM ( SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) As features FROM ( SELECT 'Feature' As type, ST_AsGeoJSON(lg.the_geom)::json As geometry, id_vehicle, id_driver, origin, destiny, \"comments\", date_registry As properties FROM \"position\" AS lg WHERE id_vehicle=" + parseInt(request.params.id_vehicle) + " order by date_registry ASC) AS f ) As fc;",
+        (error, results) => {
+            if (error) {
+                throw error
+            }
+            response.status(200).json(results.rows[0].row_to_json);
+            //console.log(results.rows[0].row_to_json);
+        })
+}
+
+const getCurrentPointByVehicle = (request, response) => {
+    // pool.query('SELECT st_astext(the_geom) FROM position WHERE id_vehicle=' + parseInt(request.params.id_vehicle) + ' ORDER BY gid ASC', (error, results) => {
+    pool.query("SELECT row_to_json(fc) FROM (SELECT array_to_json(array_agg(f)) As feature FROM (SELECT 'Feature' As type, ST_AsGeoJSON(ST_Transform(lg.the_geom,3857))::json As geometry, id_vehicle, id_driver, date_registry, accuracy, address, speed FROM position AS lg WHERE id_vehicle=" + parseInt(request.params.id_vehicle) + " order by date_registry DESC LIMIT 1) AS f) As fc;",
+        //pool.query("SELECT row_to_json(fc) FROM ( SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) As features FROM ( SELECT 'Feature' As type, ST_AsGeoJSON(lg.the_geom)::json As geometry, id_vehicle, id_driver, origin, destiny, \"comments\", date_registry As properties FROM \"position\" AS lg WHERE id_vehicle=" + parseInt(request.params.id_vehicle) + " order by date_registry ASC) AS f ) As fc;",
+        (error, results) => {
+            if (error) {
+                throw error
+            }
+            response.status(200).json(results.rows[0].row_to_json);
+            //console.log(results.rows[0].row_to_json);
+        })
+}
+
 
 
 const createDriver = (request, response) => {
@@ -283,7 +311,7 @@ const deleteVehicleById = (request, response) => {
             throw error
         }
         response.status(200).json(results.rows);
-        console.log(results.rows[0]);
+        //console.log(results.rows[0]);
     });
 }
 
@@ -294,18 +322,18 @@ const getDriverByIdVehicle = (request, response) => {
             throw error
         }
         response.status(200).json(results.rows);
-        console.log(results.rows[0]);
+        //console.log(results.rows[0]);
     })
 }
 
 
 const getVehicleByIdDriver = (request, response) => {
-    pool.query('SELECT a.id_driver, b.id_vehicle, b.type, b.brand, b.model, b.passengers, b.fuel, b.available, a.date_registry FROM vehicle_driver a, vehicles b WHERE a.id_vehicle=b.id_vehicle AND a.id_driver=' + request.params.id_driver, (error, results) => {
+    pool.query('SELECT a.id_driver, b.id_vehicle, b.matricula, b.type, b.brand, b.model, b.passengers, b.fuel, b.available, a.date_registry FROM vehicle_driver a, vehicles b WHERE a.id_vehicle=b.id_vehicle AND a.id_driver=' + request.params.id_driver, (error, results) => {
         if (error) {
             throw error
         }
         response.status(200).json(results.rows);
-        console.log(results.rows);
+        //console.log(results.rows);
     })
 }
 
@@ -313,7 +341,7 @@ const getVehicleByIdDriver = (request, response) => {
 const vehicleDriver = (request, response) => {
     const {id_vehicle, id_driver} = request.body;
 
-    console.log(request.body);
+    //console.log(request.body);
 
     pool.query('INSERT INTO vehicle_driver (id_vehicle, id_driver, date_registry) ' +
         'VALUES ($1, $2, localtimestamp)',
@@ -340,7 +368,7 @@ const vehicleDriver = (request, response) => {
 const deleteVehicleDriver = (request, response) => {
     const {id_driver} = request.body;
 
-    console.log(request.body);
+    //console.log(request.body);
 
     pool.query('DELETE FROM vehicle_driver WHERE id_driver=$1;',
         [id_driver], (error, results) => {
@@ -364,7 +392,7 @@ const deleteVehicleDriver = (request, response) => {
 
 const availabilityDriver = (request, response) => {
     const {id_driver, availability} = request.body;
-    console.log(id_driver + ', ' + availability);
+    //console.log(id_driver + ', ' + availability);
 
     pool.on('error', (err, client) => {
         console.error('Unexpected error on idle client', err)
@@ -389,7 +417,7 @@ const availabilityDriver = (request, response) => {
 
 const availabilityVehicle = (request, response) => {
     const {id_vehicle, availability} = request.body;
-    console.log(id_vehicle + ', ' + availability);
+    //console.log(id_vehicle + ', ' + availability);
 
     pool.on('error', (err, client) => {
         console.error('Unexpected error on idle client', err)
@@ -504,6 +532,8 @@ module.exports = {
     deleteDriverById,
     getPositionByDriver,
     getPositionByVehicle,
+    getLastPositionByVehicle,
+    getCurrentPointByVehicle,
     getDriverByIdVehicle,
     getVehicleByIdDriver,
     vehicleDriver,
