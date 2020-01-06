@@ -1,8 +1,8 @@
 //var Pool = require("pg").Pool;
 var pg = require("pg");
 
-//var conString = "postgres://postgres:postgres@localhost:5432/api";
-var conString = "postgres://wzkowhhekyvcbh:dbc37ca58c23fa2edf7ed4af8319e00316de9aaf1defbb8cac1fd86500704f6a@ec2-107-20-173-2.compute-1.amazonaws.com:5432/d2346t6en0926l";
+var conString = "postgres://postgres:postgres@localhost:5432/api";
+//var conString = "postgres://wzkowhhekyvcbh:dbc37ca58c23fa2edf7ed4af8319e00316de9aaf1defbb8cac1fd86500704f6a@ec2-107-20-173-2.compute-1.amazonaws.com:5432/d2346t6en0926l";
 
 //Fechas por defecto
 var ahora = new Date();
@@ -83,20 +83,6 @@ const getPositionByDriver = (request, response) => {
 const getPositionByVehicle = (request, response) => {
     // pool.query('SELECT st_astext(the_geom) FROM position WHERE id_vehicle=' + parseInt(request.params.id_vehicle) + ' ORDER BY gid ASC', (error, results) => {
     pool.query("SELECT row_to_json(fc) FROM ( SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) As features FROM ( SELECT 'Feature' As type, ST_AsGeoJSON(lg.the_geom)::json As geometry, id_vehicle, id_driver, origin, destiny, comments, date_registry, accuracy, address, speed FROM position AS lg WHERE id_vehicle=" + parseInt(request.params.id_vehicle) + " AND TO_DATE(TO_CHAR(date_registry, 'DDMMYYYY'),'DDMMYYYY') between to_date('" + fecha_ini + "','YYYYMMDD') and to_date('" + fecha_fin + "','YYYYMMDD')  order by date_registry ASC) AS f ) As fc;",
-    //pool.query("SELECT row_to_json(fc) FROM ( SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) As features FROM ( SELECT 'Feature' As type, ST_AsGeoJSON(lg.the_geom)::json As geometry, id_vehicle, id_driver, origin, destiny, \"comments\", date_registry As properties FROM \"position\" AS lg WHERE id_vehicle=" + parseInt(request.params.id_vehicle) + " order by date_registry ASC) AS f ) As fc;",
-        (error, results) => {
-            if (error) {
-                throw error
-            }
-            response.status(200).json(results.rows[0].row_to_json);
-            //console.log(results.rows[0].row_to_json);
-        })
-}
-
-const getLastPositionByVehicle = (request, response) => {
-    // pool.query('SELECT st_astext(the_geom) FROM position WHERE id_vehicle=' + parseInt(request.params.id_vehicle) + ' ORDER BY gid ASC', (error, results) => {
-    //pool.query("SELECT row_to_json(f) FROM (SELECT " + parseInt(request.params.id_vehicle) + " as id_vehicle, ST_AsGeoJSON(ST_Multi(ST_Union(fc.the_geom)))::json AS geometry FROM (SELECT * from position WHERE id_vehicle=" + parseInt(request.params.id_vehicle) +" ORDER BY date_registry DESC LIMIT 2) AS fc)AS f;",
-    pool.query("SELECT row_to_json(f) FROM (SELECT " + parseInt(request.params.id_vehicle) + " as id_vehicle, ST_AsGeoJSON(ST_Multi(ST_Union(ST_Transform(fc.the_geom,3857))))::json AS geometry FROM (SELECT * from position WHERE id_vehicle=" + parseInt(request.params.id_vehicle) +" ORDER BY date_registry DESC LIMIT 2) AS fc)AS f;",
         //pool.query("SELECT row_to_json(fc) FROM ( SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) As features FROM ( SELECT 'Feature' As type, ST_AsGeoJSON(lg.the_geom)::json As geometry, id_vehicle, id_driver, origin, destiny, \"comments\", date_registry As properties FROM \"position\" AS lg WHERE id_vehicle=" + parseInt(request.params.id_vehicle) + " order by date_registry ASC) AS f ) As fc;",
         (error, results) => {
             if (error) {
@@ -107,6 +93,22 @@ const getLastPositionByVehicle = (request, response) => {
         })
 }
 
+// Obtiene los dos últimos puntos de un vehículo
+const getLastPositionByVehicle = (request, response) => {
+    // pool.query('SELECT st_astext(the_geom) FROM position WHERE id_vehicle=' + parseInt(request.params.id_vehicle) + ' ORDER BY gid ASC', (error, results) => {
+    //pool.query("SELECT row_to_json(f) FROM (SELECT " + parseInt(request.params.id_vehicle) + " as id_vehicle, ST_AsGeoJSON(ST_Multi(ST_Union(fc.the_geom)))::json AS geometry FROM (SELECT * from position WHERE id_vehicle=" + parseInt(request.params.id_vehicle) +" ORDER BY date_registry DESC LIMIT 2) AS fc)AS f;",
+    pool.query("SELECT row_to_json(f) FROM (SELECT " + parseInt(request.params.id_vehicle) + " as id_vehicle, ST_AsGeoJSON(ST_Multi(ST_Union(ST_Transform(fc.the_geom,3857))))::json AS geometry FROM (SELECT * from position WHERE id_vehicle=" + parseInt(request.params.id_vehicle) + " ORDER BY date_registry DESC LIMIT 2) AS fc)AS f;",
+        //pool.query("SELECT row_to_json(fc) FROM ( SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) As features FROM ( SELECT 'Feature' As type, ST_AsGeoJSON(lg.the_geom)::json As geometry, id_vehicle, id_driver, origin, destiny, \"comments\", date_registry As properties FROM \"position\" AS lg WHERE id_vehicle=" + parseInt(request.params.id_vehicle) + " order by date_registry ASC) AS f ) As fc;",
+        (error, results) => {
+            if (error) {
+                throw error
+            }
+            response.status(200).json(results.rows[0].row_to_json);
+            //console.log(results.rows[0].row_to_json);
+        })
+}
+
+// Obtiene el punto con la posición actual del vehículo
 const getCurrentPointByVehicle = (request, response) => {
     // pool.query('SELECT st_astext(the_geom) FROM position WHERE id_vehicle=' + parseInt(request.params.id_vehicle) + ' ORDER BY gid ASC', (error, results) => {
     pool.query("SELECT row_to_json(fc) FROM (SELECT array_to_json(array_agg(f)) As feature FROM (SELECT 'Feature' As type, ST_AsGeoJSON(ST_Transform(lg.the_geom,3857))::json As geometry, id_vehicle, id_driver, date_registry, accuracy, address, speed FROM position AS lg WHERE id_vehicle=" + parseInt(request.params.id_vehicle) + " order by date_registry DESC LIMIT 1) AS f) As fc;",
@@ -120,7 +122,37 @@ const getCurrentPointByVehicle = (request, response) => {
         })
 }
 
+// Obtiene las fechas de las rutas de cada vehículo a través de su id_vehicle
+const getRoutesByVehicle = (request, response) => {
+    pool.query("SELECT distinct TO_CHAR(fc.date_registry, 'DD-MM-YYYY') as date FROM (SELECT date_registry FROM position WHERE id_driver=" + parseInt(request.params.id_vehicle) + ") AS fc order by date desc;",
+        (error, results) => {
+            if (error) {
+                throw error
+            }
+            response.status(200).json(results.rows);
+            //console.log(results.rows[0].row_to_json);
+        })
+}
 
+// Obtiene la ruta de un vehículo para una fecha dada
+const getRouteOfVehicleByDate = (request, response) => {
+    var id_vehicle = request.params.id_vehicle;
+    var date = request.params.date;
+
+    pool.query("SELECT ST_AsGeoJSON(ST_MakeLine(ST_Transform(the_geom,3857)))::json FROM position WHERE id_vehicle=" + id_vehicle + " AND TO_DATE(TO_CHAR(date_registry, 'DDMMYYYY'),'DDMMYYYY') = to_date('" + date + "','DD-MM-YYYY');\n",
+        (error, results) => {
+            if (error) {
+                throw error
+            }
+            var feature = {};
+            feature.type = 'Feature';
+            feature.geometry = results.rows[0].st_asgeojson;
+
+            response.status(200).json(feature);
+
+            //TODO: aqui se podría hacer la separación de linestring por (d>170m) && (d<3m no registrar)
+        })
+}
 
 const createDriver = (request, response) => {
     const {email, password, name, surname, birthdate, genre, mobile_number} = request.body
@@ -130,7 +162,7 @@ const createDriver = (request, response) => {
 
     regex = /\d{2}\/\d{2}\/\d{4}/;
 
-    if(regex.test(birthdate)){
+    if (regex.test(birthdate)) {
         // formato de fecha para cuando recibe una petición GET de la APP geoloc
         console.log('formato de fecha: DD/MM/YYYY');
         pool.query('INSERT INTO drivers ( email, password, name, surname, birthdate, genre, mobile_number, available) ' +
@@ -144,7 +176,7 @@ const createDriver = (request, response) => {
                 console.log(results.rows[0]);
                 response.redirect("/map");
             })
-    }else{
+    } else {
         // formato de fecha para cuando recibe una petición GET del cliente web
         console.log('formato de fecha: YYYY-MM-DD');
         pool.query('INSERT INTO drivers ( email, password, name, surname, birthdate, genre, mobile_number, available) ' +
@@ -384,7 +416,7 @@ const deleteVehicleDriver = (request, response) => {
             // status.id_vehicle = id_vehicle;
             //var myString = JSON.stringify(login_code);
 
-            response.send({ msg: 'Eliminación de las relaciones conductor(' + id_driver + ') con cualquier vehiculo de manera satisfactoria.'});
+            response.send({msg: 'Eliminación de las relaciones conductor(' + id_driver + ') con cualquier vehiculo de manera satisfactoria.'});
             //response.status(200).json(status);
             //response.redirect("/map");
         })
@@ -408,7 +440,7 @@ const availabilityDriver = (request, response) => {
                 }
 
                 console.log(results.rows[0]);
-                response.send({ msg: 'Modificación del atributo \'available\' del conductor id_driver:' + id_driver +  ' a \'' + availability + '\' de manera satisfactoria.'});
+                response.send({msg: 'Modificación del atributo \'available\' del conductor id_driver:' + id_driver + ' a \'' + availability + '\' de manera satisfactoria.'});
                 //response.redirect("/map");
                 done();
             });
@@ -433,7 +465,7 @@ const availabilityVehicle = (request, response) => {
                 }
 
                 console.log(results.rows[0]);
-                response.send({ msg: 'Modificación del atributo \'available\' del vehiculo id_vehicle:' + id_vehicle +  ' a \'' + availability + '\' de manera satisfactoria.'});
+                response.send({msg: 'Modificación del atributo \'available\' del vehiculo id_vehicle:' + id_vehicle + ' a \'' + availability + '\' de manera satisfactoria.'});
             });
         done();
     })
@@ -514,7 +546,7 @@ const dateRegistryToShow = (req, response) => {
         fecha_ini = req.params.fecha_ini;
         fecha_fin = req.params.fecha_fin;
         console.log("se ha cambiado la fecha de registro a mostrar desde el día: " + fecha_ini + ' al día ' + fecha_fin);
-        response.status(200).send({ msg: 'Se van a mostrar los vehículos con fecha desde: ' + fecha_ini + ' hasta el día: ' + fecha_fin});
+        response.status(200).send({msg: 'Se van a mostrar los vehículos con fecha desde: ' + fecha_ini + ' hasta el día: ' + fecha_fin});
     }
 }
 
@@ -534,6 +566,8 @@ module.exports = {
     getPositionByVehicle,
     getLastPositionByVehicle,
     getCurrentPointByVehicle,
+    getRoutesByVehicle,
+    getRouteOfVehicleByDate,
     getDriverByIdVehicle,
     getVehicleByIdDriver,
     vehicleDriver,

@@ -28,7 +28,7 @@ block content
     div#alerts
     div#tools
         header.logoHeader
-                h3 Panel de búsqueda
+            h3 Panel de búsqueda
         .panel.with-nav-tabs.panel-default
             .panel-heading
                 ul.nav.nav-tabs
@@ -38,10 +38,6 @@ block content
                         a#tab-drivers(href='#tab_drivers_results', data-toggle='tab') Conductores
                     li
                         a#tab-filtros(href='#tab_filtros', data-toggle='tab') Filtros
-                    li
-                        a#tab-info(href='#tab_info', data-toggle='tab') Info
-                    li
-                        a#tab-rutas(href='#tab_rutas', data-toggle='tab') Rutas
             .panel-body
                 .tab-content
                     #tab_vehicles_results.tab-pane.fade.in.active
@@ -51,7 +47,7 @@ block content
                                     tr
                                         th Icono
                                         th Nº
-                                        th Vehículo
+                                        th Vehículo/Conductor
                                         th Velocidad
                                 tbody#vehicles_results
                     #tab_drivers_results.tab-pane.fade
@@ -73,6 +69,23 @@ block content
                                         button.btn.btn-success(type='button' onclick="fechaRegistroHoy()" title="Registro hoy") Fecha de Registro HOY
                                     span(style="right:2em;")
                                         button.btn-xs.btn.btn-warning(type='button' onclick="limpiaFiltros()" title="limpiar filtros de búsqueda") Limpiar filtros
+    div#info-results
+        header.logoHeader
+            h3 Resultados
+        .panel.with-nav-tabs.panel-default
+            .panel-heading
+                ul.nav.nav-tabs
+                    li.active
+                        a#tab-info(href='#tab_info', data-toggle='tab') Info
+                    li
+                        a#tab-rutas(href='#tab_rutas', data-toggle='tab') Rutas
+            .panel-body
+                .tab-content
+                    #tab_info.tab-pane.fade.in.active
+                        div#info_result
+                    #tab_rutas.tab-pane.fade
+                        div.p-0.card-body
+                            div#rutas_result
     p#warning(style='background:#f80; color:#fff; padding:.5em; display:none; float:left;')  Ugh! it&apos;s a bit long!
         br
         p "Try to go on searching..."
@@ -118,6 +131,9 @@ block content
         // Variable que alojará las entidades 'Driver' en JSON
         var driversJSON = {};
         var numDrivers = 0;
+
+        // Vehículo seleccionado actual
+        var currentVehicle = {};
 
 
 
@@ -183,9 +199,9 @@ block content
             ]),
             layers: [pnoaWmts, osm, americano, interministerial, olistat, sigpac, IGNBaseOrto],
             //overlays: [overlay],
-            interactions: ol.interaction.defaults({ altShiftDragRotate:false, pinchRotate:false }),
+            interactions: ol.interaction.defaults({altShiftDragRotate: false, pinchRotate: false}),
             view: new ol.View({
-                //center: ol.proj.transform([#{lng}, #{lat}], 'EPSG:4326', 'EPSG:3857'), zoom: 6
+                //center: ol.proj.transform([#{lng},#{lat}], 'EPSG:4326', 'EPSG:3857'), zoom: 6
                 center: ol.proj.fromLonLat([#{lng}, #{lat}]),
                 zoom: 6
             })
@@ -331,7 +347,7 @@ block content
                 peticion_http = new XMLHttpRequest();
                 theUrl = ROOT + '/time/' + desde + '/' + hasta;
 
-                peticion_http.open('GET', theUrl , true);
+                peticion_http.open('GET', theUrl, true);
                 peticion_http.send(null);
             }
 
@@ -344,7 +360,7 @@ block content
         }
 
         // establecer como fecha de registro a mostrar 'Hoy'
-        function fechaRegistroHoy(){
+        function fechaRegistroHoy() {
             console.log('Lanzamiento de fechaRegistroHoy()')
             var today = new Date();
             var dd = today.getDate();
@@ -389,7 +405,7 @@ block content
         //var view = new ol.View(map.getView());
 
         // Zooom and fit to the source of a layer
-        function zoomToFeature(source){
+        function zoomToFeature(source) {
             var extent = source.getExtent();
             var polygon = new ol.geom.Polygon.fromExtent(extent);
             map.getView().fit(polygon, {padding: [170, 50, 30, 150]});
@@ -448,7 +464,7 @@ block content
 
                 // Petición de vehículo asignado
                 theUrlVehicle = ROOT + '/vehicleByIdDriver/' + id;
-                var response =  httpGet(theUrlVehicle);
+                var response = httpGet(theUrlVehicle);
                 //console.log('Ha hecho la petición: ' + theUrlVehicle );
                 //console.log('response: ' + response );
                 var resVehicleAssigned = JSON.parse(response);
@@ -534,7 +550,7 @@ block content
                     " data-genre=" + genre + " data-mobile_number= " + mobile_number + " data-email=" + email +
                     " data-available=" + available +
                     ">" +
-                        "<i class='fa fa-edit'></i>" +
+                    "<i class='fa fa-edit'></i>" +
                     "</a>" +
                     "<a class='btn visualize-vehicle' title='Mostrar vehículo asociado' data-id=" + id + "><i class='fas " + eye + "'></i></a>" +
                     "<a class='btn zoom-vehicle' title='Zoom a vehículo asociado' data-id=" + id + "><i class='fas fa-bullseye'></i></a>" +
@@ -577,7 +593,7 @@ block content
 
         // Función que crea un estilo con un estilo aleatorio para cada vehículo
         // TODO: crear un color aleatorio pero de un array con colores preestablecidos, ya que algunos que crea esta función no se ven muy bien en el mapa
-        function createStyle(){
+        function createStyle() {
             var color = generateColor();
             var stroke = new ol.style.Stroke({color: 'black', width: 2});
             var fill = new ol.style.Fill({color: color});
@@ -631,7 +647,7 @@ block content
 
 
         // Inicializa las capas para cada vehículo
-        function initializeLayers(){
+        function initializeLayers() {
             for (var i = 0; i < numVehicles; i++) {
                 var id = vehiclesJSON[i]['id_vehicle'];
 
@@ -726,7 +742,7 @@ block content
                         // https://viglino.github.io/ol-ext/examples/geom/map.geom.cspline.html
                         // Crea una entidad con las coordenadas del LineString
 
-                        var curved = turf.bezierSpline(line,{ sharpness: SUAVIDAD });
+                        var curved = turf.bezierSpline(line, {sharpness: SUAVIDAD});
                         // curved.properties = {stroke: '#0f0'};
 
                         // curved.properties = { tension: 1,
@@ -786,7 +802,7 @@ block content
                         // Establece la fuente para la capa
                         layer.setSource(vectorSource);
 
-                    } else{
+                    } else {
                         var style = createStyle();
 
                         styles.push(style);
@@ -807,13 +823,13 @@ block content
         }
 
         // Actualiza la posición actual de todos los vehículos
-        function updateVehiclesPosition(){
+        function updateVehiclesPosition() {
             vehicles = getVehicles();
             var peticionGet = "";
 
             // Bucle para obtener la posición de cada vehículo
             var numVehicles = vehicles.length;
-            for(var i = 0; i < numVehicles ; i++){
+            for (var i = 0; i < numVehicles; i++) {
                 var id = null;
                 id = vehicles[i].id_vehicle;
                 var layerposition = layerPosition(id);
@@ -879,7 +895,7 @@ block content
                             // http://jsfiddle.net/ntkuqe2a/
                             // https://viglino.github.io/ol-ext/examples/geom/map.geom.cspline.html
                             // creates a feature with the coordinates of the linestring
-                            var curved = turf.bezierSpline(line,{ sharpness: SUAVIDAD });
+                            var curved = turf.bezierSpline(line, {sharpness: SUAVIDAD});
                             // curved.properties = {stroke: '#0f0'};
 
                             // curved.properties = {
@@ -893,7 +909,6 @@ block content
                                 //"features": [line, curved]
                                 "features": [line]
                             };
-
 
 
                             // Crea un nuevo objeto Vector para alojar las entidades
@@ -922,7 +937,7 @@ block content
                             // Variable para almacenar la capa actual
                             var layer = map.getLayers().getArray()[layerposition];
 
-                            if(layer == undefined){
+                            if (layer == undefined) {
                                 //console.log('Genera una capa nueva, id:' + layerposition)
                                 createLayerById(id);
                             }
@@ -933,7 +948,7 @@ block content
                             // Actualiza la visualización de la capa
                             drawCurrentIdPosition(id, layer, layerposition);
 
-                        }else {
+                        } else {
                             //console.log("No tiene coordenadas");
                             var style = createStyle();
 
@@ -951,7 +966,7 @@ block content
 
 
         // Crea los elementos HTML para cada vehículo
-        function createVehicleHTMLelements(){
+        function createVehicleHTMLelements() {
             var myItems = [], $vehicles_results = $('#vehicles_results');
 
             for (var i = 0; i < ultimasPosicionesVehiculos.features.length; i++) {
@@ -975,7 +990,7 @@ block content
 
                 // Icono para el tipo de vehículo
                 var type_icon;
-                switch (type){
+                switch (type) {
                     case 'Coche':
                         type_icon = 'car_icon.png';
                         break;
@@ -1002,24 +1017,28 @@ block content
                 // Crea elementos HTML para cada vehículo
                 myItems.push("" +
                     "<tr>" +
-                        "<td class='align-items-center align-middle' title='Icono'>"+
-                            "<img class='list-thumbnail' src='/images/" + type_icon + "' width=\"50\">" +
-                        "</td>"+
-                        "<td class='align-middle' title='Número'>" + id + "</td>" +
-                        "<td class='align-middle'>" +
-                            "<div>" +
-                                "<h4 class='mb-1 font-weight-semi-bold' title='Matrícula vehículo'>" + matricula + "</h4>" +
-                                "<p class='mb-0' title='Conductor'>"+ id_driver + "</p>" +
-                            "</div>" +
-                        "</td>" +
-                        "<td class='align-middle' title='Velocidad'>" + velocidad + " km/h</td>" +
+                    "<td class='align-items-center align-middle' title='Icono'>" +
+                    "<img class='list-thumbnail' src='/images/" + type_icon + "' width=\"50\">" +
+                    "</td>" +
+                    "<td class='align-middle' title='Número'>" + id + "</td>" +
+                    "<td class='align-middle'>" +
+                    "<div>" +
+                    "<h4 class='mb-1 font-weight-semi-bold' title='Matrícula vehículo'>" + matricula + "</h4>" +
+                    "<p class='mb-0' title='Conductor'>" + id_driver + "</p>" +
+                    "</div>" +
+                    "</td>" +
+                    "<td class='align-middle' title='Velocidad'>" + velocidad + " km/h</td>" +
                     "</tr>");
-
             }
 
             $('#vehicles_results').html(myItems.join(''));
+
+            // hace visible el menu lateral de la información de cada vehículo
+            //$("#info-results").toggle();
+
             //console.log('vehiculos creados: ')
             //console.log(vehiclesJSON);
+
             updateFunctions();
         }
 
@@ -1056,7 +1075,7 @@ block content
 
         // Llama a la función createVehicleHTMLelements() cada vez que se pulsa sobre la pestaña 'Vehículos'
         $("#tab-vehicles").click(function () {
-            createVehicleHTMLelements();
+            //createVehicleHTMLelements();
         })
 
         // Llama a la función getDrivers() cada vez que se pulsa sobre la pestaña 'Vonductores'
@@ -1066,7 +1085,7 @@ block content
 
 
         // Crea una alerta
-        function createAlert(message){
+        function createAlert(message) {
             // Control
             var notification = new ol.control.Notification({});
             map.addControl(notification);
@@ -1074,7 +1093,7 @@ block content
         }
 
         // Función que dibuja la posición de la capa con el identificador especificado
-        function drawCurrentIdPosition(id, layer, layerposition){
+        function drawCurrentIdPosition(id, layer, layerposition) {
             //console.log('dibujar posición del punto actual de la capa con id: ' + id);
             var vectorSource = layer.getSource();
             if (vectorSource != null) {
@@ -1094,6 +1113,7 @@ block content
         }
 
         // Crea una capa para dibujar cada uno de los objetos
+        /*
         function showFeatureLayer(id){
             var layerposition = layerPosition(id);
             var layer = map.getLayers().getArray()[layerposition];
@@ -1105,14 +1125,16 @@ block content
             }
         }
 
-        function toggleOSMLayer(){
+         */
+
+        function toggleOSMLayer() {
             //console.log("activa/desactiva capa OSM");
             var layerOSM = map.getLayers().getArray()[0];
             var layerPNOA = map.getLayers().getArray()[1];
             var IGNBaseOrto = map.getLayers().getArray()[2];
 
 
-            if(layerOSM.getVisible() == false && layerPNOA.getVisible() == true){
+            if (layerOSM.getVisible() == false && layerPNOA.getVisible() == true) {
                 $("#mapPNOA").removeClass('selected');
                 $("#mapOSM").addClass('selected');
                 layerOSM.setVisible(true);
@@ -1128,7 +1150,7 @@ block content
             var IGNBaseOrto = map.getLayers().getArray()[2];
 
 
-            if(layerOSM.getVisible()==true && layerPNOA.getVisible()==false){
+            if (layerOSM.getVisible() == true && layerPNOA.getVisible() == false) {
                 $("#mapOSM").removeClass('selected');
                 $("#mapPNOA").addClass('selected');
                 layerOSM.setVisible(false);
@@ -1137,7 +1159,7 @@ block content
             }
         }
 
-        function updateFunctions(){
+        function updateFunctions() {
             // Borra conductor por su 'id'
             $(".delete-driver").on('click', function () {
                 var id = $(this).data('id');
@@ -1211,18 +1233,18 @@ block content
                 var id = $(this).data('id');
                 var pos = layerPosition(id) - OFFSET_DOWN;
 
-                if(vehiclesJSON[pos].visibility == true){       // si la capa está actualmente visible, establece la clase propiamente
+                if (vehiclesJSON[pos].visibility == true) {       // si la capa está actualmente visible, establece la clase propiamente
                     $(this).children("i").removeClass('fa-eye');
                     $(this).children("i").addClass('fa-eye-slash');
                 }
 
                 // Cambia el icono de visualización y modifica el título
-                if($(this).children("i").attr('class')=='fas fa-eye-slash'){    // capa es 'visible', la cambia a 'no visible'
+                if ($(this).children("i").attr('class') == 'fas fa-eye-slash') {    // capa es 'visible', la cambia a 'no visible'
                     $(this).children("i").removeClass('fa-eye-slash');
                     $(this).children("i").addClass('fa-eye');
-                    $(this).children("i").attr('title','Mostrar vehículo');
-                    vehiclesJSON[pos].visibility='false'
-                }else if($(this).children("i").attr('class')=='fas fa-eye'){    // capa es 'no visible', la cambia a 'visible'
+                    $(this).children("i").attr('title', 'Mostrar vehículo');
+                    vehiclesJSON[pos].visibility = 'false'
+                } else if ($(this).children("i").attr('class') == 'fas fa-eye') {    // capa es 'no visible', la cambia a 'visible'
                     $(this).children("i").removeClass('fa-eye');
                     $(this).children("i").addClass('fa-eye-slash');
                     $(this).children("i").attr('title', 'Ocultar vehículo');
@@ -1230,7 +1252,7 @@ block content
                 }
 
                 // Llamada a la función que muestra la posición del vehículo
-                showFeatureLayer(id);
+                //showFeatureLayer(id);
 
             });
 
@@ -1242,8 +1264,8 @@ block content
                 var source = map.getLayers().getArray()[layerposition].getSource();
 
                 // comprueba que haya fuente de datos o que la capa no tenga entidades
-                if (source != null){
-                    zoomToFeature(source);
+                if (source != null) {
+                    zoomToFeature(source);rutas_result
                 }
             });
             //console.log('cursor');
@@ -1252,8 +1274,31 @@ block content
             $('#tabla-vehiculos tbody tr').click(function () {
                 $(this).addClass('bg-success').siblings().removeClass('bg-success');
                 var id = $(this).find("td[title='Número']").text();
-                //$(this).find("td>img").css("filter","hue-rotate(180deg)");
+                seleccionaVehiculoActual(id);
+
+                // genera los elementos HTML con los resultados
+                createVehicleHTMLinfo();
+
+                // genera los elementos HTML con las rutas realizadas
+                createVehicleHTMLrutas();
+
+                // muestra el panel lateral con los resultados del vehículo seleccionado
+                $("#info-results").show("blind", 500);
+
                 console.log('Elemento seleccionado: ' + id);
+            });
+
+            // Marca y selecciona la ruta seleccionada para pintarla en el mapa
+            $('#tabla-rutas tbody tr').click(function () {
+                $(this).addClass('bg-success').siblings().removeClass('bg-success');
+                var fecha = $(this).find("td[title='Fecha Ruta']>h5").text();
+                var id = currentVehicle.properties.id_vehicle;
+
+                // Hace la petición para mostrar la ruta con el id_vehicle y la fecha de la ruta seleccionada
+                muestraRutaPorFecha(id, fecha);
+
+                console.log('Fecha seleccionado: ' + fecha);
+
             });
 
         }
@@ -1275,7 +1320,7 @@ block content
 
         }
 
-        $(document).ready(function() {
+        $(document).ready(function () {
             // Crea estilos para los vehículos
             vehiclesJSON = getVehicles();
             numVehicles = vehiclesJSON.length;
@@ -1285,6 +1330,9 @@ block content
 
             //Crea la capa Vector para albergar las posiciones de los vehículos
             creaCapaPosicionVehiculos(ultimasPosicionesVehiculos);
+
+            // Crea la capa para mostrar las rutas de los vehículos
+            creaCapaRutasVehiculos();
 
             // Inicializa las capas de los vehículos
             //initializeLayers();

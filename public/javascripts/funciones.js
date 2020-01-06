@@ -35,24 +35,12 @@ function httpGet(theUrl) {
 
 var color = generateColor();
 
-var pointStyle = new ol.style.Style({
-    image: new ol.style.Icon({
-        opacity: 1,
-        scale: 1,
-        //color: color,
-        crossOrigin: 'anonymous',
-        src: '/images/geolocation_marker_heading.png',
-        rotateWithView: true
-    })
-});
-
-
 custom_styles = {
     'Point': new ol.style.Style({
         image: new ol.style.Icon({
             opacity: 1,
             scale: 1,
-            color: color,
+            //color: color,
             crossOrigin: 'anonymous',
             src: '/images/geolocation_marker_heading.png',
             rotateWithView: true
@@ -68,7 +56,7 @@ style_function = function (feature) {
         image: new ol.style.Icon({
             opacity: 1,
             scale: 1.2,
-            color: color,
+            //color: color,
             crossOrigin: 'anonymous',
             src: '/images/geolocation_marker_heading.png',
             rotateWithView: true
@@ -77,6 +65,14 @@ style_function = function (feature) {
     style.getImage().setRotation(-rotation + (Math.PI / 2));
     return style;
 }
+
+// Estilo para las rutas
+var routeStyle = new ol.style.Style({
+    stroke: new ol.style.Stroke({
+        color: '#00ff0d',
+        width: 3
+    })
+})
 
 // Crea la capa que contendrá las posiciones actuales de los vehículos
 var vectorLayer;
@@ -98,6 +94,24 @@ function creaCapaPosicionVehiculos(geometrias) {
     zoomToFeature(vectorLayer.getSource());
 }
 
+// Crea la capa para mostrar las rutas de los vehículos
+var routesLayer;
+function creaCapaRutasVehiculos() {
+    routesLayer = new ol.layer.Vector({
+        source: new ol.source.Vector({
+            /*
+            features: (new ol.format.GeoJSON()).readFeatures(geometrias, {
+                //dataProjection: 'EPSG:4326',
+                //featureProjection: 'EPSG:3857'
+            })
+             */
+        }),
+        style: routeStyle
+    });
+
+    map.addLayer(routesLayer);
+}
+
 //Función que obtiene las últimas posiciones de todos los vehículos
 function obtienePosicionActualVehiculos(vehicles) {
     let url;
@@ -116,6 +130,10 @@ function obtienePosicionActualVehiculos(vehicles) {
         let accuracy = null;
         let feature = {};
         let idVehicle = null;
+        let brand = null;
+        let model = null;
+        let passengers = 0;
+        let fuel = null;
         let id_driver = null;
         let matricula = null;
         let available = false;
@@ -150,6 +168,10 @@ function obtienePosicionActualVehiculos(vehicles) {
         feature.properties = {};
         feature.properties.vehicleType = vehicles[i].type;
         feature.properties.matricula = vehicles[i].matricula;
+        feature.properties.brand = vehicles[i].brand;
+        feature.properties.model = vehicles[i].model;
+        feature.properties.passengers = vehicles[i].passengers;
+        feature.properties.fuel = vehicles[i].fuel;
         feature.properties.id_vehicle = idVehicle;
         feature.properties.id_driver = id_driver;
         feature.properties.rotacion = rotacion;
@@ -172,3 +194,175 @@ function zoomToFeature(source) {
     map.getView().fit(polygon, {padding: [170, 50, 30, 150]});
 }
 
+// Hace zoom y ajusta la vista a la ruta seleccionada
+function zoomToRoute(source) {
+    var extent = source.getExtent();
+    var polygon = new ol.geom.Polygon.fromExtent(extent);
+    map.getView().fit(polygon, {padding: [5, 5, 5, 5]});
+}
+
+function seleccionaVehiculoActual(id) {
+    var features = ultimasPosicionesVehiculos.features;
+
+    for (i in features) {
+        if (features[i].properties.id_vehicle == id) {
+            console.log('Se ha seleccionado el objeto: ' + features[i].properties.matricula);
+            currentVehicle = features[i];
+        }
+    }
+}
+
+
+// Crea elementos HTLM con la información del bvehículo seleccionado como actual
+function createVehicleHTMLinfo() {
+    var myItems = [], $vehicles_results = $('#info_result');
+
+    var vehiculo = currentVehicle;
+    var matricula = vehiculo.properties.matricula;
+    var id = vehiculo.properties.id_vehicle;
+    var marca = vehiculo.properties.brand;
+    var modelo = vehiculo.properties.model;
+    var pasajeros = vehiculo.properties.passengers;
+    var fuel = vehiculo.properties.fuel;
+    var id_driver = vehiculo.properties.id_driver;
+    var type = vehiculo.properties.vehicleType;
+    var address = vehiculo.properties.address;
+    var available = vehiculo.properties.available;
+    var velocidad = vehiculo.properties.speed;
+    if (vehiculo.geometry != null) {
+        var coordenadasLonLat = ol.proj.toLonLat(vehiculo.geometry.coordinates);
+        var coordenadas = Number(coordenadasLonLat[0].toFixed(2)) + ', ' + Number(coordenadasLonLat[1].toFixed(2));
+    }
+
+    // Petición del conductor asignado
+    theUrlDriver = ROOT + '/driverByIdVehicle/' + id;
+    var resDriverAssigned = JSON.parse(httpGet(theUrlDriver));
+    var conductor_asignado;
+    if (resDriverAssigned.length == !0) {
+        var driver = resDriverAssigned[0];
+        conductor_asignado = driver['id_driver'] + ': ' + driver['name'] + ' ' + driver['surname'];
+    } else {
+        conductor_asignado = 'No asignado.';
+    }
+
+    // Icono para el tipo de vehículo
+    var vehicle_mini_icon = 'f5de';
+    // Icono para el tipo de vehículo asignado
+    switch (type) {
+        case 'Coche':
+            vehicle_mini_icon = 'f5de';
+            break;
+        case 'Furgoneta':
+            vehicle_mini_icon = 'f5b6';
+            break;
+        case 'Camión':
+            vehicle_mini_icon = 'f0d1';
+            break;
+        case 'Bicicleta':
+            vehicle_mini_icon = 'f206';
+            break;
+        case 'Motocicleta':
+            vehicle_mini_icon = 'f21c';
+            break;
+        case 'Scooter Eléctrico':
+            vehicle_mini_icon = 'f0e7';
+            break;
+        default:
+            vehicle_mini_icon = 'f5de'
+    }
+
+
+    // Crea elementos HTML para cada vehículo
+    myItems.push("" +
+        "<h3 class='mb-1 font-weight-semi-bold' title='Matrícula vehículo'>" + matricula + "</h3>" +
+        "<h5 title='dirección'>" + address + "</h5>" +
+        "<h5 title='coordenadas'>Lon/Lat: " + coordenadas + "</h5>" +
+        "<hr style='color: #566167;'/>" +
+        "<div title='Vehículo'><i class='fa'>&#x" + vehicle_mini_icon + "</i>" +
+        "<h4>" + id + ": " + marca + ", " + modelo + ", " + "</h4>" +
+        "<p>Pasageros: " + pasajeros + "</p>" +
+        "<p>Combustible: " + fuel + "</p>" +
+        "</div>" +
+        "<div class='align-middle' title='Última veolicidad registrada Velocidad'>Velocidad: " + velocidad + " km/h</div><hr style='color: #566167;'/>" +
+        "<div><h5>Conductor Asignado:</h5><p class='mb-0' title='Conductor'>" + conductor_asignado + "</p></div>"
+    );
+
+    // Añade los elementos al div #info_result
+    $('#info_result').html(myItems.join(''));
+}
+
+
+function createVehicleHTMLrutas() {
+    var myItems = [], $vehicles_results = $('#rutas_result');
+
+    var vehiculo = currentVehicle;
+    var id = vehiculo.properties.id_vehicle;
+    var matricula = vehiculo.properties.matricula;
+
+    myItems.push("" +
+        "<h3 class='mb-1 font-weight-semi-bold' title='Matrícula vehículo'>" + matricula + "</h3>" +
+        "<hr style='color: #566167;'/>" +
+        "<table class='table-dashboard mb-0 table table-borderless vehicles-table' id='tabla-rutas'>" +
+        "<thead class='bg-light'>" +
+        "<tr>" +
+        "<th><h4>Ruta Nº</h4></th>" +
+        "<th><h4>Fecha</h4></th>" +
+        "</tr>" +
+        "</thead>" +
+        "<tbody>");
+
+    // Petición del conductor asignado
+    theUrl = ROOT + '/getRoutesByVehicle/' + id;
+    var rutas = JSON.parse(httpGet(theUrl));
+    var fechas_rutas;
+    if (rutas.length != 0) {
+
+        for (ruta in rutas) {
+            // Crea elementos HTML para cada vehículo
+            myItems.push("" +
+                "<tr>" +
+                "<td class='align-items-center align-middle' title='Número Ruta'>" +
+                "<h5>[" + ruta + "]: " + "</h5>" +
+                "</td>" +
+                "<td class='align-middle' title='Fecha Ruta'><h5>" + rutas[ruta].date + "</h5></td>" +
+                "</tr>");
+        }
+        myItems.push("</tbody></table>");
+    } else {
+        fechas_rutas = 'No hay rutas disponibles.';
+
+        myItems.push("" +
+            "<tr>" +
+            "<td class='align-items-center align-middle' title='Número Ruta'>" +
+            "<h4>[--]: " + "</h4>" +
+            "</td>" +
+            "<td class='align-middle' title='Fecha Ruta'>" + fechas_rutas + "</td>" +
+            "</tr></tbody></table>");
+    }
+
+// Añade los elementos al div #info_result
+    $('#rutas_result').html(myItems.join(''));
+
+    updateFunctions();
+}
+
+function muestraRutaPorFecha(id, fecha) {
+    // Petición del conductor asignado
+    var date = theUrl = ROOT + '/getRouteOfVehicleByDate/' + id + '/' + fecha;
+    var ruta = JSON.parse(httpGet(theUrl));
+
+    var format = new ol.format.GeoJSON({ });
+    var feature = format.readFeature(ruta, { });
+
+    // Borra la ruta anterior
+    routesLayer.getSource().clear();
+
+    //Añade la ruta seleccionada
+    routesLayer.getSource().addFeature(feature);
+
+    //Hace zoom a la ruta mostrada
+    zoomToRoute(routesLayer.getSource());
+
+
+
+}

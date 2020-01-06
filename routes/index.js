@@ -83,9 +83,9 @@ router.get('/test', function (req, res, next) {
     })
 });
 
-//********************************************************
-//Interaction with database through GET, POST, PUT, DELETE
-//********************************************************
+//*******************************************************************************
+// Interacción con la base de datos a través de peticiones GET, POST, PUT, DELETE
+//*******************************************************************************
 //Crea un conductor
 router.post('/driver', db.createDriver);
 
@@ -136,6 +136,12 @@ router.get('/getLastPositionByVehicle/:id_vehicle', db.getLastPositionByVehicle)
 
 //Obtiene el último punto, con sus atributos, para un id_vehicle dado
 router.get('/getCurrentPointByVehicle/:id_vehicle', db.getCurrentPointByVehicle);
+
+// Obtiene las fechas de las rutas de cada vehículo a través de su id_vehicle
+router.get('/getRoutesByVehicle/:id_vehicle', db.getRoutesByVehicle);
+
+// Obtiene la ruta de un vehículo para una fecha dada
+router.get('/getRouteOfVehicleByDate/:id_vehicle/:date', db.getRouteOfVehicleByDate);
 
 //Establecer relación driver-vehicle
 router.post('/vehicleDriver', db.vehicleDriver);

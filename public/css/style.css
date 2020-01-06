@@ -224,13 +224,26 @@ tr {
 }
 
 #tools {
-    width: 30%;
+    width: 25%;
     max-width: 94vw;
     background: #3b3d4d;
     z-index: 1;
     color: #868fa0;
     position: fixed;
     left: 0px;
+    top: 50px;
+    box-shadow: 0 2px 5px #000;
+    display: none;
+}
+
+#info-results {
+    width: 20%;
+    max-width: 94vw;
+    background: #3b3d4d;
+    z-index: 1;
+    color: #868fa0;
+    position: fixed;
+    right: 0px;
     top: 50px;
     box-shadow: 0 2px 5px #000;
     display: none;
@@ -373,7 +386,7 @@ tr {
 }
 .loading .fa {
     vertical-align: middle;
-    font-size: 1.5em;
+    font-size: 2em;
 }
 
 .mb-0, .my-0 {
