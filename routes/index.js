@@ -1,7 +1,6 @@
 var express = require('express');
 var router = express.Router();
 var bodyParser = require('body-parser');
-
 const db = require('../queries');
 
 // var pg = require("pg");position-vehicle

@@ -1,8 +1,8 @@
 //var Pool = require("pg").Pool;
-var pg = require("pg");
+//var pg = require("pg");
 
-var conString = "postgres://postgres:postgres@localhost:5432/api";
-//var conString = "postgres://wzkowhhekyvcbh:dbc37ca58c23fa2edf7ed4af8319e00316de9aaf1defbb8cac1fd86500704f6a@ec2-107-20-173-2.compute-1.amazonaws.com:5432/d2346t6en0926l";
+//var conString = "postgres://postgres:postgres@localhost:5432/api";
+var conString = "postgres://wzkowhhekyvcbh:dbc37ca58c23fa2edf7ed4af8319e00316de9aaf1defbb8cac1fd86500704f6a@ec2-107-20-173-2.compute-1.amazonaws.com:5432/d2346t6en0926l";
 
 //Fechas por defecto
 var ahora = new Date();
@@ -148,7 +148,10 @@ const getRouteOfVehicleByDate = (request, response) => {
             feature.type = 'Feature';
             feature.geometry = results.rows[0].st_asgeojson;
 
-            response.status(200).json(feature);
+            //var respuesta = separaLineStrings(feature)
+
+            //response.status(200).json(respuesta);
+            response.status(200).json(results.rows[0].st_asgeojson);
 
             //TODO: aqui se podría hacer la separación de linestring por (d>170m) && (d<3m no registrar)
         })

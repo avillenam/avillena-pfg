@@ -1,10 +1,13 @@
 // Obtiene un color aleatorio de la matriz COLORS
+/*
 function generateColor() {
     // generate random color for each object
     var R = Math.floor(Math.random() * 256);
     return COLORS[Math.floor(Math.random() * COLORS.length)];
     //console.log('array styles creado: ' + styles.length + ' styles');
 }
+
+ */
 
 // Obtiene todos los vehículos
 function getVehicles() {
@@ -33,7 +36,7 @@ function httpGet(theUrl) {
     return xmlHttp.responseText;
 }
 
-var color = generateColor();
+//var color = generateColor();
 
 custom_styles = {
     'Point': new ol.style.Style({
@@ -345,14 +348,17 @@ function createVehicleHTMLrutas() {
 
     updateFunctions();
 }
-
+var ruta;
 function muestraRutaPorFecha(id, fecha) {
     // Petición del conductor asignado
     var date = theUrl = ROOT + '/getRouteOfVehicleByDate/' + id + '/' + fecha;
-    var ruta = JSON.parse(httpGet(theUrl));
+    ruta = JSON.parse(httpGet(theUrl));
+
+    // Separa la LineString obtenida en getRouteOfVehicleByDate según las tolerancias
+    var multilinestring = separaLineStrings(ruta);
 
     var format = new ol.format.GeoJSON({ });
-    var feature = format.readFeature(ruta, { });
+    var feature = format.readFeature(multilinestring, { });
 
     // Borra la ruta anterior
     routesLayer.getSource().clear();
@@ -363,6 +369,49 @@ function muestraRutaPorFecha(id, fecha) {
     //Hace zoom a la ruta mostrada
     zoomToRoute(routesLayer.getSource());
 
-
-
 }
+
+// Calcula la distancia entre dos puntos
+function distanciaEntreDosPuntos(pto1, pto2){
+    var line = new ol.geom.LineString([pto1, pto2])
+    return line.getLength();
+}
+
+// Obtiene un MultiLineString
+function separaLineStrings(line){
+    var puntos = line.coordinates;
+    var numPtos = puntos.length;
+    var distMaxima = 3000;
+    var distMinima = 5;
+
+    var feature = {};
+    feature.type="Feature";
+    feature.geometry={};
+    feature.geometry.type="MultiLineString";
+    feature.geometry.coordinates=[];
+
+    var ptoInicial=puntos[0];
+    var lineString = [];
+    lineString.push(ptoInicial);
+
+    for (var i = 1; i< numPtos; i++){
+        var distancia = distanciaEntreDosPuntos(puntos[i-1],puntos[i]);
+        console.log();
+        console.log('i-1: ' + (i-1) + ', i: ' + i + ', Distancia: ' +distancia);
+
+        if(distancia>distMinima){
+            if(distancia<distMaxima){
+                lineString.push(puntos[i]);
+            }else if(distancia>distMaxima){
+                feature.geometry.coordinates.push(lineString);
+                lineString = [];
+                lineString.push(puntos[i]);
+            }
+        }
+    }
+
+    feature.geometry.coordinates.push(lineString);
+
+    return feature;
+}
+
