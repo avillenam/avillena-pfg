@@ -404,14 +404,6 @@ block content
 
         //var view = new ol.View(map.getView());
 
-        // Zooom and fit to the source of a layer
-        function zoomToFeature(source) {
-            var extent = source.getExtent();
-            var polygon = new ol.geom.Polygon.fromExtent(extent);
-            map.getView().fit(polygon, {padding: [170, 50, 30, 150]});
-        }
-
-
         function toGeo(coords) {
             return ol.proj.transform(coords, 'EPSG:3857', 'EPSG:4326');
         }

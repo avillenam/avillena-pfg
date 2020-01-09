@@ -406,14 +406,14 @@ function obtienePosicionActualVehiculos(vehicles) {
 function zoomToFeature(source) {
     var extent = source.getExtent();
     var polygon = new ol.geom.Polygon.fromExtent(extent);
-    map.getView().fit(polygon, {padding: [170, 50, 30, 150]});
+    map.getView().fit(polygon, {padding: [170, 50, 30, 150], minResolution: 1.19});
 }
 
 // Hace zoom y ajusta la vista a la ruta seleccionada
 function zoomToRoute(source) {
     var extent = source.getExtent();
     var polygon = new ol.geom.Polygon.fromExtent(extent);
-    map.getView().fit(polygon, {padding: [5, 5, 5, 5]});
+    map.getView().fit(polygon, {padding: [5, 5, 5, 5], minResolution: 0.59});
 }
 
 function seleccionaVehiculoActual(id) {
