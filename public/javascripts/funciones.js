@@ -375,7 +375,7 @@ function obtienePosicionActualVehiculos(vehicles) {
             address = respuesta.feature[0].address;
             accuracy = respuesta.feature[0].accuracy;
             id_driver = respuesta.feature[0].id_driver;
-            last_date_registry = respuesta.feature[0].date_registry;
+            last_date_registry = respuesta.feature[0].date;
         }
 
         feature.type = "Feature";

@@ -138,12 +138,13 @@ const getTailVehicle = (request, response) => {
 // Obtiene el punto con la posición actual del vehículo
 const getCurrentPointByVehicle = (request, response) => {
     // pool.query('SELECT st_astext(the_geom) FROM position WHERE id_vehicle=' + parseInt(request.params.id_vehicle) + ' ORDER BY gid ASC', (error, results) => {
-    pool.query("SELECT row_to_json(fc) FROM (SELECT array_to_json(array_agg(f)) As feature FROM (SELECT 'Feature' As type, ST_AsGeoJSON(ST_Transform(lg.the_geom,3857))::json As geometry, id_vehicle, id_driver, to_char(date_registry,'DD-MM-YYYY') AS date_registry, accuracy, address, speed FROM position AS lg WHERE id_vehicle=" + parseInt(request.params.id_vehicle) + " order by date_registry DESC LIMIT 1) AS f) As fc;",
+    pool.query("SELECT row_to_json(fc) FROM (SELECT array_to_json(array_agg(f)) As feature FROM (SELECT 'Feature' As type, ST_AsGeoJSON(ST_Transform(lg.the_geom,3857))::json As geometry, id_vehicle, id_driver, to_char(date_registry,'DD-MM-YYYY; HH24:MI:SS') AS date, accuracy, address, speed FROM position AS lg WHERE id_vehicle=" + parseInt(request.params.id_vehicle) + " order by date_registry DESC LIMIT 1) AS f) As fc;",
         //pool.query("SELECT row_to_json(fc) FROM ( SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) As features FROM ( SELECT 'Feature' As type, ST_AsGeoJSON(lg.the_geom)::json As geometry, id_vehicle, id_driver, origin, destiny, \"comments\", date_registry As properties FROM \"position\" AS lg WHERE id_vehicle=" + parseInt(request.params.id_vehicle) + " order by date_registry ASC) AS f ) As fc;",
         (error, results) => {
             if (error) {
                 throw error
             }
+
             response.status(200).json(results.rows[0].row_to_json);
             //console.log(results.rows[0].row_to_json);
         })
