@@ -131,7 +131,10 @@ router.get('/position-driver/:id_driver', db.getPositionByDriver);
 router.get('/position-vehicle/:id_vehicle', db.getPositionByVehicle);
 
 //Obtiene los dos últimos puntos para un id_vehicle dado
-router.get('/getLastPositionByVehicle/:id_vehicle', db.getLastPositionByVehicle);
+router.get('/getTwoLastPositionByVehicle/:id_vehicle', db.getTwoLastPositionByVehicle);
+
+//Obtiene los n últimos puntos para un id_vehicle dado
+router.get('/getTailVehicle/:id_vehicle/:date', db.getTailVehicle);
 
 //Obtiene el último punto, con sus atributos, para un id_vehicle dado
 router.get('/getCurrentPointByVehicle/:id_vehicle', db.getCurrentPointByVehicle);

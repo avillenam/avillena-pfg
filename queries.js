@@ -94,7 +94,7 @@ const getPositionByVehicle = (request, response) => {
 }
 
 // Obtiene los dos últimos puntos de un vehículo
-const getLastPositionByVehicle = (request, response) => {
+const getTwoLastPositionByVehicle = (request, response) => {
     // pool.query('SELECT st_astext(the_geom) FROM position WHERE id_vehicle=' + parseInt(request.params.id_vehicle) + ' ORDER BY gid ASC', (error, results) => {
     //pool.query("SELECT row_to_json(f) FROM (SELECT " + parseInt(request.params.id_vehicle) + " as id_vehicle, ST_AsGeoJSON(ST_Multi(ST_Union(fc.the_geom)))::json AS geometry FROM (SELECT * from position WHERE id_vehicle=" + parseInt(request.params.id_vehicle) +" ORDER BY date_registry DESC LIMIT 2) AS fc)AS f;",
     pool.query("SELECT row_to_json(f) FROM (SELECT " + parseInt(request.params.id_vehicle) + " as id_vehicle, ST_AsGeoJSON(ST_Multi(ST_Union(ST_Transform(fc.the_geom,3857))))::json AS geometry FROM (SELECT * from position WHERE id_vehicle=" + parseInt(request.params.id_vehicle) + " ORDER BY date_registry DESC LIMIT 2) AS fc)AS f;",
@@ -108,10 +108,37 @@ const getLastPositionByVehicle = (request, response) => {
         })
 }
 
+// Obtiene los 'n' últimos puntos de la ruta de un vehículo
+const getTailVehicle = (request, response) => {
+    var id_vehicle = request.params.id_vehicle;
+    var fecha_ultima_ruta = request.params.date;
+    var n=15;
+
+    pool.query("SELECT row_to_json(f) FROM (SELECT " + parseInt(id_vehicle) + " as id_vehicle, ST_AsGeoJSON(ST_MakeLine(ST_Transform(the_geom,3857)))::json AS geometry FROM (SELECT * from position WHERE id_vehicle=" + parseInt(id_vehicle) + " AND to_char(date_registry,'DD-MM-YYYY') = '" + fecha_ultima_ruta + "' ORDER BY date_registry DESC LIMIT " + n + ") AS fc)AS f;",
+        (error, results) => {
+            if (error) {
+                throw error
+            }
+
+            var feature = {};
+            feature.type = 'Feature';
+            feature.geometry = results.rows[0].row_to_json.geometry;
+            feature.properties = {};
+            feature.properties.id_vehicle = id_vehicle;
+            feature.properties.fecha = fecha_ultima_ruta;
+
+            response.status(200).json(feature);
+
+            //response.status(200).json(results.rows[0].row_to_json);
+            //console.log(results.rows[0].row_to_json);
+        })
+}
+
+
 // Obtiene el punto con la posición actual del vehículo
 const getCurrentPointByVehicle = (request, response) => {
     // pool.query('SELECT st_astext(the_geom) FROM position WHERE id_vehicle=' + parseInt(request.params.id_vehicle) + ' ORDER BY gid ASC', (error, results) => {
-    pool.query("SELECT row_to_json(fc) FROM (SELECT array_to_json(array_agg(f)) As feature FROM (SELECT 'Feature' As type, ST_AsGeoJSON(ST_Transform(lg.the_geom,3857))::json As geometry, id_vehicle, id_driver, date_registry, accuracy, address, speed FROM position AS lg WHERE id_vehicle=" + parseInt(request.params.id_vehicle) + " order by date_registry DESC LIMIT 1) AS f) As fc;",
+    pool.query("SELECT row_to_json(fc) FROM (SELECT array_to_json(array_agg(f)) As feature FROM (SELECT 'Feature' As type, ST_AsGeoJSON(ST_Transform(lg.the_geom,3857))::json As geometry, id_vehicle, id_driver, to_char(date_registry,'DD-MM-YYYY') AS date_registry, accuracy, address, speed FROM position AS lg WHERE id_vehicle=" + parseInt(request.params.id_vehicle) + " order by date_registry DESC LIMIT 1) AS f) As fc;",
         //pool.query("SELECT row_to_json(fc) FROM ( SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) As features FROM ( SELECT 'Feature' As type, ST_AsGeoJSON(lg.the_geom)::json As geometry, id_vehicle, id_driver, origin, destiny, \"comments\", date_registry As properties FROM \"position\" AS lg WHERE id_vehicle=" + parseInt(request.params.id_vehicle) + " order by date_registry ASC) AS f ) As fc;",
         (error, results) => {
             if (error) {
@@ -124,7 +151,7 @@ const getCurrentPointByVehicle = (request, response) => {
 
 // Obtiene las fechas de las rutas de cada vehículo a través de su id_vehicle
 const getRoutesByVehicle = (request, response) => {
-    pool.query("SELECT distinct TO_CHAR(fc.date_registry, 'DD-MM-YYYY') as date FROM (SELECT date_registry FROM position WHERE id_driver=" + parseInt(request.params.id_vehicle) + ") AS fc order by date desc;",
+    pool.query("SELECT distinct TO_CHAR(fc.date_registry, 'DD-MM-YYYY') as date FROM (SELECT date_registry FROM position WHERE id_vehicle=" + parseInt(request.params.id_vehicle) + ") AS fc order by date desc;",
         (error, results) => {
             if (error) {
                 throw error
@@ -139,21 +166,21 @@ const getRouteOfVehicleByDate = (request, response) => {
     var id_vehicle = request.params.id_vehicle;
     var date = request.params.date;
 
-    pool.query("SELECT ST_AsGeoJSON(ST_MakeLine(ST_Transform(the_geom,3857)))::json FROM position WHERE id_vehicle=" + id_vehicle + " AND TO_DATE(TO_CHAR(date_registry, 'DDMMYYYY'),'DDMMYYYY') = to_date('" + date + "','DD-MM-YYYY');\n",
+    pool.query("SELECT ST_AsGeoJSON(ST_MakeLine(ST_Transform(the_geom,3857)))::json FROM position WHERE id_vehicle=" + id_vehicle + " AND TO_DATE(TO_CHAR(date_registry, 'DDMMYYYY'),'DDMMYYYY') = to_date('" + date + "','DD-MM-YYYY');",
         (error, results) => {
             if (error) {
                 throw error
             }
+            /*
             var feature = {};
             feature.type = 'Feature';
             feature.geometry = results.rows[0].st_asgeojson;
 
-            //var respuesta = separaLineStrings(feature)
+             */
 
-            //response.status(200).json(respuesta);
             response.status(200).json(results.rows[0].st_asgeojson);
+            //response.status(200).json(feature);
 
-            //TODO: aqui se podría hacer la separación de linestring por (d>170m) && (d<3m no registrar)
         })
 }
 
@@ -567,7 +594,8 @@ module.exports = {
     deleteDriverById,
     getPositionByDriver,
     getPositionByVehicle,
-    getLastPositionByVehicle,
+    getTwoLastPositionByVehicle,
+    getTailVehicle,
     getCurrentPointByVehicle,
     getRoutesByVehicle,
     getRouteOfVehicleByDate,
