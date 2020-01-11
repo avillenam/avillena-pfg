@@ -26,6 +26,8 @@ block content
         a.btn.btn-primary.btn-block(type="button" data-toggle="modal" data-target="#formVehicleDriver" style="position: absolute; right: 3em; ") Vehículo-Conductor
     a.toggleSettings
         i.fa.fa-bars
+    a.toggleResults
+        i.fa.fa-bars
     div#alerts
     div#tools
         header.logoHeader
@@ -87,6 +89,56 @@ block content
                     #tab_rutas.tab-pane.fade
                         div.p-0.card-body
                             div#rutas_result
+    .btn-group-vertical(role="group" aria-label="Vertical button group")#buttons-group
+        .btn-group(role="group" title="Capas Base del Mapa")
+            button.btn.btn-default.dropdown-toggle#btnGroupVerticalDrop1(type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")
+                i.fa.fa-map
+            ul.dropdown-menu(aria-labelledby="btnGroupVerticalDrop1" style="position: absolute; right: 3em; ")
+                form
+                    fieldset
+                        legend Capas Base
+                        label
+                            input#pnoa(type="radio" name="capa_base" value="PNOA" checked)
+                            label PNOA máxima actualidad
+                        br
+                        label
+                            input#osm(type="radio" name="capa_base" value="OSM")
+                            label Open Street Map
+                        br
+                    fieldset
+                        legend Capas Auxiliares
+                        label
+                            input#americano(type="checkbox" name="capa_auxiliar" value="americano" )
+                            label Americano serie B (1956-57)
+                        br
+                        label
+                            input#interministerial(type="checkbox" name="capa_auxiliar" value="interministerial")
+                            label Interministerial (1973-86)
+                        br
+                        label
+                            input#olistat(type="checkbox" name="capa_auxiliar" value="olistat")
+                            label OLISTAT (1997-1998)
+                        br
+                        label
+                            input#sigpac(type="checkbox" name="capa_auxiliar" value="sigpac")
+                            label SIGPAC (1997-2003)
+                        br
+                        label
+                            input#pnoa2004(type="checkbox" name="capa_auxiliar" value="pnoa2004")
+                            label PNOA (2004)
+                        br
+                        label
+                            input#IGNBaseOrto(type="checkbox" name="capa_auxiliar" value="IGNBaseOrto" checked)
+                            label IGNBaseOrto
+        button#btn-zoom-vehiculos.btn.btn-default(type="button" title="Zoom a vehículos")
+            i.fa.fa-search-location
+        button#btn-mostrar-objetos.btn.btn-primary(type="button" title="Muestra/Oculta objetos")
+            i.fa.fa-location-arrow
+        button#btn-mostrar-colas.btn.btn-default(type="button" title="Muestra/Oculta colas")
+            i.fa.fa-route
+        button#btn-mostrar-rutas.btn.btn-default(type="button" title="Muestra/Oculta rutas")
+            i.fa.fa-road
+
     p#warning(style='background:#f80; color:#fff; padding:.5em; display:none; float:left;')  Ugh! it&apos;s a bit long!
         br
         p "Try to go on searching..."
@@ -203,12 +255,11 @@ block content
                 new ol.control.ScaleLine({
                     className: 'ol-scale-line',
                     target: document.getElementById('scale-line')
-                }),
-                new ol.control.LayerPopup()
+                })
             ]),
             layers: [pnoaWmts, osm, americano, interministerial, olistat, sigpac, IGNBaseOrto],
             //overlays: [overlay],
-            interactions: ol.interaction.defaults({altShiftDragRotate: false, pinchRotate: false}),
+            //interactions: ol.interaction.defaults({altShiftDragRotate: false, pinchRotate: false}),
             view: new ol.View({
                 //center: ol.proj.transform([#{lng},#{lat}], 'EPSG:4326', 'EPSG:3857'), zoom: 6
                 center: ol.proj.fromLonLat([#{lng}, #{lat}]),
@@ -522,6 +573,11 @@ block content
             $("#tools").toggle();
         })
 
+        // Muestra u oculta el menú principal
+        $(".toggleResults").click(function (event) {
+            $("#info-results").toggle();
+        })
+
         // Llama a la función createVehicleHTMLelements() cada vez que se pulsa sobre la pestaña 'Vehículos'
         $("#tab-vehicles").click(function () {
             //createVehicleHTMLelements();
@@ -575,11 +631,25 @@ block content
                 // genera los elementos HTML con las rutas realizadas
                 createVehicleHTMLrutas();
 
-                // Si la capa de rutas tiene alguna entidad la elimina y apaga la capa
+                // Si la capa de rutas tiene alguna entidad la elimina
                 if(routesLayer.getSource().getFeatures().length!=0){
                     routesLayer.getSource().clear();
-                    routesLayer.setVisible(false);
+                    //routesLayer.setVisible(false);
                 }
+
+                // Apaga el botón de las rutas
+                /*
+                if ($('#btn-mostrar-rutas').hasClass('btn-primary')) {
+                    $('#btn-mostrar-rutas').removeClass('btn-primary');
+                    $('#btn-mostrar-rutas').addClass('btn-default');
+                }
+                */
+
+                //Enciende el botón de las colas
+                // if ($('#btn-mostrar-colas').hasClass('btn-default')) {
+                //     $('#btn-mostrar-colas').removeClass('btn-default');
+                //     $('#btn-mostrar-colas').addClass('btn-primary');
+                // }
 
                 // Dibuja la cola de la ruta del vehiculo seleccionado
                 if(tailsLayer.getVisible()==false){   // Si la capa de colas está apagada, la enciende
@@ -593,6 +663,13 @@ block content
                 // muestra el panel lateral con los resultados del vehículo seleccionado
                 $("#info-results").show("blind", 500);
 
+                // Enciende el botón '#btn-mostrar-colas'
+                if ($('#btn-mostrar-colas').hasClass('btn-default')) {
+                    $('#btn-mostrar-colas').removeClass('btn-default');
+                    $('#btn-mostrar-colas').addClass('btn-primary');
+                }
+                //toggleBtnMostrarColas();
+
                 console.log('Elemento seleccionado: ' + id);
             });
 
@@ -603,10 +680,19 @@ block content
                 ultimaFechaCurrentVehicle = fecha;
                 var id = currentVehicle.properties.id_vehicle;
 
-                // Si la capa de colas tiene alguna entidad la elimina y apaga la capa
+                // Si la capa de colas tiene alguna entidad la elimina
                 if (tailsLayer.getSource().getFeatures().length != 0) {
                     tailsLayer.getSource().clear();
-                    tailsLayer.setVisible(false);
+                    //tailsLayer.setVisible(false);
+
+                    //Tambien apaga el botón de las colas
+                    /*
+                    if ($('#btn-mostrar-colas').hasClass('btn-primary')){
+                        $('#btn-mostrar-colas').removeClass('btn-primary');
+                        $('#btn-mostrar-colas').addClass('btn-default');
+                    }
+                    */
+
                 }
 
                 // Hace la petición para mostrar la ruta con el id_vehicle y la fecha de la ruta seleccionada
@@ -618,10 +704,16 @@ block content
                 //Hace zoom a la ruta mostrada
                 zoomToRoute(routesLayer.getSource());
 
+                // Enciende el botón '#btn-mostrar-rutas'
+                if ($('#btn-mostrar-rutas').hasClass('btn-default')) {
+                    $('#btn-mostrar-rutas').removeClass('btn-default');
+                    $('#btn-mostrar-rutas').addClass('btn-primary');
+                }
+                //toggleBtnMostrarRutas();
+
                 console.log('Fecha seleccionada: ' + fecha);
 
             });
-
         }
 
         function limpiaFiltros() {
@@ -708,6 +800,104 @@ block content
                     muestraRutaPorFecha(currentVehicle.properties.id_vehicle, ultimaFechaCurrentVehicle);
                 };
             }
+
+            // Funcionalidad Botones de Capa base
+            $('input:radio[name=capa_base]').change(function () {
+                if (this.value == 'PNOA') {
+                    osm.setVisible(false);
+                    pnoaWmts.setVisible(true);
+                } else if (this.value == 'OSM') {
+                    pnoaWmts.setVisible(false);
+                    osm.setVisible(true);
+                }
+            });
+
+            // Funcionalidad Botones de Capas auxiliares
+            $('input:checkbox[name=capa_auxiliar]').change(function () {
+                if (this.value == 'americano') {
+                    if(document.getElementById("americano").checked){
+                        // enciende la capa
+                        americano.setVisible(true);
+                    } else if(document.getElementById("americano").checked == false){
+                        // apaga la capa
+                        americano.setVisible(false);
+                    }
+                } else if (this.value == 'interministerial') {
+                    if (document.getElementById("interministerial").checked) {
+                        // enciende la capa
+                        interministerial.setVisible(true);
+                    } else if (document.getElementById("interministerial").checked == false) {
+                        // apaga la capa
+                        interministerial.setVisible(false);
+                    }
+                } else if (this.value == 'olistat') {
+                    if (document.getElementById("olistat").checked) {
+                        // enciende la capa
+                        olistat.setVisible(true);
+                    } else if (document.getElementById("olistat").checked == false) {
+                        // apaga la capa
+                        olistat.setVisible(false);
+                    }
+                } else if (this.value == 'sigpac') {
+                    if (document.getElementById("sigpac").checked) {
+                        // enciende la capa
+                        sigpac.setVisible(true);
+                    } else if (document.getElementById("sigpac").checked == false) {
+                        // apaga la capa
+                        sigpac.setVisible(false);
+                    }
+                } else if (this.value == 'pnoa2004') {
+                    if (document.getElementById("pnoa2004").checked) {
+                        // enciende la capa
+                        pnoa2004.setVisible(true);
+                    } else if (document.getElementById("pnoa2004").checked == false) {
+                        // apaga la capa
+                        pnoa2004.setVisible(false);
+                    }
+                } else if (this.value == 'IGNBaseOrto') {
+                    if (document.getElementById("IGNBaseOrto").checked) {
+                        // enciende la capa
+                        IGNBaseOrto.setVisible(true);
+                    } else if (document.getElementById("IGNBaseOrto").checked == false) {
+                        // apaga la capa
+                        IGNBaseOrto.setVisible(false);
+                    }
+                }
+            });
+
+            // Funcionalidad al hacer click en los botones del 'buttons-group'
+            $('#btn-zoom-vehiculos').click(function(){
+                //hace zoom a los objetos
+                zoomToFeature(vehiclesLayer.getSource());
+            })
+
+            $('#btn-mostrar-objetos').click(function () {
+                if ($(this).hasClass('btn-default')) {
+                    $(this).removeClass('btn-default');
+                    $(this).addClass('btn-primary');
+                    // Enciende la capa vehiclesLayer
+                    if (vehiclesLayer.getVisible() == false) {
+                        vehiclesLayer.setVisible(true);
+                    }
+
+                } else {
+                    $(this).removeClass('btn-primary');
+                    $(this).addClass('btn-default');
+                    // Apaga la capa vehiclesLayer
+                    if(vehiclesLayer.getVisible() == true){
+                        vehiclesLayer.setVisible(false);
+                    }
+
+                }
+            })
+
+            $('#btn-mostrar-colas').click(function () {
+                toggleBtnMostrarColas();
+            });
+
+            $('#btn-mostrar-rutas').click(function () {
+                toggleBtnMostrarRutas();
+            });
 
 
             // Destello de la posicion actual de los vehículos visibles

@@ -152,7 +152,7 @@ const getCurrentPointByVehicle = (request, response) => {
 
 // Obtiene las fechas de las rutas de cada vehículo a través de su id_vehicle
 const getRoutesByVehicle = (request, response) => {
-    pool.query("SELECT distinct TO_CHAR(fc.date_registry, 'DD-MM-YYYY') as date FROM (SELECT date_registry FROM position WHERE id_vehicle=" + parseInt(request.params.id_vehicle) + ") AS fc order by date desc;",
+    pool.query("SELECT distinct TO_CHAR(fc.date_registry, 'DD-MM-YYYY') as date FROM (SELECT date_registry FROM position WHERE id_vehicle=" + parseInt(request.params.id_vehicle) + "  ORDER BY date_registry DESC) AS fc;",
         (error, results) => {
             if (error) {
                 throw error

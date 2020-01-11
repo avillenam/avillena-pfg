@@ -695,12 +695,12 @@ var displayFeatureInfo = function (pixel) {
             var model = feature.getProperties().model;
             var id_driver = feature.getProperties().id_driver;
             var conductor = getDriver(id_driver);
-            var informacion = '[' +id_vehicle + '].- ' + matricula + ', ' + brand + ', ' + model + ', ' + conductor.name + ' ' + conductor.surname;
-        }else if(feature.getGeometry().getType() == 'MultiLineString'){
+            var informacion = '[' + id_vehicle + '].- ' + matricula + ', ' + brand + ', ' + model + ', ' + conductor.name + ' ' + conductor.surname;
+        } else if (feature.getGeometry().getType() == 'MultiLineString') {
             var id_vehicle = feature.getProperties().id_vehicle;
             var fecha = feature.getProperties().fecha;
             var informacion = 'Id vehículo: ' + id_vehicle + ', Fecha ruta: ' + fecha;
-        }else if(feature.getGeometry().getType() == 'LineString'){
+        } else if (feature.getGeometry().getType() == 'LineString') {
 
         }
 
@@ -714,3 +714,42 @@ var displayFeatureInfo = function (pixel) {
     }
 };
 
+
+function toggleBtnMostrarColas() {
+    if ($('#btn-mostrar-colas').hasClass('btn-default')) {
+        $('#btn-mostrar-colas').removeClass('btn-default');
+        $('#btn-mostrar-colas').addClass('btn-primary');
+        // Enciende la capa vehiclesLayer
+        if (tailsLayer.getVisible() == false) {
+            tailsLayer.setVisible(true);
+        }
+
+    } else {
+        $('#btn-mostrar-colas').removeClass('btn-primary');
+        $('#btn-mostrar-colas').addClass('btn-default');
+        // Apaga la capa vehiclesLayer
+        if (tailsLayer.getVisible() == true) {
+            tailsLayer.setVisible(false);
+        }
+
+    }
+}
+
+function toggleBtnMostrarRutas() {
+        if ($('#btn-mostrar-rutas').hasClass('btn-default')) {
+        $('#btn-mostrar-rutas').removeClass('btn-default');
+        $('#btn-mostrar-rutas').addClass('btn-primary');
+        // Enciende la capa vehiclesLayer
+        if (routesLayer.getVisible() == false) {
+            routesLayer.setVisible(true);
+        }
+
+    } else {
+        $('#btn-mostrar-rutas').removeClass('btn-primary');
+        $('#btn-mostrar-rutas').addClass('btn-default');
+        // Apaga la capa vehiclesLayer
+        if (routesLayer.getVisible() == true) {
+            routesLayer.setVisible(false);
+        }
+    }
+}
