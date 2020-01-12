@@ -423,6 +423,7 @@ function seleccionaVehiculoActual(id) {
         if (features[i].properties.id_vehicle == id) {
             console.log('Se ha seleccionado el objeto: ' + features[i].properties.matricula);
             currentVehicle = features[i];
+            idCurrentVehicle = currentVehicle.properties.id_vehicle;
         }
     }
 }
@@ -558,7 +559,7 @@ function createVehicleHTMLrutas() {
 // Añade los elementos al div #info_result
     $('#rutas_result').html(myItems.join(''));
 
-    updateFunctions();
+    //updateFunctions();
 }
 
 
@@ -606,10 +607,13 @@ function muestraRutaPorFecha(id, fecha) {
 
 // Muestra la cola de la ruta del vehículo seleccionado
 function muestraColaVehiculo(id) {
-    var fecha_ultimo_registro = (getVehicle(id).properties.last_date_registry).substring(0, 10);    // formato DD-MM-YYYY
+
+    //var fecha_ultimo_registro = (getVehicle(id).properties.last_date_registry).substring(0, 10);    // formato DD-MM-YYYY
+    var fecha_ultimo_registro = getVehicle(id).properties.last_date_registry;    // formato DD-MM-YYYY
 
     // Petición del conductor asignado
     if (fecha_ultimo_registro != null) {
+        fecha_ultimo_registro = fecha_ultimo_registro.substring(0, 10);
         var theUrl = ROOT + '/getTailVehicle/' + id + '/' + fecha_ultimo_registro;
         var respuesta = JSON.parse(httpGet(theUrl));
 
@@ -625,7 +629,51 @@ function muestraColaVehiculo(id) {
             tailsLayer.getSource().addFeature(feature);
 
         }
+    } else {
+        alert ("El vehículo con matrícula: " + getVehicle(id).properties.matricula + " no tiene posiciones registradas.")
+        currentVehicle = {};
+        idCurrentVehicle = null;
     }
+
+    // Marca y selecciona la ruta seleccionada para pintarla en el mapa
+    $('#tabla-rutas tbody tr').click(function () {
+        $(this).addClass('bg-success').siblings().removeClass('bg-success');
+        var fecha = $(this).find("td[title='Fecha Ruta']>h5").text();
+        ultimaFechaCurrentVehicle = fecha;
+        //var id = currentVehicle.properties.id_vehicle;
+
+        // Si la capa de colas tiene alguna entidad la elimina
+        if (tailsLayer.getSource().getFeatures().length != 0) {
+            tailsLayer.getSource().clear();
+            currentVehicle = {};
+            tailsLayer.setVisible(false);
+
+            //Tambien apaga el botón de las colas
+            if ($('#btn-mostrar-colas').hasClass('btn-primary')) {
+                $('#btn-mostrar-colas').removeClass('btn-primary');
+                $('#btn-mostrar-colas').addClass('btn-default');
+            }
+        }
+
+        // Hace la petición para mostrar la ruta con el id_vehicle y la fecha de la ruta seleccionada
+        if (routesLayer.getVisible() == false) {   // Si la capa de rutas está apagada, la enciende
+            routesLayer.setVisible(true);
+        }
+        muestraRutaPorFecha(idCurrentVehicle, fecha);
+
+        //Hace zoom a la ruta mostrada
+        zoomToRoute(routesLayer.getSource());
+
+        // Enciende el botón '#btn-mostrar-rutas'
+        if ($('#btn-mostrar-rutas').hasClass('btn-default')) {
+            $('#btn-mostrar-rutas').removeClass('btn-default');
+            $('#btn-mostrar-rutas').addClass('btn-primary');
+        }
+        //toggleBtnMostrarRutas();
+
+        console.log('Fecha seleccionada: ' + fecha);
+
+    });
 
 }
 
@@ -736,7 +784,7 @@ function toggleBtnMostrarColas() {
 }
 
 function toggleBtnMostrarRutas() {
-        if ($('#btn-mostrar-rutas').hasClass('btn-default')) {
+    if ($('#btn-mostrar-rutas').hasClass('btn-default')) {
         $('#btn-mostrar-rutas').removeClass('btn-default');
         $('#btn-mostrar-rutas').addClass('btn-primary');
         // Enciende la capa vehiclesLayer
@@ -753,3 +801,4 @@ function toggleBtnMostrarRutas() {
         }
     }
 }
+

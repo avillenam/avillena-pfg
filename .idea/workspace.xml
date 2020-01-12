@@ -4,6 +4,7 @@
     <list default="true" id="6d5f1f38-e885-4881-8791-5da2d0a04345" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/css/style.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/javascripts/constants.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/javascripts/constants.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/javascripts/funciones.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/javascripts/funciones.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/queries.js" beforeDir="false" afterPath="$PROJECT_DIR$/queries.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/views/map.jade" beforeDir="false" afterPath="$PROJECT_DIR$/views/map.jade" afterDir="false" />
@@ -151,7 +152,7 @@
       <workItem from="1573579703488" duration="3125000" />
       <workItem from="1573909740381" duration="46373000" />
       <workItem from="1576956994211" duration="13080000" />
-      <workItem from="1577113620965" duration="151097000" />
+      <workItem from="1577113620965" duration="159773000" />
     </task>
     <task id="LOCAL-00001" summary="version 2.5.1">
       <created>1572271103995</created>
@@ -391,7 +392,14 @@
       <option name="project" value="LOCAL" />
       <updated>1578590010807</updated>
     </task>
-    <option name="localTasksCounter" value="35" />
+    <task id="LOCAL-00035" summary="version 4.4">
+      <created>1578740381251</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1578740381251</updated>
+    </task>
+    <option name="localTasksCounter" value="36" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -426,7 +434,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="version 2.7.2" />
     <MESSAGE value="version 2.7.5" />
     <MESSAGE value="version 2.7.6" />
     <MESSAGE value="version 2.7.7" />
@@ -451,7 +458,8 @@
     <MESSAGE value="version 4.3" />
     <MESSAGE value="version 4.3.1" />
     <MESSAGE value="version 4.3.2" />
-    <option name="LAST_COMMIT_MESSAGE" value="version 4.3.2" />
+    <MESSAGE value="version 4.4" />
+    <option name="LAST_COMMIT_MESSAGE" value="version 4.4" />
   </component>
   <component name="masterDetails">
     <states>

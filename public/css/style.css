@@ -6,7 +6,7 @@ html, body {
 
 .ol-zoom {
     left: unset !important;
-    top: 240px!important;
+    top: 240px !important;
     right: .5em;
 }
 
@@ -481,23 +481,33 @@ table {
 }
 
 .dropdown-menu {
-    position: absolute!important;
+    position: absolute !important;
     left: unset !important;
-    right: 3em!important;
+    right: 3em !important;
     min-width: 200px;
 }
 
-legend{
+legend {
     font-size: 12px;
 }
 
-fieldset{
-    padding:unset!important;
+fieldset {
+    padding: unset !important;
     margin: 10px;
 }
 
-label{
-    font-weight:unset !important;
+label {
+    font-weight: unset !important;
     font-size: 12px;
 
+}
+
+.huerotate {
+    /*filter: hue-rotate(90deg);*/
+    filter: hue-rotate(3.142rad);
+}
+
+/*Vehiculos activos o con geometría*/
+.activo{
+    color: green;
 }
