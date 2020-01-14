@@ -334,10 +334,19 @@ style_route_function = function (feature) {
     for (var i = 0; i < lineStrings.length; i++) {
         var line =  lineStrings[i];
         var longitud = line.getLength();
-        var numPuntos = line.getCoordinates().length;
+        var coordenadasPuntos = line.getCoordinates();
+        var numPuntos = coordenadasPuntos.length;
         var ratio = longitud/numPuntos;
 
+        // Simplifica el LineString para que no sature el mapa de flechas
         line = line.simplify(ratio);
+
+        //TODO: Darle al último punto simbología diferentes con rotación
+        var ptoFinalAnt = coordenadasPuntos[numPuntos-2];
+        var ptoFinal = coordenadasPuntos[numPuntos];
+        var rotacionPtoFinal = extractRotation([ptoFinalAnt, ptoFinal]);
+
+
         /*
         if(line.getLength() > 700){
             line = line.simplify(50);
@@ -360,7 +369,12 @@ style_route_function = function (feature) {
                 })
             }));
         });
+
+
+
     }
+
+
 
     return styles;
 };
