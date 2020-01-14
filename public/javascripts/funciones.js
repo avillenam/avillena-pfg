@@ -54,7 +54,7 @@ function creaCapaRutasVehiculos() {
             })
              */
         }),
-        style: routeStyle
+        style: style_route_function
     });
     map.addLayer(routesLayer);
 }
@@ -200,16 +200,6 @@ function getDrivers() {
             "<div title='Género'><i class='fa fa-genderless'></i>" + genre + "</div>" +
             "<div title='Número de móvil'><i class='fa fa-mobile-alt'></i>" + mobile_number + "</div>" +
             "<div title='Vehículo'><i class='fa'>&#x" + vehicle_mini_icon + "</i>" + id_vehicle + "</div>" +
-            "<a title='Eliminar conductor' class='deleteIcon delete-driver' data-id=" + id + "><i class='fa fa-trash'></i></a>" +
-            "<a title='Editar conductor' class='editIcon edit-driver' data-toggle='modal' data-target='#editFormDriver' " +
-            " data-id=" + id + " data-name=" + name + " data-surname=" + surname + " data-birthdate= " + birthdate +
-            " data-genre=" + genre + " data-mobile_number= " + mobile_number + " data-email=" + email +
-            " data-available=" + available +
-            ">" +
-            "<i class='fa fa-edit'></i>" +
-            "</a>" +
-            "<a class='btn visualize-vehicle' title='Mostrar vehículo asociado' data-id=" + id + "><i class='fas " + eye + "'></i></a>" +
-            "<a class='btn zoom-vehicle' title='Zoom a vehículo asociado' data-id=" + id + "><i class='fas fa-bullseye'></i></a>" +
             "</div>" +
             "</div>");
 
@@ -325,6 +315,55 @@ var routeStyle = new ol.style.Style({
         width: 3
     })
 });
+
+style_route_function = function (feature) {
+    var geometry = feature.getGeometry();
+
+
+    var styles = [
+        // linestring
+        new ol.style.Style({
+            stroke: new ol.style.Stroke({
+                color: '#180eee',
+                width: 3
+            })
+        })
+    ];
+
+    var lineStrings = geometry.getLineStrings();
+    for (var i = 0; i < lineStrings.length; i++) {
+        var line =  lineStrings[i];
+        var longitud = line.getLength();
+        var numPuntos = line.getCoordinates().length;
+        var ratio = longitud/numPuntos;
+
+        line = line.simplify(ratio);
+        /*
+        if(line.getLength() > 700){
+            line = line.simplify(50);
+        }
+
+         */
+
+        line.forEachSegment(function (start, end) {
+            var dx = end[0] - start[0];
+            var dy = end[1] - start[1];
+            var rotation = Math.atan2(dy, dx);
+            // arrows
+            styles.push(new ol.style.Style({
+                geometry: new ol.geom.Point(end),
+                image: new ol.style.Icon({
+                    src: '/images/Red_Arrow_small.png',
+                    anchor: [.5, .5],
+                    rotateWithView: true,
+                    rotation: (Math.PI - rotation)
+                })
+            }));
+        });
+    }
+
+    return styles;
+};
 
 
 //Función que obtiene las últimas posiciones de todos los vehículos
@@ -630,7 +669,7 @@ function muestraColaVehiculo(id) {
 
         }
     } else {
-        alert ("El vehículo con matrícula: " + getVehicle(id).properties.matricula + " no tiene posiciones registradas.")
+        alert("El vehículo con matrícula: " + getVehicle(id).properties.matricula + " no tiene posiciones registradas.")
         currentVehicle = {};
         idCurrentVehicle = null;
     }

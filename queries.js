@@ -167,7 +167,7 @@ const getRouteOfVehicleByDate = (request, response) => {
     var id_vehicle = request.params.id_vehicle;
     var date = request.params.date;
 
-    pool.query("SELECT ST_AsGeoJSON(ST_MakeLine(ST_Transform(the_geom,3857)))::json FROM position WHERE id_vehicle=" + id_vehicle + " AND TO_DATE(TO_CHAR(date_registry, 'DDMMYYYY'),'DDMMYYYY') = to_date('" + date + "','DD-MM-YYYY');",
+    pool.query("SELECT ST_AsGeoJSON(ST_MakeLine(ST_Transform(fc.the_geom,3857)))::json FROM (SELECT the_geom FROM position WHERE id_vehicle=" + id_vehicle + " AND TO_DATE(TO_CHAR(date_registry, 'DDMMYYYY'),'DDMMYYYY') = to_date('" + date + "','DD-MM-YYYY') order by date_registry desc) AS fc;",
         (error, results) => {
             if (error) {
                 throw error
