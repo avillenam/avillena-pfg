@@ -120,15 +120,15 @@ var sigpac = new ol.layer.Tile({
 });
 
 //Capa ortofoto vuelo PNOA 2004
-var pnoa2004 = new ol.layer.Tile({
-    title: "PNOA (2004)",
+var pnoa2006 = new ol.layer.Tile({
+    title: "PNOA (2006)",
     baseLayer: false,
     preload: Infinity,
     visible: false,
     source: new ol.source.TileWMS(({
         url: 'http://www.ign.es/wms/pnoa-historico',
         params: {
-            'LAYERS': 'PNOA2004', 'VERSION': '1.3.0',
+            'LAYERS': 'PNOA2006', 'VERSION': '1.3.0',
             'FORMAT': 'image/png', 'CRS': 'EPSG:3857'
         }
     }))

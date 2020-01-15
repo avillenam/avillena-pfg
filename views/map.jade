@@ -124,8 +124,8 @@ block content
                             label SIGPAC (1997-2003)
                         br
                         label
-                            input#pnoa2004(type="checkbox" name="capa_auxiliar" value="pnoa2004")
-                            label PNOA (2004)
+                            input#pnoa2006(type="checkbox" name="capa_auxiliar" value="pnoa2006")
+                            label PNOA (2006)
                         br
                         label
                             input#IGNBaseOrto(type="checkbox" name="capa_auxiliar" value="IGNBaseOrto" checked)
@@ -257,7 +257,7 @@ block content
                     target: document.getElementById('scale-line')
                 })
             ]),
-            layers: [pnoaWmts, osm, americano, interministerial, olistat, sigpac, IGNBaseOrto],
+            layers: [pnoaWmts, osm, americano, interministerial, olistat, sigpac, pnoa2006, IGNBaseOrto],
             //overlays: [overlay],
             //interactions: ol.interaction.defaults({altShiftDragRotate: false, pinchRotate: false}),
             view: new ol.View({
@@ -530,7 +530,7 @@ block content
                         type_icon = 'fa-bolt';
                         break;
                     default:
-                        type_icon = 'fa-odnoklassniki'
+                        type_icon = 'fa-question-square'
                 }
 
 
@@ -758,13 +758,13 @@ block content
                         // apaga la capa
                         sigpac.setVisible(false);
                     }
-                } else if (this.value == 'pnoa2004') {
-                    if (document.getElementById("pnoa2004").checked) {
+                } else if (this.value == 'pnoa2006') {
+                    if (document.getElementById("pnoa2006").checked) {
                         // enciende la capa
-                        pnoa2004.setVisible(true);
-                    } else if (document.getElementById("pnoa2004").checked == false) {
+                        pnoa2006.setVisible(true);
+                    } else if (document.getElementById("pnoa2006").checked == false) {
                         // apaga la capa
-                        pnoa2004.setVisible(false);
+                        pnoa2006.setVisible(false);
                     }
                 } else if (this.value == 'IGNBaseOrto') {
                     if (document.getElementById("IGNBaseOrto").checked) {

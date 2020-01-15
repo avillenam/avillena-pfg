@@ -319,7 +319,6 @@ var routeStyle = new ol.style.Style({
 style_route_function = function (feature) {
     var geometry = feature.getGeometry();
 
-
     var styles = [
         // linestring
         new ol.style.Style({
@@ -330,21 +329,24 @@ style_route_function = function (feature) {
         })
     ];
 
+
+
+
     var lineStrings = geometry.getLineStrings();
     for (var i = 0; i < lineStrings.length; i++) {
         var line =  lineStrings[i];
         var longitud = line.getLength();
         var coordenadasPuntos = line.getCoordinates();
         var numPuntos = coordenadasPuntos.length;
-        var ratio = longitud/numPuntos;
+        var ratio = (longitud/numPuntos)*.2;
 
         // Simplifica el LineString para que no sature el mapa de flechas
         line = line.simplify(ratio);
 
-        //TODO: Darle al último punto simbología diferentes con rotación
-        var ptoFinalAnt = coordenadasPuntos[numPuntos-2];
-        var ptoFinal = coordenadasPuntos[numPuntos];
-        var rotacionPtoFinal = extractRotation([ptoFinalAnt, ptoFinal]);
+        //TODO: Darle al primer y al último punto simbologías diferentes
+
+
+        //var rotacionPtoFinal = extractRotation([ptoFinalAnt, ptoFinal]);
 
 
         /*
@@ -371,6 +373,27 @@ style_route_function = function (feature) {
         });
 
 
+
+        // Diferente simbología para los puntos inicial y final
+        var ptoInicio = geometry.getFirstCoordinate();
+        var ptoFinal = geometry.getLastCoordinate();
+        styles.push(new ol.style.Style({
+            geometry: new ol.geom.Point(ptoFinal),
+            image: new ol.style.Icon({
+                src: '/images/route_start.png',
+                anchor: [.5, .5],
+                rotateWithView: true
+            })
+        }));
+
+        styles.push(new ol.style.Style({
+            geometry: new ol.geom.Point(ptoInicio),
+            image: new ol.style.Icon({
+                src: '/images/route_end.png',
+                anchor: [.5, .5],
+                rotateWithView: true
+            })
+        }));
 
     }
 
@@ -547,13 +570,13 @@ function createVehicleHTMLinfo() {
         "<h5 title='dirección'>" + address + "</h5>" +
         "<h5 title='coordenadas'>Lon/Lat: " + coordenadas + "</h5>" +
         "<hr style='color: #566167;'/>" +
-        "<div title='Vehículo'><i class='fa'>&#x" + vehicle_mini_icon + "</i>" +
-        "<h4>" + id + ": " + marca + ", " + modelo + ", " + "</h4>" +
+        "<div title='Vehículo'><h4 style='font-weight: bold'>Datos del Vehículo</h4>" +
+        "<h4><i class='fa'>&#x" + vehicle_mini_icon + "</i> [" + id + "]: " + marca + ", " + modelo + "</h4>" +
         "<p>Pasageros: " + pasajeros + "</p>" +
         "<p>Combustible: " + fuel + "</p>" +
         "</div>" +
         "<div class='align-middle' title='Última veolicidad registrada Velocidad'>Velocidad: " + velocidad + " km/h</div><hr style='color: #566167;'/>" +
-        "<div><h5>Conductor Asignado:</h5><p class='mb-0' title='Conductor'>" + conductor_asignado + "</p></div>"
+        "<div><h4 style='font-weight: bold'>Conductor Asignado:</h4><p class='mb-0' title='Conductor'>" + conductor_asignado + "</p></div>"
     );
 
     // Añade los elementos al div #info_result
