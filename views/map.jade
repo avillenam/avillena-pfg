@@ -678,17 +678,41 @@ block content
             createVehicleHTMLelements();
 
             // Funcionalidad al mover el cursor para mostrar info del vehículo
-            map.on('pointermove', function (evt) {
-                if (evt.dragging) {
+            var selected = null;
+
+            map.on('pointermove', function (e) {
+                if (e.dragging) {
                     info.tooltip('hide');
                     return;
                 }
-                displayFeatureInfo(map.getEventPixel(evt.originalEvent));
+                displayFeatureInfo(map.getEventPixel(e.originalEvent));
+
+                // resaltar elemento al pasar el ratón
+                if (selected !== null) {
+                    selected.setStyle(undefined);
+                    selected = null;
+                }
+
+                map.forEachFeatureAtPixel(e.pixel, function (f) {
+                    selected = f;
+                    f.setStyle(highlightStyle);
+                    return true;
+                });
+
+                if (selected) {
+                    console.log(selected.get('matricula'));
+                } else {
+                    console.log();
+                }
+
+
             });
 
+            /*
             map.on('click', function (evt) {
                 displayFeatureInfo(evt.pixel);
             });
+            */
 
 
             // lanza las peticiones en bucle cada 5 segundos

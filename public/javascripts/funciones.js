@@ -309,13 +309,6 @@ style_tail_function = function (feature) {
 };
 
 // Estilo para las rutas
-var routeStyle = new ol.style.Style({
-    stroke: new ol.style.Stroke({
-        color: '#180eee',
-        width: 3
-    })
-});
-
 style_route_function = function (feature) {
     var geometry = feature.getGeometry();
 
@@ -410,6 +403,16 @@ style_route_function = function (feature) {
     return styles;
 };
 
+
+var highlightStyle = new ol.style.Style({
+    fill: new ol.style.Fill({
+        color: 'rgba(255,255,255,0.7)'
+    }),
+    stroke: new ol.style.Stroke({
+        color: '#3399CC',
+        width: 3
+    })
+});
 
 //Función que obtiene las últimas posiciones de todos los vehículos
 function obtienePosicionActualVehiculos(vehicles) {
@@ -886,3 +889,28 @@ function toggleBtnMostrarRutas() {
     }
 }
 
+
+// Funcionalidad al pasar el ratón por encima de un elemento se ilumine en el panel de resultados
+
+
+/*
+map.on('pointermove', function(e) {
+    if (selected !== null) {
+        selected.setStyle(undefined);
+        selected = null;
+    }
+
+    map.forEachFeatureAtPixel(e.pixel, function(f) {
+        selected = f;
+        f.setStyle(highlightStyle);
+        return true;
+    });
+
+    if (selected) {
+        console.log(selected.get('matricula'));
+    } else {
+        console.log();
+    }
+});
+
+ */
