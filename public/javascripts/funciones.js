@@ -330,32 +330,18 @@ style_route_function = function (feature) {
     ];
 
 
-
-
     var lineStrings = geometry.getLineStrings();
     for (var i = 0; i < lineStrings.length; i++) {
-        var line =  lineStrings[i];
+        var line = lineStrings[i];
         var longitud = line.getLength();
         var coordenadasPuntos = line.getCoordinates();
         var numPuntos = coordenadasPuntos.length;
-        var ratio = (longitud/numPuntos)*.2;
+        var ratio = (longitud / numPuntos) * .2;
 
         // Simplifica el LineString para que no sature el mapa de flechas
         line = line.simplify(ratio);
 
-        //TODO: Darle al primer y al último punto simbologías diferentes
-
-
-        //var rotacionPtoFinal = extractRotation([ptoFinalAnt, ptoFinal]);
-
-
-        /*
-        if(line.getLength() > 700){
-            line = line.simplify(50);
-        }
-
-         */
-
+        // Introduce las flechas de direccion de la ruta
         line.forEachSegment(function (start, end) {
             var dx = end[0] - start[0];
             var dy = end[1] - start[1];
@@ -372,6 +358,29 @@ style_route_function = function (feature) {
             }));
         });
 
+        //TODO: Darle al primer y al último punto simbologías diferentes
+        // Simpología para los puntos de parada
+        var ptoParada1 = line.getFirstCoordinate();
+        styles.push(new ol.style.Style({
+            geometry: new ol.geom.Point(ptoParada1),
+            image: new ol.style.Icon({
+                src: '/images/route_stop.png',
+                anchor: [.5, .5],
+                rotateWithView: true
+            })
+        }));
+
+        if (i != (lineStrings.length - 1)) {
+            var ptoParada2 = line.getLastCoordinate();
+            styles.push(new ol.style.Style({
+                geometry: new ol.geom.Point(ptoParada2),
+                image: new ol.style.Icon({
+                    src: '/images/route_stop.png',
+                    anchor: [.5, .5],
+                    rotateWithView: true
+                })
+            }));
+        }
 
 
         // Diferente simbología para los puntos inicial y final
@@ -396,7 +405,6 @@ style_route_function = function (feature) {
         }));
 
     }
-
 
 
     return styles;
