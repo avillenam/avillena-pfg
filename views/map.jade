@@ -79,16 +79,17 @@ block content
             .panel-heading
                 ul.nav.nav-tabs
                     li.active
-                        a#tab-info(href='#tab_info', data-toggle='tab') Info
-                    li
                         a#tab-rutas(href='#tab_rutas', data-toggle='tab') Rutas
+                    li
+                        a#tab-info(href='#tab_info', data-toggle='tab') Información del vehículo
             .panel-body
                 .tab-content
-                    #tab_info.tab-pane.fade.in.active
-                        div#info_result
-                    #tab_rutas.tab-pane.fade
+                    #tab_rutas.tab-pane.fade.in.active
                         div.p-0.card-body
                             div#rutas_result
+                    #tab_info.tab-pane.fade
+                        div#info_result
+
     .btn-group-vertical(role="group" aria-label="Vertical button group")#buttons-group
         .btn-group(role="group" title="Capas Base del Mapa")
             button.btn.btn-default.dropdown-toggle#btnGroupVerticalDrop1(type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")
@@ -148,6 +149,46 @@ block content
         br
         p "Distance:"
         span
+    // Modal EDITAR Vehiculo
+    #editFormVehicle.modal.fade(tabindex='-1', role='dialog', aria-labelledby='editFormVehicleLabel')
+        .modal-dialog(role='document')
+            .modal-content
+                form(method="post" action="/editVehicle")
+                    input(type="hidden" id="edit-vehicle-form-id" name="id")
+                    .modal-header
+                        button.close(type='button', data-dismiss='modal', aria-label='Cerrar')
+                            span(aria-hidden='true') ×
+                        h4#myEditVehicleLabel.modal-title Editar Vehiculo
+                    .modal-body
+                        .form-group
+                            label Tipo de Vehículo
+                            input.form-control(type="text" name="type" id="edit-vehicle-form-type")
+                        .form-group
+                            label Marca
+                            input.form-control(type="text" name="brand" id="edit-vehicle-form-brand")
+                        .form-group
+                            label Modelo
+                            input.form-control(type="text" name="model" id="edit-vehicle-form-model")
+                        .form-group
+                            label Número de Pasajeros
+                            input.form-control(type="number" name="passengers" id="edit-vehicle-form-passengers")
+                        .form-group
+                            label Tipo de Comnbustible
+                            select.form-control(type="text" name="fuel" id="edit-vehicle-form-fuel")
+                                option(value="Diesel") Diesel
+                                option(value="Gasolina") Gasolina
+                                option(value="Electricidad") Electricidad
+                                option(value="Sin combustible") Sin combustible
+                        .form-group
+                            label Disponible
+                            input.form-control(type="text" name="available" id="edit-vehicle-form-available")
+
+                            //select.form-control(type="text" name="available" id="edit-vehicle-form-available")
+                            //    option(value="true") True
+                            //    option(value="false") False
+                    .modal-footer
+                        button.btn.btn-default(type='button', data-dismiss='modal') Close
+                        input.btn.btn-primary(type='submit' value="Guardar")
 
     //form.flotante(method="post" action="/coords")
     //    .input-group.flex-nowrap.col-12
@@ -716,7 +757,7 @@ block content
 
 
             // lanza las peticiones en bucle cada 5 segundos
-           //setInterval(updatePosition, 5000);
+            //setInterval(updatePosition, 5000);
             function updatePosition() {
                 console.log('actualiza!');
 
@@ -922,7 +963,3 @@ block content
 
 
         });
-
-
-
-

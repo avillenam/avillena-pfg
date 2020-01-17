@@ -303,7 +303,7 @@ tr {
 }
 
 
-.resultItem .editIcon {
+#info_result .editIcon {
     /*float: right;*/
     border-radius: 30px;
     width: 30px;
@@ -311,12 +311,25 @@ tr {
     text-align: center;
     line-height: 30px;
     position: absolute;
-    /*top: 7px;*/
+    top: 300px;
     right: 40px;
     cursor: pointer;
 }
 
-.resultItem .deleteIcon {
+#info_result .editRelationIcon {
+    /*float: right;*/
+    border-radius: 30px;
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    line-height: 30px;
+    position: absolute;
+    top: 460px;
+    right: 40px;
+    cursor: pointer;
+}
+
+#info_result .deleteIcon {
     /*float: right;*/
     border-radius: 30px;
     width: 30px;
@@ -325,11 +338,38 @@ tr {
     line-height: 30px;
     position: absolute;
     right: 8px;
-    /*top: 6px;*/
+    top: 300px;
     color: red;
     cursor: pointer;
 }
 
+
+#info_result .relationIcon {
+    /*float: right;*/
+    border-radius: 30px;
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    line-height: 30px;
+    position: absolute;
+    top: 460px;
+    right: 72px;
+    cursor: pointer;
+}
+
+#info_result .deleteRelationIcon {
+    /*float: right;*/
+    border-radius: 30px;
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    line-height: 30px;
+    position: absolute;
+    right: 8px;
+    top: 460px;
+    color: red;
+    cursor: pointer;
+}
 
 .panel-body {
     background: #3b3d4d;
@@ -508,6 +548,6 @@ label {
 }
 
 /*Vehiculos activos o con geometría*/
-.activo{
+.activo {
     color: green;
 }
