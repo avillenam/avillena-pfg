@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="6d5f1f38-e885-4881-8791-5da2d0a04345" name="Default Changelist" comment="" />
+    <list default="true" id="6d5f1f38-e885-4881-8791-5da2d0a04345" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/css/style.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/javascripts/constants.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/javascripts/constants.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/javascripts/funciones.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/javascripts/funciones.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/queries.js" beforeDir="false" afterPath="$PROJECT_DIR$/queries.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/map.jade" beforeDir="false" afterPath="$PROJECT_DIR$/views/map.jade" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -145,7 +152,8 @@
       <workItem from="1573579703488" duration="3125000" />
       <workItem from="1573909740381" duration="46373000" />
       <workItem from="1576956994211" duration="13080000" />
-      <workItem from="1577113620965" duration="176836000" />
+      <workItem from="1577113620965" duration="181698000" />
+      <workItem from="1579367919961" duration="5742000" />
     </task>
     <task id="LOCAL-00001" summary="version 2.5.1">
       <created>1572271103995</created>
@@ -420,7 +428,14 @@
       <option name="project" value="LOCAL" />
       <updated>1579200664748</updated>
     </task>
-    <option name="localTasksCounter" value="40" />
+    <task id="LOCAL-00040" summary="version 5.1">
+      <created>1579274831523</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1579274831523</updated>
+    </task>
+    <option name="localTasksCounter" value="41" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -455,7 +470,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="version 2.8" />
     <MESSAGE value="version 2.8.1" />
     <MESSAGE value="version 2.8.2" />
     <MESSAGE value="version 2.8.3" />
@@ -480,7 +494,8 @@
     <MESSAGE value="version 4.6" />
     <MESSAGE value="version 4.7" />
     <MESSAGE value="version 5.0" />
-    <option name="LAST_COMMIT_MESSAGE" value="version 5.0" />
+    <MESSAGE value="version 5.1" />
+    <option name="LAST_COMMIT_MESSAGE" value="version 5.1" />
   </component>
   <component name="masterDetails">
     <states>

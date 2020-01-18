@@ -251,13 +251,14 @@ tr {
     display: block;
     width: 24px;
     height: 24px;
-    font-size: 14px;
+    font-size: 16px;
     line-height: 24px;
     transition: all ease 0.4s;
 }
 
 #tools {
-    width: 25%;
+    /*width: 25%;*/
+    width: 370px;
     max-width: 94vw;
     background: #3b3d4d;
     z-index: 1;
@@ -270,7 +271,8 @@ tr {
 }
 
 #info-results {
-    width: 20%;
+    /*width: 20%;*/
+    width: 300px;
     max-width: 94vw;
     background: #3b3d4d;
     z-index: 1;
@@ -302,74 +304,97 @@ tr {
 
 }
 
+.tileActions {
+    float: right;
+}
 
+#info_result a,
+.resultItem a{
+    border-radius: 30px;
+    text-align: center;
+    line-height: 30px;
+    cursor: pointer;
+    margin: 5px;
+}
+
+#info_result .deleteIcon,
+.resultItem .deleteIcon{
+    color: red;
+}
+
+/*
 #info_result .editIcon {
-    /*float: right;*/
+    !*float: right;*!
     border-radius: 30px;
     width: 30px;
     height: 30px;
     text-align: center;
     line-height: 30px;
-    position: absolute;
+    !*position: absolute;*!
     top: 300px;
     right: 40px;
     cursor: pointer;
+    margin: 5px;
 }
 
 #info_result .editRelationIcon {
-    /*float: right;*/
+    !*float: right;*!
     border-radius: 30px;
     width: 30px;
     height: 30px;
     text-align: center;
     line-height: 30px;
-    position: absolute;
+    !*position: absolute;*!
     top: 460px;
     right: 40px;
     cursor: pointer;
+    margin: 5px;
 }
 
 #info_result .deleteIcon {
-    /*float: right;*/
+    !*float: right;*!
     border-radius: 30px;
     width: 30px;
     height: 30px;
     text-align: center;
     line-height: 30px;
-    position: absolute;
+    !*position: absolute;*!
     right: 8px;
     top: 300px;
     color: red;
     cursor: pointer;
+    margin: 5px;
 }
 
 
 #info_result .relationIcon {
-    /*float: right;*/
+    !*float: right;*!
     border-radius: 30px;
     width: 30px;
     height: 30px;
     text-align: center;
     line-height: 30px;
-    position: absolute;
+    !*position: absolute;*!
     top: 460px;
     right: 72px;
     cursor: pointer;
+    margin: 5px;
 }
 
 #info_result .deleteRelationIcon {
-    /*float: right;*/
+    !*float: right;*!
     border-radius: 30px;
     width: 30px;
     height: 30px;
     text-align: center;
     line-height: 30px;
-    position: absolute;
+    !*position: absolute;*!
     right: 8px;
     top: 460px;
     color: red;
     cursor: pointer;
-}
+    margin: 5px;
+}*/
 
 .panel-body {
     background: #3b3d4d;
@@ -550,4 +575,14 @@ label {
 /*Vehiculos activos o con geometría*/
 .activo {
     color: green;
+}
+
+
+.nav-tabs>li>a {
+    font-size: 12px;
+}
+
+.nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover {
+    font-size: 14px;
+    font-weight: bold;
 }

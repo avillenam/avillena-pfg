@@ -15,18 +15,9 @@ block content
     //    "Loading data..."
     div(style="display: none;")
         #marker(title="Marker")
-    //div.btn-group(role="group" style="position: absolute; right: 3em; top: 60px;")
-    //    div.btn.btn-default.selected#mapOSM(type="button" style="visibility:visible; background: url(/images/mapOSM.jpg)" onclick="toggleOSMLayer()") OSM
-    //    div.btn.btn-default#mapPNOA(type="button" style="visibility:visible; background: url(/images/mapPNOA.jpg)" onclick="togglePNOALayer()") PNOA
-    div.col-md-1(style="position: absolute; right: 1em; bottom: 60px;")
-        a.btn.btn-primary.btn-block(type="button" data-toggle="modal" data-target="#formVehicle" style="position: absolute; right: 3em; ") Añade Vehiculo
-    div.col-md-1(style="position: absolute; right: 1em; bottom: 95px;")
-        a.btn.btn-primary.btn-block(type="button" data-toggle="modal" data-target="#formDriver" style="position: absolute; right: 3em; ") Añade Conductor
-    div.col-md-1(style="position: absolute; right: 1em; bottom: 130px;")
-        a.btn.btn-primary.btn-block(type="button" data-toggle="modal" data-target="#formVehicleDriver" style="position: absolute; right: 3em; ") Vehículo-Conductor
-    a.toggleSettings
+    a.toggleSettings(title='Panel Principal')
         i.fa.fa-bars
-    a.toggleResults
+    a.toggleResults(title='Panel de Resultados')
         i.fa.fa-bars
     div#alerts
     div#tools
@@ -40,7 +31,7 @@ block content
                     li
                         a#tab-drivers(href='#tab_drivers_results', data-toggle='tab') Conductores
                     li
-                        a#tab-filtros(href='#tab_filtros', data-toggle='tab') Filtros
+                        a#tab-opciones(href='#tab_opciones', data-toggle='tab') Opciones
             .panel-body
                 .tab-content
                     #tab_vehicles_results.tab-pane.fade.in.active
@@ -55,23 +46,18 @@ block content
                                 tbody#vehicles_results
                     #tab_drivers_results.tab-pane.fade
                         div#drivers_results
-                    #tab_filtros.tab-pane.fade
-                        div#filtros
+                    #tab_opciones.tab-pane.fade
+                        div#opciones
                             div.group
-                                h4 Fecha de registro
-                                div.panel-body
-                                    div.form-group
-                                        div.advanced-calendar-label
-                                            label Desde:
-                                            p.input-group
-                                                input#fecha_desde.datepicker.form-control(type="text" placeholder="Desde" autocomplete="off")
-                                        div.advanced-calendar-label
-                                            label Hasta:
-                                            p.input-group
-                                                input#fecha_hasta.datepicker.form-control(type="text" placeholder="Hasta" autocomplete="off")
-                                        button.btn.btn-success(type='button' onclick="fechaRegistroHoy()" title="Registro hoy") Fecha de Registro HOY
-                                    span(style="right:2em;")
-                                        button.btn-xs.btn.btn-warning(type='button' onclick="limpiaFiltros()" title="limpiar filtros de búsqueda") Limpiar filtros
+                                h4 Crea nuevo Vehículo
+                                div.form-group
+                                    button.btn.btn-primary.btn-block(type='button' title="Crea nuevo vehículo" data-toggle="modal" data-target="#formVehicle") Crea nuevo vehículo
+                                h4 Crea nuevo Conductor
+                                div.form-group
+                                    button.btn.btn-primary.btn-block(type='button' title="Crea nuevo conductor" data-toggle="modal" data-target="#formDriver") Crea nuevo conductor
+                                h4 Crea relación Vehículo-Conductor
+                                div.form-group
+                                    button.btn.btn-primary.btn-block(type='button' title="Crea relación Vehículo-Conductor" data-toggle="modal" data-target="#formVehicleDriver") Vehículo-Conductor
     div#info-results
         header.logoHeader
             h3 Resultados
@@ -149,6 +135,50 @@ block content
         br
         p "Distance:"
         span
+
+    // Modal AÑADIR vehículo
+    #formVehicle.modal.fade(tabindex='-1', role='dialog', aria-labelledby='formVehicleLabel')
+        .modal-dialog(role='document')
+            .modal-content
+                form(method="post" action="/vehicle")
+                    .modal-header
+                        button.close(type='button', data-dismiss='modal', aria-label='Close')
+                            span(aria-hidden='true') ×
+                        h4#myVehicleLabel.modal-title Añade Vehículo
+                    .modal-body
+                        .form-group
+                            label Tipo de Vehículo
+                            select.form-control(type="text" name="type")
+                                option(value="Coche") Coche
+                                option(value="Furgoneta") Furgoneta
+                                option(value="Camión") Camión
+                                option(value="Bicicleta") Bicicleta
+                                option(value="Motocicleta") Motocicleta
+                                option(value="Scooter Eléctrico") Scooter Eléctrico
+                        .form-group
+                            label Marca
+                            input.form-control(type="text" name="brand")
+                        .form-group
+                            label Modelo
+                            input.form-control(type="text" name="model")
+                        .form-group
+                            label Número de pasajeros
+                            input.form-control(type="number" name="passengers")
+                        .form-group
+                            label Tipo de combustible
+                            select.form-control(type="text" name="fuel")
+                                option(value="Diesel") Diesel
+                                option(value="Gasolina") Gasolina
+                                option(value="Electricidad") Electricidad
+                                option(value="Sin combustible") Sin combustible
+                        .form-group
+                            label Disponible
+                            select.form-control(type="text" name="available")
+                                option(value="true") Verdadero
+                                option(value="false") Falso
+                    .modal-footer
+                        button.btn.btn-default(type='button', data-dismiss='modal') Cerrar
+                        input.btn.btn-primary(type='submit' value="Guardar")
     // Modal EDITAR Vehiculo
     #editFormVehicle.modal.fade(tabindex='-1', role='dialog', aria-labelledby='editFormVehicleLabel')
         .modal-dialog(role='document')
@@ -182,13 +212,101 @@ block content
                         .form-group
                             label Disponible
                             input.form-control(type="text" name="available" id="edit-vehicle-form-available")
-
-                            //select.form-control(type="text" name="available" id="edit-vehicle-form-available")
-                            //    option(value="true") True
-                            //    option(value="false") False
                     .modal-footer
                         button.btn.btn-default(type='button', data-dismiss='modal') Close
                         input.btn.btn-primary(type='submit' value="Guardar")
+    // Modal AÑADIR Conductor
+    #formDriver.modal.fade(tabindex='-1', role='dialog', aria-labelledby='formDriverLabel')
+        .modal-dialog(role='document')
+            .modal-content
+                form(method="post" action="/driver")
+                    .modal-header
+                        button.close(type='button', data-dismiss='modal', aria-label='Cerrar')
+                            span(aria-hidden='true') ×
+                        h4#myDriverLabel.modal-title Añadir conductor
+                    .modal-body
+                        .form-group
+                            label Email
+                            input.form-control(type="email" name="email")
+                        .form-group
+                            label Contraseña
+                            input.form-control(type="password" name="password")
+                        .form-group
+                            label Nombre
+                            input.form-control(type="text" name="name")
+                        .form-group
+                            label Apellido
+                            input.form-control(type="text" name="surname")
+                        .form-group
+                            label Fecha de nacimiento
+                            input.form-control(type="date" name="birthdate")
+                        .form-group
+                            label Género
+                            select.form-control(type="text" name="genre")
+                                option(value="Masculino") Masculino
+                                option(value="Femenino") Femenino
+                        .form-group
+                            label Número de móvil
+                            input.form-control(type="tel" name="mobile_number")
+                    .modal-footer
+                        button.btn.btn-default(type='button', data-dismiss='modal') Cerrar
+                        input.btn.btn-primary(type='submit' value="Guardar")
+    // Modal EDIT Conductor
+    #editFormDriver.modal.fade(tabindex='-1', role='dialog', aria-labelledby='editFormDriverLabel')
+        .modal-dialog(role='document')
+            .modal-content
+                form(method="post" action="/editDriver")
+                    input(type="hidden" id="edit-form-id" name="id")
+                    .modal-header
+                        button.close(type='button', data-dismiss='modal', aria-label='Close')
+                            span(aria-hidden='true') ×
+                        h4#myEditDriverLabel.modal-title Editar Conductor
+                    .modal-body
+                        .form-group
+                            label Email
+                            input.form-control(type="email" name="email" id="edit-form-email")
+                        //TODO: Añadir comprobación de password
+                        .form-group
+                            label Contraseña
+                            input.form-control(type="password" name="password" id="edit-form-password")
+                        .form-group
+                            label Nombre
+                            input.form-control(type="text" name="name" id="edit-form-name")
+                        .form-group
+                            label Apellido
+                            input.form-control(type="text" name="surname" id="edit-form-surname")
+                        .form-group
+                            label Fecha de nacimiento
+                            input.form-control(type="text" name="birthdate" id="edit-form-birthdate")
+                        .form-group
+                            label Género
+                            input.form-control(type="text" name="genre" id="edit-form-genre")
+                        .form-group
+                            label Número de móvil
+                            input.form-control(type="tel" name="mobile_number" id="edit-form-mobile_number")
+                    .modal-footer
+                        button.btn.btn-default(type='button', data-dismiss='modal') Close
+                        input.btn.btn-primary(type='submit' value="Save")
+    // Modal ADD Vehicle-Driver relation
+    #formVehicleDriver.modal.fade(tabindex='-1', role='dialog', aria-labelledby='formVehicleDriverLabel')
+        .modal-dialog(role='document')
+            .modal-content
+                form(method="post" action="/vehicleDriver")
+                    .modal-header
+                        button.close(type='button', data-dismiss='modal', aria-label='Close')
+                            span(aria-hidden='true') ×
+                        h4#myVehicleDriverLabel.modal-title Establece relación Conductor-Vehículo
+                    .modal-body
+                        // TODO:para cada uno de los siguientes hacer un "select" obteniendolos de una consulta a la base de datos.
+                        .form-group
+                            label Conductor
+                            input.form-control(type="text" name="id_driver")
+                        .form-group
+                            label Vehículo
+                            input.form-control(type="text" name="id_vehicle")
+                    .modal-footer
+                        button.btn.btn-default(type='button', data-dismiss='modal') Close
+                        input.btn.btn-primary(type='submit' value="Save")
 
     //form.flotante(method="post" action="/coords")
     //    .input-group.flex-nowrap.col-12
@@ -666,7 +784,69 @@ block content
         }
 
         function updateFunctions() {
+            // Edita conductor seleccionado
+            $(".edit-driver").on('click', function () {
+                // console.log('intentando editar un driver');
+                $("#edit-form-id").val($(this).data('id'));
+                $("#edit-form-name").val($(this).data('name'));
+                $("#edit-form-surname").val($(this).data('surname'));
+                $("#edit-form-birthdate").val($(this).data('birthdate'));
+                $("#edit-form-genre").val($(this).data('genre'));
+                $("#edit-form-mobile_number").val($(this).data('mobile_number'));
+                $("#edit-form-email").val($(this).data('email'));
+                $("#edit-form-password").val($(this).data('password'));
 
+            });
+
+            // Edita el vehículo seleccionado
+            $(".edit-vehicle").on('click', function () {
+                $("#edit-vehicle-form-id").val($(this).data('id'));
+                $("#edit-vehicle-form-type").val($(this).data('type'));
+                $("#edit-vehicle-form-brand").val($(this).data('brand'));
+                $("#edit-vehicle-form-model").val($(this).data('model'));
+                $("#edit-vehicle-form-passengers").val($(this).data('passengers'));
+                $("#edit-vehicle-form-fuel").val($(this).data('fuel'));
+                $("#edit-vehicle-form-available").val($(this).data('available'));
+            });
+
+            // Borra conductor por su 'id'
+            $(".delete-driver").on('click', function () {
+                var id = $(this).data('id');
+                var url = '/deleteDriver/' + id;
+                if (confirm('¿Eliminar conductor con id:' + id + '?')) {
+                    $.ajax({
+                        url: url,
+                        type: 'DELETE',
+                        success: function (result) {
+                            console.log('Borrando conductor con id:' + id);
+                            window.location.href = '/map';
+                        },
+                        error: function (err) {
+                            console.log(err);
+                        }
+                    })
+                }
+            });
+
+            // Elimina vehículo por su 'id'
+            $(".delete-vehicle").on('click', function () {
+                var id = $(this).data('id');
+                var url = '/deleteVehicle/' + id;
+                if (confirm('¿Eliminar vehículo con id:' + id + '?')) {
+                    // elimina conductor a través de una petición DELETE
+                    $.ajax({
+                        url: url,
+                        type: 'DELETE',
+                        success: function (result) {
+                            console.log('Borrando Vehiculo con id:' + id);
+                            window.location.href = '/map';
+                        },
+                        error: function (err) {
+                            console.log(err);
+                        }
+                    })
+                }
+            });
         }
 
         function limpiaFiltros() {
@@ -728,6 +908,7 @@ block content
                 }
                 displayFeatureInfo(map.getEventPixel(e.originalEvent));
 
+                /*
                 // resaltar elemento al pasar el ratón
                 if (selected !== null) {
                     selected.setStyle(undefined);
@@ -745,7 +926,7 @@ block content
                 } else {
                     console.log();
                 }
-
+            */
 
             });
 
@@ -959,7 +1140,5 @@ block content
 
                 console.log('Elemento seleccionado: ' + id);
             });
-
-
 
         });
