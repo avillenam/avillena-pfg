@@ -20,6 +20,5 @@
     "postgeo": "*",
     "serve-favicon": "^2.5.0"
   },
-  "devDependencies": {
-  }
+  "devDependencies": {}
 }
