@@ -2,12 +2,12 @@
 // --------CAPAS--------
 /***********************/
 
-var vehiclesLayer;    // Capa para las ultimas posiciones de los vehículos
-var tailsLayer;     // Capa para las colas de las rutas de los vehículos
-var routesLayer;    // Capa para las rutas de los vehículos
+var vehiclesLayer;    // Capa para las ultimas posiciones de los objetos
+var tailsLayer;     // Capa para las colas de las rutas de los objetos
+var routesLayer;    // Capa para las rutas de los objetos
 
-// Crea la capa que contendrá las posiciones actuales de los vehículos
-function creaCapaPosicionVehiculos(geometrias) {
+// Crea la capa que contendrá las posiciones actuales de los objetos
+function creaCapaPosicionVehiculos() {
     vehiclesLayer = new ol.layer.Vector({
         source: new ol.source.Vector({
             /*
@@ -22,10 +22,10 @@ function creaCapaPosicionVehiculos(geometrias) {
 
     map.addLayer(vehiclesLayer);
 
-};
+}
 
 
-// Crea la capa para mostrar las colas de los vehículos
+// Crea la capa para mostrar las colas de los objetos
 function creaCapaColasVehiculos() {
     tailsLayer = new ol.layer.Vector({
         source: new ol.source.Vector({
@@ -43,7 +43,7 @@ function creaCapaColasVehiculos() {
 }
 
 
-// Crea la capa para mostrar las rutas de los vehículos
+// Crea la capa para mostrar las rutas de los objetos
 function creaCapaRutasVehiculos() {
     routesLayer = new ol.layer.Vector({
         source: new ol.source.Vector({
@@ -69,7 +69,7 @@ function generateColor() {
 }
  */
 
-// Obtiene todos los vehículos
+// Obtiene todos los objetos
 function getVehicles() {
     //console.log('peticion enviada');
     theUrl = ROOT + '/getVehicles';
@@ -83,27 +83,27 @@ function getVehicle(id) {
     var vehiculo = {};
     for (var i = 0; i < numVehiculos; i++) {
         var temp = ultimasPosicionesVehiculos.features[i];
-        if (temp.properties.id_vehicle == id) {
+        if (temp.properties.id_vehicle === id) {
             vehiculo = temp;
         }
     }
     return vehiculo;
 }
 
-// Obtiene todos los conductores y crea los elementos HTML
-//TODO: separar el obtener los objetos de los conductores de la creación de los HTML como en getVehicles()
+// Obtiene todos los portadores y crea los elementos HTML
+//TODO: separar el obtener los objetos de los portadores de la creación de los HTML como en getVehicles()
 function getDrivers() {
     // consulta a lanzarse
     theUrl = ROOT + '/getDrivers';
 
-    // petición http para obtener los conductores
+    // petición http para obtener los portadores
     driversJSON = JSON.parse(httpGet(theUrl));
     numDrivers = driversJSON.length;
 
     //console.log('driversJSON: ' + JSON.stringify(driversJSON));
 
     //Variables para alojar los items
-    var myItems = [], $drivers_results = $('#drivers_results');
+    var myItems = [];
 
     // Buclque para crear cada elemento en el panel del visualizador
     for (var i = 0; i < numDrivers; i++) {
@@ -118,7 +118,7 @@ function getDrivers() {
         var email = driversJSON[i]['email'];
         var available = driversJSON[i]['available'];
 
-        // Petición de vehículo asignado
+        // Petición de objeto asignado
         theUrlVehicle = ROOT + '/vehicleByIdDriver/' + id;
         var response = httpGet(theUrlVehicle);
         //console.log('Ha hecho la petición: ' + theUrlVehicle );
@@ -127,19 +127,20 @@ function getDrivers() {
         //console.log('resVehicleAssigned: ' + resVehicleAssigned);
         //console.log('resVehicleAssigned: ' + JSON.stringify(resVehicleAssigned));
         //console.log('resVehicleAssigned.length: ' + resVehicleAssigned.length);
-        // variable para establecer el icono del tipo de vehículo asignado. Por defecto: 'coche'
+        // variable para establecer el icono del tipo de objeto asignado. Por defecto: 'coche'
         var vehicle_mini_icon = 'f5de';
         var id_vehicle;
-        if (resVehicleAssigned.length == !0) {
+        var visibility;
+        if (resVehicleAssigned.length === !0) {
             //console.log('resVehicleAssigned.length == !0');
             var vehicle = resVehicleAssigned[0];
             id_vehicle = vehicle['id_vehicle'] + ': ' + vehicle['brand'] + ' ' + vehicle['model'];
             var vehicle_type = vehicle['type'];
-            var visibility = vehicle['visibility'];
+            visibility = vehicle['visibility'];
             //console.log(id_vehicle);
         } else {
             id_vehicle = 'No asignado.';
-            var visibility = false;
+            visibility = false;
             //console.log(id_vehicle);
         }
 
@@ -156,7 +157,7 @@ function getDrivers() {
                 gender_icon = 'interrogacion_icon.png';
         }
 
-        // Icono para el tipo de vehículo asignado
+        // Icono para el tipo de objeto asignado
         switch (vehicle_type) {
             case 'Coche':
                 vehicle_mini_icon = 'f5de';
@@ -176,34 +177,37 @@ function getDrivers() {
             case 'Scooter Eléctrico':
                 vehicle_mini_icon = 'f0e7';
                 break;
+            case 'Objeto':
+                vehicle_mini_icon = 'f1b2';
+                break;
             default:
                 vehicle_mini_icon = 'f5de'
         }
 
         // Establece el icono de visibilidad
         var eye = '';
-        if (visibility == 'false') {
+        if (visibility === 'false') {
             eye = 'fa-eye';
         } else {
             eye = 'fa-eye-slash';
         }
 
-        // Crea un elemento por cada conductor
+        // Crea un elemento por cada portador
         myItems.push("" +
             "<div class='resultItem'>" +
-                "<img class='list-thumbnail' src='/images/" + gender_icon + "' width='50'>" +
+                "<img class='list-thumbnail' src='/images/" + gender_icon + "' width='50' alt='icon result'>" +
                 "<div href='#" + id + "' class='details'>" +
                     "<div class='list-group-item-heading'><i class='fa fa-hashtag'></i>" + id + "</div>" +
                     "<div title='Email'><i class='fa fa-at'></i>" + email + "</div>" +
-                    "<div title='Nombre de conductor'><i class='glyphicon glyphicon-user'></i>" + name + " " + surname + "</div>" +
+                    "<div title='Nombre de portador'><i class='glyphicon glyphicon-user'></i>" + name + " " + surname + "</div>" +
                     "<div title='Fecha de nacimiento'><i class='glyphicon glyphicon-calendar'></i>" + birthdate + "</div>" +
                     "<div title='Género'><i class='fa fa-genderless'></i>" + genre + "</div>" +
                     "<div title='Número de móvil'><i class='fa fa-mobile-alt'></i>" + mobile_number + "</div>" +
-                    "<div title='Vehículo'><i class='fa'>&#x" + vehicle_mini_icon + "</i>" + id_vehicle + "</div>" +
+                    "<div title='Objeto Móvil'><i class='fa'>&#x" + vehicle_mini_icon + "</i>" + id_vehicle + "</div>" +
                 "</div>" +
                 "<div class='tileActions'>" +
-                    "<a title='Eliminar conductor' class='deleteIcon delete-driver' data-id=" + id + "><i class='fa fa-trash'></i></a>" +
-                    "<a title='Editar conductor' class='editIcon edit-driver' data-toggle='modal' data-target='#editFormDriver' " +
+                    "<a title='Eliminar portador' class='deleteIcon delete-driver' data-id=" + id + "><i class='fa fa-trash'></i></a>" +
+                    "<a title='Editar portador' class='editIcon edit-driver' data-toggle='modal' data-target='#editFormDriver' " +
                     " data-id=" + id + " data-name=" + name + " data-surname=" + surname + " data-birthdate= " + birthdate +
                     " data-genre=" + genre + " data-mobile_number= " + mobile_number + " data-email=" + email +
                     " data-available=" + available +
@@ -214,7 +218,7 @@ function getDrivers() {
             "</div>");
     }
     $('#drivers_results').html(myItems.join(''));
-    //console.log('Conductores capturados: ')
+    //console.log('portadores capturados: ')
     //console.log(driversJSON);
     updateFunctions();
 }
@@ -225,7 +229,7 @@ function getDriver(id) {
     var conductor = {};
     for (var i = 0; i < numConductores; i++) {
         var temp = driversJSON[i];
-        if (temp.id_driver == id) {
+        if (temp.id_driver === id) {
             conductor = temp;
         }
     }
@@ -238,10 +242,8 @@ function extractRotation(coordinates) {
     var start = coordinates[1];
     var dx = end[0] - start[0];
     var dy = end[1] - start[1];
-    var dx = end[0] - start[0];
-    var dy = end[1] - start[1];
     return Math.atan2(dy, dx);
-};
+}
 
 // Petición GET dada una URL
 function httpGet(theUrl) {
@@ -266,7 +268,7 @@ custom_styles = {
     })
 };
 
-// Función que crea el estilo para los puntos que indican la posición actual de los vehículos
+// Función que crea el estilo para los puntos que indican la posición actual de los objetos
 style_function = function (feature) {
     var rotation = feature.getProperties().rotacion;
     style_nr = feature.getGeometry().getType();
@@ -285,7 +287,7 @@ style_function = function (feature) {
     return style;
 };
 
-// Función que crea el estilo para los puntos que indican la posición actual de los vehículos
+// Función que crea el estilo para los puntos que indican la posición actual de los objetos
 style_tail_function = function (feature) {
     var geometry = feature.getGeometry();
     var styles = [
@@ -372,7 +374,7 @@ style_route_function = function (feature) {
             })
         }));
 
-        if (i != (lineStrings.length - 1)) {
+        if (i !== (lineStrings.length - 1)) {
             var ptoParada2 = line.getLastCoordinate();
             styles.push(new ol.style.Style({
                 geometry: new ol.geom.Point(ptoParada2),
@@ -423,12 +425,12 @@ var highlightStyle = new ol.style.Style({
     })
 });
 
-//Función que obtiene las últimas posiciones de todos los vehículos
+//Función que obtiene las últimas posiciones de todos los objetos
 function obtienePosicionActualVehiculos(vehicles) {
     let url;
     let lastTwoPoints = {};
     let ultimasPosicionesVehiculos = {};
-    ultimasPosicionesVehiculos.type = 'FeatureCollection'
+    ultimasPosicionesVehiculos.type = 'FeatureCollection';
     ultimasPosicionesVehiculos.features = [];
 
     let numVehicles = vehicles.length;
@@ -441,28 +443,28 @@ function obtienePosicionActualVehiculos(vehicles) {
         let accuracy = null;
         let feature = {};
         let idVehicle = null;
-        let brand = null;
-        let model = null;
-        let passengers = 0;
-        let fuel = null;
+        // let brand = null;
+        // let model = null;
+        // let passengers = 0;
+        // let fuel = null;
         let id_driver = null;
-        let matricula = null;
+        // let matricula = null;
         let available = false;
         let last_date_registry = null;
         let respuesta;
-        // petición GET para obtener los dos últimos puntos del vehículo
+        // petición GET para obtener los dos últimos puntos del objeto
         idVehicle = vehicles[i].id_vehicle;
         url = ROOT + '/getTwoLastPositionByVehicle/' + idVehicle;
         lastTwoPoints = JSON.parse(httpGet(url));
         if (lastTwoPoints.geometry != null) {
-            if (lastTwoPoints.geometry.coordinates.length == 2) {
+            if (lastTwoPoints.geometry.coordinates.length === 2) {
                 rotacion = extractRotation(lastTwoPoints.geometry.coordinates);
             } else {
                 rotacion = 0;
             }
         }
 
-        // Petición GET para obtener el último punto del vehículo y sus atributos
+        // Petición GET para obtener el último punto del objeto y sus atributos
         url = ROOT + '/getCurrentPointByVehicle/' + idVehicle;
         respuesta = JSON.parse(httpGet(url));
         if (respuesta.feature != null) {
@@ -515,8 +517,8 @@ function zoomToRoute(source) {
 function seleccionaVehiculoActual(id) {
     var features = ultimasPosicionesVehiculos.features;
 
-    for (i in features) {
-        if (features[i].properties.id_vehicle == id) {
+    for (let i in features) {
+        if (features[i].properties.id_vehicle === id) {
             console.log('Se ha seleccionado el objeto: ' + features[i].properties.matricula);
             currentVehicle = features[i];
             idCurrentVehicle = currentVehicle.properties.id_vehicle;
@@ -525,9 +527,9 @@ function seleccionaVehiculoActual(id) {
 }
 
 
-// Crea elementos HTLM con la información del bvehículo seleccionado como actual
+// Crea elementos HTLM con la información del objeto seleccionado como actual
 function createVehicleHTMLinfo() {
-    var myItems = [], $vehicles_results = $('#info_result');
+    var myItems = [];
 
     var vehiculo = currentVehicle;
     var matricula = vehiculo.properties.matricula;
@@ -548,7 +550,7 @@ function createVehicleHTMLinfo() {
         coordenadas = 'Coordenadas desconocidas'
     }
 
-    // Petición del conductor asignado
+    // Petición del portador asignado
     theUrlDriver = ROOT + '/driverByIdVehicle/' + id;
     var resDriverAssigned = JSON.parse(httpGet(theUrlDriver));
     var conductor_asignado;
@@ -560,9 +562,9 @@ function createVehicleHTMLinfo() {
         conductor_asignado = 'No asignado.';
     }
 
-    // Icono para el tipo de vehículo
+    // Icono para el tipo de objeto
     var vehicle_mini_icon = 'f5de';
-    // Icono para el tipo de vehículo asignado
+    // Icono para el tipo de objeto asignado
     switch (type) {
         case 'Coche':
             vehicle_mini_icon = 'f5de';
@@ -582,21 +584,24 @@ function createVehicleHTMLinfo() {
         case 'Scooter Eléctrico':
             vehicle_mini_icon = 'f0e7';
             break;
+        case 'Objeto':
+            vehicle_mini_icon = 'f1b2';
+            break;
         default:
             vehicle_mini_icon = 'f5de'
     }
 
 
-    // Crea elementos HTML para cada vehículo
+    // Crea elementos HTML para cada objeto
     myItems.push("" +
         "<div>" +
-            "<h3 class='mb-1 font-weight-semi-bold' title='Matrícula vehículo'>" + matricula + "</h3>" +
-            "<h5 title='Última dirección registrada del vehículo'>" + address + "</h5>" +
-            "<h5 title='Ultimas coordenadas registradas del vehículo'>Lon/Lat: " + coordenadas + "</h5>" +
+            "<h3 class='mb-1 font-weight-semi-bold' title='Código objeto'>" + matricula + "</h3>" +
+            "<h5 title='Última dirección registrada del objeto'>" + address + "</h5>" +
+            "<h5 title='Ultimas coordenadas registradas del objeto'>Lon/Lat: " + coordenadas + "</h5>" +
         "</div>" +
         "<hr style='color: #566167;'/>" +
         "<div>" +
-            "<h4 title='Vehículo' style='font-weight: bold'>Datos del Vehículo</h4>" +
+            "<h4 title='Objeto Móvil' style='font-weight: bold'>Datos del Objeto Móvil</h4>" +
             "<div class='tileActions'>" +
                 "<a title='Editar Vehiculo' class='editIcon edit-vehicle' data-toggle='modal' data-target='#editFormVehicle' " +
                 " data-id=" + parseInt(id) +
@@ -618,14 +623,14 @@ function createVehicleHTMLinfo() {
         "</div>" +
         "<hr style='color: #566167;'/>" +
         "<div>" +
-            "<h4 style='font-weight: bold'>Conductor Asignado:</h4>" +
+            "<h4 style='font-weight: bold'>Portador Asignado:</h4>" +
             "<div class='tileActions'>" +
-                "<a title='Crear relación Vehículo-Conductor' class='relationIcon create-relation' data-toggle='modal' data-target='#formVehicleDriver'><i class='fa fa-plus-square'></i></a>" +
-                "<a title='Editar relación Vehículo-Conductor' class='editRelationIcon edit-relation' data-toggle='modal' data-target='#editRelationVehicleDriver'><i class='fa fa-edit'></i></a>" +
-                //TODO: una vez creada o editada la relación vehículo-conductor, actualizar el panel con los nuevos datos a través de jQuery
-                "<a title='Eliminar relación Vehículo-Conductor' class='deleteIcon delete-relation' data-id=" + id + "><i class='fa fa-trash'></i></a>"+
+                "<a title='Crear relación Objeto-Portador' class='relationIcon create-relation' data-toggle='modal' data-target='#formVehicleDriver'><i class='fa fa-plus-square'></i></a>" +
+                "<a title='Editar relación Objeto-Portador' class='editRelationIcon edit-relation' data-toggle='modal' data-target='#editRelationVehicleDriver'><i class='fa fa-edit'></i></a>" +
+                //TODO: una vez creada o editada la relación objeto-portador, actualizar el panel con los nuevos datos a través de jQuery
+                "<a title='Eliminar relación Objeto-Portador' class='deleteIcon delete-relation' data-id=" + id + "><i class='fa fa-trash'></i></a>"+
             "</div>" +
-            "<p class='mb-0' title='Conductor'>" + conductor_asignado + "</p>" +
+            "<p class='mb-0' title='Portador'>" + conductor_asignado + "</p>" +
         "</div>"
 
     );
@@ -643,7 +648,7 @@ function createVehicleHTMLrutas() {
     var matricula = vehiculo.properties.matricula;
 
     myItems.push("" +
-        "<h3 class='mb-1 font-weight-semi-bold' title='Matrícula vehículo'>" + matricula + "</h3>" +
+        "<h3 class='mb-1 font-weight-semi-bold' title='Código del objeto'>" + matricula + "</h3>" +
         "<hr style='color: #566167;'/>" +
         "<table class='table-dashboard mb-0 table table-borderless vehicles-table' id='tabla-rutas'>" +
         "<thead class='bg-light'>" +
@@ -654,14 +659,14 @@ function createVehicleHTMLrutas() {
         "</thead>" +
         "<tbody>");
 
-    // Petición del conductor asignado
+    // Petición del portador asignado
     theUrl = ROOT + '/getRoutesByVehicle/' + id;
     var rutas = JSON.parse(httpGet(theUrl));
     var fechas_rutas;
     if (rutas.length != 0) {
 
         for (ruta in rutas) {
-            // Crea elementos HTML para cada vehículo
+            // Crea elementos HTML para cada objeto
             myItems.push("" +
                 "<tr>" +
                 "<td class='align-items-center align-middle' title='Número Ruta'>" +
@@ -704,11 +709,11 @@ function muestraPosicionVehiculos(features) {
 }
 
 
-// Muestra la ruta completa de un vehículo dados su 'id' y la 'fecha'
+// Muestra la ruta completa de un objeto dados su 'id' y la 'fecha'
 function muestraRutaPorFecha(id, fecha) {
     var ruta;
 
-    // Petición del conductor asignado
+    // Petición del portador asignado
     var date = theUrl = ROOT + '/getRouteOfVehicleByDate/' + id + '/' + fecha;
     ruta = JSON.parse(httpGet(theUrl));
 
@@ -732,13 +737,13 @@ function muestraRutaPorFecha(id, fecha) {
 
 }
 
-// Muestra la cola de la ruta del vehículo seleccionado
+// Muestra la cola de la ruta del objeto seleccionado
 function muestraColaVehiculo(id) {
 
     //var fecha_ultimo_registro = (getVehicle(id).properties.last_date_registry).substring(0, 10);    // formato DD-MM-YYYY
     var fecha_ultimo_registro = getVehicle(id).properties.last_date_registry;    // formato DD-MM-YYYY
 
-    // Petición del conductor asignado
+    // Petición del portador asignado
     if (fecha_ultimo_registro != null) {
         fecha_ultimo_registro = fecha_ultimo_registro.substring(0, 10);
         var theUrl = ROOT + '/getTailVehicle/' + id + '/' + fecha_ultimo_registro;
@@ -757,7 +762,7 @@ function muestraColaVehiculo(id) {
 
         }
     } else {
-        alert("El vehículo con matrícula: " + getVehicle(id).properties.matricula + " no tiene coordenadas registradas.")
+        alert("El objeto móvil con código: " + getVehicle(id).properties.matricula + " no tiene coordenadas registradas.")
         currentVehicle = {};
         idCurrentVehicle = null;
     }
@@ -875,7 +880,7 @@ var displayFeatureInfo = function (pixel) {
         } else if (feature.getGeometry().getType() == 'MultiLineString') {
             var id_vehicle = feature.getProperties().id_vehicle;
             var fecha = feature.getProperties().fecha;
-            var informacion = 'Id vehículo: ' + id_vehicle + ', Fecha ruta: ' + fecha;
+            var informacion = 'Id objeto: ' + id_vehicle + ', Fecha ruta: ' + fecha;
         } else if (feature.getGeometry().getType() == 'LineString') {
 
         }

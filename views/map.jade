@@ -27,9 +27,9 @@ block content
             .panel-heading
                 ul.nav.nav-tabs
                     li.active
-                        a#tab-vehicles(href='#tab_vehicles_results', data-toggle='tab') Vehículos
+                        a#tab-vehicles(href='#tab_vehicles_results', data-toggle='tab') Objetos móviles/Vehículos
                     li
-                        a#tab-drivers(href='#tab_drivers_results', data-toggle='tab') Conductores
+                        a#tab-drivers(href='#tab_drivers_results', data-toggle='tab') Portadores del objeto
                     li
                         a#tab-opciones(href='#tab_opciones', data-toggle='tab') Opciones
             .panel-body
@@ -41,7 +41,7 @@ block content
                                     tr
                                         th Icono
                                         th Nº
-                                        th Vehículo/Conductor
+                                        th Objeto/Portador
                                         th Velocidad
                                 tbody#vehicles_results
                     #tab_drivers_results.tab-pane.fade
@@ -49,15 +49,15 @@ block content
                     #tab_opciones.tab-pane.fade
                         div#opciones
                             div.group
-                                h4 Crea nuevo Vehículo
+                                h4 Crea nuevo Objeto Móvil
                                 div.form-group
-                                    button.btn.btn-primary.btn-block(type='button' title="Crea nuevo vehículo" data-toggle="modal" data-target="#formVehicle") Crea nuevo vehículo
-                                h4 Crea nuevo Conductor
+                                    button.btn.btn-primary.btn-block(type='button' title="Crea nuevo objeto" data-toggle="modal" data-target="#formVehicle") Crea nuevo objeto
+                                h4 Crea nuevo Portador
                                 div.form-group
-                                    button.btn.btn-primary.btn-block(type='button' title="Crea nuevo conductor" data-toggle="modal" data-target="#formDriver") Crea nuevo conductor
-                                h4 Crea relación Vehículo-Conductor
+                                    button.btn.btn-primary.btn-block(type='button' title="Crea nuevo portador" data-toggle="modal" data-target="#formDriver") Crea nuevo portador
+                                h4 Crea relación Portador-Objeto Móvil
                                 div.form-group
-                                    button.btn.btn-primary.btn-block(type='button' title="Crea relación Vehículo-Conductor" data-toggle="modal" data-target="#formVehicleDriver") Vehículo-Conductor
+                                    button.btn.btn-primary.btn-block(type='button' title="Crea relación VPortador-Objeto" data-toggle="modal" data-target="#formVehicleDriver") Portador-Objeto
     div#info-results
         header.logoHeader
             h3 Resultados
@@ -67,7 +67,7 @@ block content
                     li.active
                         a#tab-rutas(href='#tab_rutas', data-toggle='tab') Rutas
                     li
-                        a#tab-info(href='#tab_info', data-toggle='tab') Información del vehículo
+                        a#tab-info(href='#tab_info', data-toggle='tab') Información del objeto
             .panel-body
                 .tab-content
                     #tab_rutas.tab-pane.fade.in.active
@@ -97,10 +97,10 @@ block content
                         label
                             input#americano(type="checkbox" name="capa_auxiliar" value="americano" )
                             label Americano serie B (1956-57)
-                        br
-                        label
-                            input#interministerial(type="checkbox" name="capa_auxiliar" value="interministerial")
-                            label Interministerial (1973-86)
+                        //br
+                        //label
+                        //    input#interministerial(type="checkbox" name="capa_auxiliar" value="interministerial")
+                        //    label Interministerial (1973-86)
                         br
                         label
                             input#olistat(type="checkbox" name="capa_auxiliar" value="olistat")
@@ -117,7 +117,7 @@ block content
                         label
                             input#IGNBaseOrto(type="checkbox" name="capa_auxiliar" value="IGNBaseOrto" checked)
                             label IGNBaseOrto
-        button#btn-zoom-vehiculos.btn.btn-default(type="button" title="Zoom a vehículos")
+        button#btn-zoom-vehiculos.btn.btn-default(type="button" title="Zoom a objetos")
             i.fa.fa-search-location
         button#btn-mostrar-objetos.btn.btn-primary(type="button" title="Muestra/Oculta objetos")
             i.fa.fa-location-arrow
@@ -136,7 +136,7 @@ block content
         p "Distance:"
         span
 
-    // Modal AÑADIR vehículo
+    // Modal REGISTRAR objeto móvil
     #formVehicle.modal.fade(tabindex='-1', role='dialog', aria-labelledby='formVehicleLabel')
         .modal-dialog(role='document')
             .modal-content
@@ -144,11 +144,12 @@ block content
                     .modal-header
                         button.close(type='button', data-dismiss='modal', aria-label='Close')
                             span(aria-hidden='true') ×
-                        h4#myVehicleLabel.modal-title Añade Vehículo
+                        h4#myVehicleLabel.modal-title Registra Objeto Móvil
                     .modal-body
                         .form-group
-                            label Tipo de Vehículo
+                            label Tipo de Objeto
                             select.form-control(type="text" name="type")
+                                option(value="Coche") Objeto
                                 option(value="Coche") Coche
                                 option(value="Furgoneta") Furgoneta
                                 option(value="Camión") Camión
@@ -179,7 +180,7 @@ block content
                     .modal-footer
                         button.btn.btn-default(type='button', data-dismiss='modal') Cerrar
                         input.btn.btn-primary(type='submit' value="Guardar")
-    // Modal EDITAR Vehiculo
+    // Modal EDITAR objeto
     #editFormVehicle.modal.fade(tabindex='-1', role='dialog', aria-labelledby='editFormVehicleLabel')
         .modal-dialog(role='document')
             .modal-content
@@ -188,10 +189,10 @@ block content
                     .modal-header
                         button.close(type='button', data-dismiss='modal', aria-label='Cerrar')
                             span(aria-hidden='true') ×
-                        h4#myEditVehicleLabel.modal-title Editar Vehiculo
+                        h4#myEditVehicleLabel.modal-title Editar Objeto Móvil
                     .modal-body
                         .form-group
-                            label Tipo de Vehículo
+                            label Tipo de Objeto
                             input.form-control(type="text" name="type" id="edit-vehicle-form-type")
                         .form-group
                             label Marca
@@ -215,7 +216,7 @@ block content
                     .modal-footer
                         button.btn.btn-default(type='button', data-dismiss='modal') Close
                         input.btn.btn-primary(type='submit' value="Guardar")
-    // Modal AÑADIR Conductor
+    // Modal REGISTRAR Portador del objeto
     #formDriver.modal.fade(tabindex='-1', role='dialog', aria-labelledby='formDriverLabel')
         .modal-dialog(role='document')
             .modal-content
@@ -223,7 +224,7 @@ block content
                     .modal-header
                         button.close(type='button', data-dismiss='modal', aria-label='Cerrar')
                             span(aria-hidden='true') ×
-                        h4#myDriverLabel.modal-title Añadir conductor
+                        h4#myDriverLabel.modal-title Registrar portador del objeto
                     .modal-body
                         .form-group
                             label Email
@@ -251,7 +252,7 @@ block content
                     .modal-footer
                         button.btn.btn-default(type='button', data-dismiss='modal') Cerrar
                         input.btn.btn-primary(type='submit' value="Guardar")
-    // Modal EDIT Conductor
+    // Modal EDIT Portador
     #editFormDriver.modal.fade(tabindex='-1', role='dialog', aria-labelledby='editFormDriverLabel')
         .modal-dialog(role='document')
             .modal-content
@@ -260,7 +261,7 @@ block content
                     .modal-header
                         button.close(type='button', data-dismiss='modal', aria-label='Close')
                             span(aria-hidden='true') ×
-                        h4#myEditDriverLabel.modal-title Editar Conductor
+                        h4#myEditDriverLabel.modal-title Editar Portador del objeto
                     .modal-body
                         .form-group
                             label Email
@@ -295,14 +296,14 @@ block content
                     .modal-header
                         button.close(type='button', data-dismiss='modal', aria-label='Close')
                             span(aria-hidden='true') ×
-                        h4#myVehicleDriverLabel.modal-title Establece relación Conductor-Vehículo
+                        h4#myVehicleDriverLabel.modal-title Establece relación Portador-Objeto
                     .modal-body
                         // TODO:para cada uno de los siguientes hacer un "select" obteniendolos de una consulta a la base de datos.
                         .form-group
-                            label Conductor
+                            label Portador
                             input.form-control(type="text" name="id_driver")
                         .form-group
-                            label Vehículo
+                            label Objeto Móvil
                             input.form-control(type="text" name="id_vehicle")
                     .modal-footer
                         button.btn.btn-default(type='button', data-dismiss='modal') Close
@@ -349,7 +350,7 @@ block content
         var ultimaFechaCurrentVehicle;
         var idCurrentVehicle;
 
-        // Información a mostrar del vehículo a través de un popup
+        // Información a mostrar del objeto a través de un popup
         var info = $('#info');
         info.tooltip({
             animation: false,
@@ -638,7 +639,7 @@ block content
          */
 
 
-        // Crea los elementos HTML para cada vehículo
+        // Crea los elementos HTML para cada objeto
         function createVehicleHTMLelements() {
             var myItems = [], $vehicles_results = $('#vehicles_results');
 
@@ -657,7 +658,7 @@ block content
                     activo = "activo";
                 }
 
-                // Petición del conductor asignado
+                // Petición del portador asignado
                 theUrlDriver = ROOT + '/driverByIdVehicle/' + id;
                 var resDriverAssigned = JSON.parse(httpGet(theUrlDriver));
                 var id_driver;
@@ -668,7 +669,7 @@ block content
                     id_driver = 'No asignado.';
                 }
 
-                // Icono para el tipo de vehículo asignado
+                // Icono para el tipo de objeto asignado
                 switch (type) {
                     case 'Coche':
                         type_icon = 'fa-car';
@@ -693,7 +694,7 @@ block content
                 }
 
 
-                // Crea elementos HTML para cada vehículo
+                // Crea elementos HTML para cada objeto
                 myItems.push("" +
                     "<tr>" +
                     "<td class='align-items-center align-middle' title='Icono'>" +
@@ -703,8 +704,8 @@ block content
                     "<td class='align-middle' title='Número'>" + id + "</td>" +
                     "<td class='align-middle'>" +
                     "<div>" +
-                    "<h4 class='mb-1 font-weight-semi-bold' title='Matrícula vehículo'>" + matricula + "</h4>" +
-                    "<p class='mb-0' title='Conductor'>" + id_driver + "</p>" +
+                    "<h4 class='mb-1 font-weight-semi-bold' title='Código del objeto/vehículo'>" + matricula + "</h4>" +
+                    "<p class='mb-0' title='Portador del objeto'>" + id_driver + "</p>" +
                     "</div>" +
                     "</td>" +
                     "<td class='align-middle' title='Velocidad'>" + velocidad + " km/h</td>" +
@@ -713,7 +714,7 @@ block content
 
             $('#vehicles_results').html(myItems.join(''));
 
-            // hace visible el menu lateral de la información de cada vehículo
+            // hace visible el menu lateral de la información de cada objeto
             //$("#info-results").toggle();
 
             //console.log('vehiculos creados: ')
@@ -744,12 +745,12 @@ block content
             $("#info-results").toggle();
         })
 
-        // Llama a la función createVehicleHTMLelements() cada vez que se pulsa sobre la pestaña 'Vehículos'
+        // Llama a la función createVehicleHTMLelements() cada vez que se pulsa sobre la pestaña 'Objetos'
         $("#tab-vehicles").click(function () {
             //createVehicleHTMLelements();
         })
 
-        // Llama a la función getDrivers() cada vez que se pulsa sobre la pestaña 'Vonductores'
+        // Llama a la función getDrivers() cada vez que se pulsa sobre la pestaña 'Portadores'
         $("#tab-drivers").click(function () {
             getDrivers();
         })
@@ -784,7 +785,7 @@ block content
         }
 
         function updateFunctions() {
-            // Edita conductor seleccionado
+            // Edita portador seleccionado
             $(".edit-driver").on('click', function () {
                 // console.log('intentando editar un driver');
                 $("#edit-form-id").val($(this).data('id'));
@@ -798,7 +799,7 @@ block content
 
             });
 
-            // Edita el vehículo seleccionado
+            // Edita el objeto seleccionado
             $(".edit-vehicle").on('click', function () {
                 $("#edit-vehicle-form-id").val($(this).data('id'));
                 $("#edit-vehicle-form-type").val($(this).data('type'));
@@ -809,16 +810,16 @@ block content
                 $("#edit-vehicle-form-available").val($(this).data('available'));
             });
 
-            // Borra conductor por su 'id'
+            // Borra portador por su 'id'
             $(".delete-driver").on('click', function () {
                 var id = $(this).data('id');
                 var url = '/deleteDriver/' + id;
-                if (confirm('¿Eliminar conductor con id:' + id + '?')) {
+                if (confirm('¿Eliminar portador con id:' + id + '?')) {
                     $.ajax({
                         url: url,
                         type: 'DELETE',
                         success: function (result) {
-                            console.log('Borrando conductor con id:' + id);
+                            console.log('Borrando portador con id:' + id);
                             window.location.href = '/map';
                         },
                         error: function (err) {
@@ -828,12 +829,12 @@ block content
                 }
             });
 
-            // Elimina vehículo por su 'id'
+            // Elimina objeto por su 'id'
             $(".delete-vehicle").on('click', function () {
                 var id = $(this).data('id');
                 var url = '/deleteVehicle/' + id;
-                if (confirm('¿Eliminar vehículo con id:' + id + '?')) {
-                    // elimina conductor a través de una petición DELETE
+                if (confirm('¿Eliminar objeto con id:' + id + '?')) {
+                    // elimina portador a través de una petición DELETE
                     $.ajax({
                         url: url,
                         type: 'DELETE',
@@ -867,17 +868,17 @@ block content
         }
 
         $(document).ready(function () {
-            // Crea estilos para los vehículos
+            // Crea estilos para los objetos
             vehiclesJSON = getVehicles();
             numVehicles = vehiclesJSON.length;
 
-            // Obtiene los conductores y los vehículos de la base de datos
+            // Obtiene los portadores y los objetos de la base de datos
             getDrivers();
 
-            // Obtiene las últimas posiciones de todos los vehículos y los dibuja en el mapa
+            // Obtiene las últimas posiciones de todos los objetos y los dibuja en el mapa
             ultimasPosicionesVehiculos = obtienePosicionActualVehiculos(vehiclesJSON);
 
-            //Crea la capa Vector para albergar las posiciones de los vehículos
+            //Crea la capa Vector para albergar las posiciones de los objetos
             creaCapaPosicionVehiculos();
 
             // Hace la petición para obtener las features de los vehiculos y los añade a la capa vehiclesLayer
@@ -886,19 +887,19 @@ block content
             // hace zoom a los elementos
             zoomToFeature(vehiclesLayer.getSource());
 
-            // Crea la capa para mostrar las colas de los vehículos
+            // Crea la capa para mostrar las colas de los objetos
             creaCapaColasVehiculos();
 
-            // Crea la capa para mostrar las rutas de los vehículos
+            // Crea la capa para mostrar las rutas de los objetos
             creaCapaRutasVehiculos();
 
-            // Inicializa las capas de los vehículos
+            // Inicializa las capas de los objetos
             //initializeLayers();
 
             //console.log('Llamada a createVehicleHTMLelements()');
             createVehicleHTMLelements();
 
-            // Funcionalidad al mover el cursor para mostrar info del vehículo
+            // Funcionalidad al mover el cursor para mostrar info del objeto
             var selected = null;
 
             map.on('pointermove', function (e) {
@@ -942,18 +943,18 @@ block content
             function updatePosition() {
                 console.log('actualiza!');
 
-                // obtiene ultimas posiciones de los vehículos
+                // obtiene ultimas posiciones de los objetos
                 ultimasPosicionesVehiculos = obtienePosicionActualVehiculos(vehiclesJSON);
 
-                // Actualiza las ultimas posiciones de los vehículos
+                // Actualiza las ultimas posiciones de los objetos
                 muestraPosicionVehiculos(ultimasPosicionesVehiculos);
 
-                // Actualiza las colas de los vehículos
+                // Actualiza las colas de los objetos
                 if(currentVehicle.properties != undefined && tailsLayer.getVisible()==true){
                     muestraColaVehiculo(currentVehicle.properties.id_vehicle);
                 };
 
-                // Actualiza la ruta del vehículo seleccionado
+                // Actualiza la ruta del objeto seleccionado
                 if (currentVehicle.properties != undefined && ultimaFechaCurrentVehicle!=undefined && routesLayer.getVisible()==true) {
                     muestraRutaPorFecha(currentVehicle.properties.id_vehicle, ultimaFechaCurrentVehicle);
                 };
@@ -1058,7 +1059,7 @@ block content
             });
 
 
-            // Destello de la posicion actual de los vehículos visibles
+            // Destello de la posicion actual de los objetos visibles
             //setInterval(blinkPoint, 500);
             function blinkPoint() {
                 /*
@@ -1082,7 +1083,7 @@ block content
             // lanza las peticiones en bucle cada 5 segundos
             //setInterval(updatePosition, 5000);
 
-            // Función que llama la función que actualiza la posicion de los vehículos
+            // Función que llama la función que actualiza la posicion de los objetos
             /*
             function updatePosition() {
                 //var d = new Date();
@@ -1093,7 +1094,7 @@ block content
              */
 
 
-            // Marca y selecciona el elemento de la tabla de vehículos
+            // Marca y selecciona el elemento de la tabla de objetos
             $('#tabla-vehiculos tbody tr').click(function () {
                 $(this).addClass('bg-success').siblings().removeClass('bg-success');
                 var id = $(this).find("td[title='Número']").text();
@@ -1125,10 +1126,10 @@ block content
 
                 muestraColaVehiculo(id);
 
-                // Hace zoom a la cola del vehículo seleccionado
+                // Hace zoom a la cola del objeto seleccionado
                 zoomToFeature(tailsLayer.getSource());
 
-                // muestra el panel lateral con los resultados del vehículo seleccionado
+                // muestra el panel lateral con los resultados del objeto seleccionado
                 $("#info-results").show("blind", 500);
 
                 // Enciende el botón '#btn-mostrar-colas'
