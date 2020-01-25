@@ -83,7 +83,7 @@ function getVehicle(id) {
     var vehiculo = {};
     for (var i = 0; i < numVehiculos; i++) {
         var temp = ultimasPosicionesVehiculos.features[i];
-        if (temp.properties.id_vehicle === id) {
+        if (temp.properties.id_vehicle == id) {
             vehiculo = temp;
         }
     }
@@ -131,7 +131,7 @@ function getDrivers() {
         var vehicle_mini_icon = 'f5de';
         var id_vehicle;
         var visibility;
-        if (resVehicleAssigned.length === !0) {
+        if (resVehicleAssigned.length != 0) {
             //console.log('resVehicleAssigned.length == !0');
             var vehicle = resVehicleAssigned[0];
             id_vehicle = vehicle['id_vehicle'] + ': ' + vehicle['brand'] + ' ' + vehicle['model'];
@@ -186,7 +186,7 @@ function getDrivers() {
 
         // Establece el icono de visibilidad
         var eye = '';
-        if (visibility === 'false') {
+        if (visibility == 'false') {
             eye = 'fa-eye';
         } else {
             eye = 'fa-eye-slash';
@@ -229,7 +229,7 @@ function getDriver(id) {
     var conductor = {};
     for (var i = 0; i < numConductores; i++) {
         var temp = driversJSON[i];
-        if (temp.id_driver === id) {
+        if (temp.id_driver == id) {
             conductor = temp;
         }
     }
@@ -457,7 +457,7 @@ function obtienePosicionActualVehiculos(vehicles) {
         url = ROOT + '/getTwoLastPositionByVehicle/' + idVehicle;
         lastTwoPoints = JSON.parse(httpGet(url));
         if (lastTwoPoints.geometry != null) {
-            if (lastTwoPoints.geometry.coordinates.length === 2) {
+            if (lastTwoPoints.geometry.coordinates.length == 2) {
                 rotacion = extractRotation(lastTwoPoints.geometry.coordinates);
             } else {
                 rotacion = 0;
@@ -518,7 +518,7 @@ function seleccionaVehiculoActual(id) {
     var features = ultimasPosicionesVehiculos.features;
 
     for (let i in features) {
-        if (features[i].properties.id_vehicle === id) {
+        if (features[i].properties.id_vehicle == id) {
             console.log('Se ha seleccionado el objeto: ' + features[i].properties.matricula);
             currentVehicle = features[i];
             idCurrentVehicle = currentVehicle.properties.id_vehicle;

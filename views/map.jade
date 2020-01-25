@@ -463,7 +463,7 @@ block content
             result.clear();
             console.log(e);
             if (!e.route.length) {
-                if (e.wDistance === -1) $("#notfound0").show();
+                if (e.wDistance == -1) $("#notfound0").show();
                 else $("#notfound").show();
                 $("#result").hide();
             } else {
@@ -939,7 +939,7 @@ block content
 
 
             // lanza las peticiones en bucle cada 5 segundos
-            setInterval(updatePosition, 5000);
+            //setInterval(updatePosition, 5000);
             function updatePosition() {
                 console.log('actualiza!');
 
@@ -1098,6 +1098,7 @@ block content
             $('#tabla-vehiculos tbody tr').click(function () {
                 $(this).addClass('bg-success').siblings().removeClass('bg-success');
                 var id = $(this).find("td[title='Número']").text();
+                console.log('id seleccionado: ' + id);
                 seleccionaVehiculoActual(id);
 
                 // genera los elementos HTML con los resultados
