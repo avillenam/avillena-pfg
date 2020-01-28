@@ -88,6 +88,9 @@ router.get('/test', function (req, res, next) {
 //Crea un conductor
 router.post('/driver', db.createDriver);
 
+//Crea un objeto
+router.post('/createObject', db.createObject);
+
 //Edita conductor
 router.post('/editDriver', db.editDriver);
 

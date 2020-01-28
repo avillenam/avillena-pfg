@@ -5,7 +5,7 @@ const ROOT = 'https://avillena-pfg.herokuapp.com';
 const SUAVIDAD = 0;
 
 // offsets para las capas de vehículos
-const OFFSET_UP = 7;
+const OFFSET_UP = 11;
 const OFFSET_DOWN = 7;
 
 

@@ -301,9 +301,26 @@ const createVehicle = (request, response) => {
     console.log(request.body);
     console.log(typeof (load_capacity));
 
-    pool.query('INSERT INTO vehicles (type, brand, model, passengers, fuel, available) ' +
-        'VALUES ($1, $2, $3, $4, $5, $6)',
-        [type, brand, model, passengers, fuel, available], (error, results) => {
+    pool.query('INSERT INTO vehicles (type, matricula, brand, model, passengers, fuel, available) ' +
+        'VALUES ($1, $2, $3, $4, $5, $6, $7)',
+        [type, matricula, brand, model, passengers, fuel, available], (error, results) => {
+            if (error) {
+                throw error
+            }
+            //response.status(201).send(`Vehicle added with ID: ${results.rows[0]}`);
+            console.log(results.rows[0]);
+            response.redirect("/map");
+        })
+}
+
+const createObject = (request, response) => {
+    const { type, matricula, brand, model } = request.body;
+
+    console.log(request.body);
+    console.log(typeof (load_capacity));
+
+    pool.query('INSERT INTO vehicles (type, matricula, brand, model) VALUES ($1, $2, $3, $4)',
+        [type, matricula, brand, model], (error, results) => {
             if (error) {
                 throw error
             }
@@ -608,5 +625,6 @@ module.exports = {
     availabilityDriver,
     availabilityVehicle,
     dateRegistryToShow,
+    createObject,
     getTest
 }

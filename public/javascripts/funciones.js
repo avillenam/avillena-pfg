@@ -17,7 +17,8 @@ function creaCapaPosicionVehiculos() {
             })
              */
         }),
-        style: style_function
+        style: style_function,
+        zIndex: 1000
     });
 
     map.addLayer(vehiclesLayer);
@@ -128,7 +129,7 @@ function getDrivers() {
         //console.log('resVehicleAssigned: ' + JSON.stringify(resVehicleAssigned));
         //console.log('resVehicleAssigned.length: ' + resVehicleAssigned.length);
         // variable para establecer el icono del tipo de objeto asignado. Por defecto: 'coche'
-        var vehicle_mini_icon = 'f5de';
+        var vehicle_mini_icon = 'f1b2';
         var id_vehicle;
         var visibility;
         if (resVehicleAssigned.length != 0) {
@@ -181,7 +182,7 @@ function getDrivers() {
                 vehicle_mini_icon = 'f1b2';
                 break;
             default:
-                vehicle_mini_icon = 'f5de'
+                vehicle_mini_icon = 'f1b2'
         }
 
         // Establece el icono de visibilidad
@@ -563,7 +564,7 @@ function createVehicleHTMLinfo() {
     }
 
     // Icono para el tipo de objeto
-    var vehicle_mini_icon = 'f5de';
+    var vehicle_mini_icon = 'f1b2';
     // Icono para el tipo de objeto asignado
     switch (type) {
         case 'Coche':
@@ -588,7 +589,7 @@ function createVehicleHTMLinfo() {
             vehicle_mini_icon = 'f1b2';
             break;
         default:
-            vehicle_mini_icon = 'f5de'
+            vehicle_mini_icon = 'f1b2'
     }
 
 

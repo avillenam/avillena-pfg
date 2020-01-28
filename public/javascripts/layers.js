@@ -119,7 +119,7 @@ var sigpac = new ol.layer.Tile({
     }))
 });
 
-//Capa ortofoto vuelo PNOA 2004
+//Capa ortofoto vuelo PNOA 2006
 var pnoa2006 = new ol.layer.Tile({
     title: "PNOA (2006)",
     baseLayer: false,
@@ -129,6 +129,51 @@ var pnoa2006 = new ol.layer.Tile({
         url: 'http://www.ign.es/wms/pnoa-historico',
         params: {
             'LAYERS': 'PNOA2006', 'VERSION': '1.3.0',
+            'FORMAT': 'image/png', 'CRS': 'EPSG:3857'
+        }
+    }))
+});
+
+//Capa ortofoto vuelo PNOA 2009
+var pnoa2009 = new ol.layer.Tile({
+    title: "PNOA (2009)",
+    baseLayer: false,
+    preload: Infinity,
+    visible: false,
+    source: new ol.source.TileWMS(({
+        url: 'http://www.ign.es/wms/pnoa-historico',
+        params: {
+            'LAYERS': 'PNOA2009', 'VERSION': '1.3.0',
+            'FORMAT': 'image/png', 'CRS': 'EPSG:3857'
+        }
+    }))
+});
+
+//Capa ortofoto vuelo PNOA 2011
+var pnoa2011 = new ol.layer.Tile({
+    title: "PNOA (2011)",
+    baseLayer: false,
+    preload: Infinity,
+    visible: false,
+    source: new ol.source.TileWMS(({
+        url: 'http://www.ign.es/wms/pnoa-historico',
+        params: {
+            'LAYERS': 'PNOA2011', 'VERSION': '1.3.0',
+            'FORMAT': 'image/png', 'CRS': 'EPSG:3857'
+        }
+    }))
+});
+
+//Capa ortofoto vuelo PNOA 2014
+var pnoa2014 = new ol.layer.Tile({
+    title: "PNOA (2014)",
+    baseLayer: false,
+    preload: Infinity,
+    visible: false,
+    source: new ol.source.TileWMS(({
+        url: 'http://www.ign.es/wms/pnoa-historico',
+        params: {
+            'LAYERS': 'PNOA2014', 'VERSION': '1.3.0',
             'FORMAT': 'image/png', 'CRS': 'EPSG:3857'
         }
     }))

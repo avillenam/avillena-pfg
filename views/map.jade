@@ -55,9 +55,9 @@ block content
                                 h4 Crea nuevo Portador
                                 div.form-group
                                     button.btn.btn-primary.btn-block(type='button' title="Crea nuevo portador" data-toggle="modal" data-target="#formDriver") Crea nuevo portador
-                                h4 Crea relación Portador-Objeto Móvil
+                                h4 Crea relación Objeto-Portador Móvil
                                 div.form-group
-                                    button.btn.btn-primary.btn-block(type='button' title="Crea relación VPortador-Objeto" data-toggle="modal" data-target="#formVehicleDriver") Portador-Objeto
+                                    button.btn.btn-primary.btn-block(type='button' title="Crea relación Objeto-Portador" data-toggle="modal" data-target="#formVehicleDriver") Objeto-Portador
     div#info-results
         header.logoHeader
             h3 Resultados
@@ -115,6 +115,18 @@ block content
                             label PNOA (2006)
                         br
                         label
+                            input#pnoa2009(type="checkbox" name="capa_auxiliar" value="pnoa2009")
+                            label PNOA (2009)
+                        br
+                        label
+                            input#pnoa2011(type="checkbox" name="capa_auxiliar" value="pnoa2011")
+                            label PNOA (2011)
+                        br
+                        label
+                            input#pnoa2014(type="checkbox" name="capa_auxiliar" value="pnoa2014")
+                            label PNOA (2014)
+                        br
+                        label
                             input#IGNBaseOrto(type="checkbox" name="capa_auxiliar" value="IGNBaseOrto" checked)
                             label IGNBaseOrto
         button#btn-zoom-vehiculos.btn.btn-default(type="button" title="Zoom a objetos")
@@ -140,7 +152,7 @@ block content
     #formVehicle.modal.fade(tabindex='-1', role='dialog', aria-labelledby='formVehicleLabel')
         .modal-dialog(role='document')
             .modal-content
-                form(method="post" action="/vehicle")
+                form(method="post" action="/createObject")
                     .modal-header
                         button.close(type='button', data-dismiss='modal', aria-label='Close')
                             span(aria-hidden='true') ×
@@ -157,26 +169,14 @@ block content
                                 option(value="Motocicleta") Motocicleta
                                 option(value="Scooter Eléctrico") Scooter Eléctrico
                         .form-group
-                            label Marca
+                            label Matricula/ Código del objeto móvil
+                            input.form-control(type="text" name="matricula")
+                        .form-group
+                            label Marca/ Descripción del objeto móvil
                             input.form-control(type="text" name="brand")
                         .form-group
-                            label Modelo
+                            label Modelo/ Propiedades del objeto móvil
                             input.form-control(type="text" name="model")
-                        .form-group
-                            label Número de pasajeros
-                            input.form-control(type="number" name="passengers")
-                        .form-group
-                            label Tipo de combustible
-                            select.form-control(type="text" name="fuel")
-                                option(value="Diesel") Diesel
-                                option(value="Gasolina") Gasolina
-                                option(value="Electricidad") Electricidad
-                                option(value="Sin combustible") Sin combustible
-                        .form-group
-                            label Disponible
-                            select.form-control(type="text" name="available")
-                                option(value="true") Verdadero
-                                option(value="false") Falso
                     .modal-footer
                         button.btn.btn-default(type='button', data-dismiss='modal') Cerrar
                         input.btn.btn-primary(type='submit' value="Guardar")
@@ -195,24 +195,14 @@ block content
                             label Tipo de Objeto
                             input.form-control(type="text" name="type" id="edit-vehicle-form-type")
                         .form-group
-                            label Marca
+                            label Matricula/ Código del objeto móvil
+                            input.form-control(type="text" name="matricula" id="edit-vehicle-form-matricula")
+                        .form-group
+                            label Marca/ Descripción del objeto móvil
                             input.form-control(type="text" name="brand" id="edit-vehicle-form-brand")
                         .form-group
-                            label Modelo
+                            label Modelo/ Propiedades del objeto móvil
                             input.form-control(type="text" name="model" id="edit-vehicle-form-model")
-                        .form-group
-                            label Número de Pasajeros
-                            input.form-control(type="number" name="passengers" id="edit-vehicle-form-passengers")
-                        .form-group
-                            label Tipo de Comnbustible
-                            select.form-control(type="text" name="fuel" id="edit-vehicle-form-fuel")
-                                option(value="Diesel") Diesel
-                                option(value="Gasolina") Gasolina
-                                option(value="Electricidad") Electricidad
-                                option(value="Sin combustible") Sin combustible
-                        .form-group
-                            label Disponible
-                            input.form-control(type="text" name="available" id="edit-vehicle-form-available")
                     .modal-footer
                         button.btn.btn-default(type='button', data-dismiss='modal') Close
                         input.btn.btn-primary(type='submit' value="Guardar")
@@ -296,7 +286,7 @@ block content
                     .modal-header
                         button.close(type='button', data-dismiss='modal', aria-label='Close')
                             span(aria-hidden='true') ×
-                        h4#myVehicleDriverLabel.modal-title Establece relación Portador-Objeto
+                        h4#myVehicleDriverLabel.modal-title Establece relación Objeto-Portador
                     .modal-body
                         // TODO:para cada uno de los siguientes hacer un "select" obteniendolos de una consulta a la base de datos.
                         .form-group
@@ -417,7 +407,7 @@ block content
                     target: document.getElementById('scale-line')
                 })
             ]),
-            layers: [pnoaWmts, osm, americano, interministerial, olistat, sigpac, pnoa2006, IGNBaseOrto],
+            layers: [pnoaWmts, osm, americano, interministerial, olistat, sigpac, pnoa2006, pnoa2009, pnoa2011, pnoa2014, IGNBaseOrto],
             //overlays: [overlay],
             //interactions: ol.interaction.defaults({altShiftDragRotate: false, pinchRotate: false}),
             view: new ol.View({
@@ -689,8 +679,11 @@ block content
                     case 'Scooter Eléctrico':
                         type_icon = 'fa-bolt';
                         break;
+                    case 'Objeto':
+                        type_icon = 'fa-cube';
+                        break;
                     default:
-                        type_icon = 'fa-question-square'
+                        type_icon = 'fa-question-circle'
                 }
 
 
@@ -803,11 +796,9 @@ block content
             $(".edit-vehicle").on('click', function () {
                 $("#edit-vehicle-form-id").val($(this).data('id'));
                 $("#edit-vehicle-form-type").val($(this).data('type'));
+                $("#edit-vehicle-form-matricula").val($(this).data('matricula'));
                 $("#edit-vehicle-form-brand").val($(this).data('brand'));
                 $("#edit-vehicle-form-model").val($(this).data('model'));
-                $("#edit-vehicle-form-passengers").val($(this).data('passengers'));
-                $("#edit-vehicle-form-fuel").val($(this).data('fuel'));
-                $("#edit-vehicle-form-available").val($(this).data('available'));
             });
 
             // Borra portador por su 'id'
@@ -901,7 +892,6 @@ block content
 
             // Funcionalidad al mover el cursor para mostrar info del objeto
             var selected = null;
-
             map.on('pointermove', function (e) {
                 if (e.dragging) {
                     info.tooltip('hide');
@@ -931,11 +921,74 @@ block content
 
             });
 
-            /*
-            map.on('click', function (evt) {
-                displayFeatureInfo(evt.pixel);
+            // Funcionalidad para abrir la barra de herramientas al pinchar cobre un objeto en el mapa
+            map.on('click', function (e) {
+                // displayFeatureInfo(evt.pixel);
+                map.forEachFeatureAtPixel(e.pixel, function (f) {
+                    selected = f;
+                    });
+
+                if (selected) {
+                    var id = selected.get('id_vehicle');
+                    console.log('id: ' + id);
+                    $('#tabla-vehiculos tbody tr').each(function (index) {
+                        var idElement = $(this).find("td[title='Número']").text();
+                        // console.log(index + ": " + idElement);
+
+                        if(idElement == id){
+                            $(this).addClass('bg-success').siblings().removeClass('bg-success');
+                            console.log('El elemento ' + idElement + ', es el buscado');
+
+                            // Establece el objeto seleccionado como actual
+                            seleccionaVehiculoActual(id);
+
+                            // genera los elementos HTML con los resultados
+                            createVehicleHTMLinfo();
+
+                            // genera los elementos HTML con las rutas realizadas
+                            createVehicleHTMLrutas();
+
+                            // Si la capa de rutas tiene alguna entidad la elimina
+                            if (routesLayer.getSource().getFeatures().length != 0) {
+                                routesLayer.getSource().clear();
+                                routesLayer.setVisible(false);
+
+                                //Tambien apaga el botón de las rutas
+                                if ($('#btn-mostrar-rutas').hasClass('btn-primary')) {
+                                    $('#btn-mostrar-rutas').removeClass('btn-primary');
+                                    $('#btn-mostrar-rutas').addClass('btn-default');
+                                }
+                            }
+
+                            // Dibuja la cola de la ruta del vehiculo seleccionado
+                            if (tailsLayer.getVisible() == false) {   // Si la capa de colas está apagada, la enciende
+                                tailsLayer.setVisible(true);
+                            }
+
+                            muestraColaVehiculo(id);
+
+                            // Hace zoom a la cola del objeto seleccionado
+                            //zoomToFeature(tailsLayer.getSource());
+
+                            // muestra el panel lateral con los resultados del objeto seleccionado
+                            $("#info-results").show("blind", 500);
+
+                            // Enciende el botón '#btn-mostrar-colas'
+                            if ($('#btn-mostrar-colas').hasClass('btn-default')) {
+                                $('#btn-mostrar-colas').removeClass('btn-default');
+                                $('#btn-mostrar-colas').addClass('btn-primary');
+                            }
+                        }
+                    })
+                } else {
+                console.log();
+                }
+
+                if($('#tools').css("display") == 'none'){
+                    $('#tools').css("display","block");
+                }
+
             });
-            */
 
 
             // lanza las peticiones en bucle cada 5 segundos
@@ -1013,6 +1066,31 @@ block content
                         // apaga la capa
                         pnoa2006.setVisible(false);
                     }
+                } else if (this.value == 'pnoa2009') {
+                    if (document.getElementById("pnoa2009").checked) {
+                        // enciende la capa
+                        pnoa2009.setVisible(true);
+                    } else if (document.getElementById("pnoa2009").checked == false) {
+                        // apaga la capa
+                        pnoa2009.setVisible(false);
+                    }
+                } else if (this.value == 'pnoa2011') {
+                    if (document.getElementById("pnoa2011").checked) {
+                        // enciende la capa
+                        pnoa2011.setVisible(true);
+                    } else if (document.getElementById("pnoa2011").checked == false) {
+                        // apaga la capa
+                        pnoa2011.setVisible(false);
+                    }
+                } else if (this.value == 'pnoa2014') {
+                    if (document.getElementById("pnoa2014").checked) {
+                        // enciende la capa
+                        // enciende la capa
+                        pnoa2014.setVisible(true);
+                    } else if (document.getElementById("pnoa2014").checked == false) {
+                        // apaga la capa
+                        pnoa2014.setVisible(false);
+                    }
                 } else if (this.value == 'IGNBaseOrto') {
                     if (document.getElementById("IGNBaseOrto").checked) {
                         // enciende la capa
@@ -1059,46 +1137,30 @@ block content
             });
 
 
-            // Destello de la posicion actual de los objetos visibles
-            //setInterval(blinkPoint, 500);
+            // Destello de la posición actual de los objetos visibles
+            setInterval(blinkPoint, 500);
             function blinkPoint() {
-                /*
-                for (var i = 0; i < numVehicles; i++) {
-                    if(map.getLayers().getArray()[i + OFFSET_UP].getSource() != null){
-                        if (map.getLayers().getArray()[i + OFFSET_UP].getVisible() == true) {
-                            if (styles[i].endpoint.getImage().getOpacity() == 1) {
-                                styles[i].endpoint.getImage().setOpacity(0)
-                                map.getLayers().getArray()[i + OFFSET_UP].getSource().refresh()
-                            } else {
-                                styles[i].endpoint.getImage().setOpacity(1)
-                                map.getLayers().getArray()[i + OFFSET_UP].getSource().refresh()
-                            }
-                        }
+                if (map.getLayers().getArray()[OFFSET_UP].getVisible() == true) {
+                    if (map.getLayers().getArray()[OFFSET_UP].getOpacity() == 1) {
+                        map.getLayers().getArray()[OFFSET_UP].setOpacity(0)
+                        map.getLayers().getArray()[OFFSET_UP].getSource().refresh()
+                    } else {
+                        map.getLayers().getArray()[OFFSET_UP].setOpacity(1)
+                        map.getLayers().getArray()[OFFSET_UP].getSource().refresh()
                     }
                 }
-            map.renderSync();
-                */
+
+                map.renderSync();
+
             }
-
-            // lanza las peticiones en bucle cada 5 segundos
-            //setInterval(updatePosition, 5000);
-
-            // Función que llama la función que actualiza la posicion de los objetos
-            /*
-            function updatePosition() {
-                //var d = new Date();
-                updateVehiclesPosition();
-                //console.log('Actualizar posición en: ' + d.toLocaleTimeString());
-            }
-
-             */
-
 
             // Marca y selecciona el elemento de la tabla de objetos
             $('#tabla-vehiculos tbody tr').click(function () {
                 $(this).addClass('bg-success').siblings().removeClass('bg-success');
                 var id = $(this).find("td[title='Número']").text();
                 console.log('id seleccionado: ' + id);
+
+                // Establece el objeto seleccionado como actual
                 seleccionaVehiculoActual(id);
 
                 // genera los elementos HTML con los resultados
@@ -1124,7 +1186,6 @@ block content
                     tailsLayer.setVisible(true);
                 }
 
-
                 muestraColaVehiculo(id);
 
                 // Hace zoom a la cola del objeto seleccionado
@@ -1138,7 +1199,6 @@ block content
                     $('#btn-mostrar-colas').removeClass('btn-default');
                     $('#btn-mostrar-colas').addClass('btn-primary');
                 }
-                //toggleBtnMostrarColas();
 
                 console.log('Elemento seleccionado: ' + id);
             });
