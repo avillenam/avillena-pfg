@@ -6,6 +6,8 @@ var vehiclesLayer;    // Capa para las ultimas posiciones de los objetos
 var tailsLayer;     // Capa para las colas de las rutas de los objetos
 var routesLayer;    // Capa para las rutas de los objetos
 
+var ruta;
+
 // Crea la capa que contendrá las posiciones actuales de los objetos
 function creaCapaPosicionVehiculos() {
     vehiclesLayer = new ol.layer.Vector({
@@ -55,7 +57,8 @@ function creaCapaRutasVehiculos() {
             })
              */
         }),
-        style: style_route_function
+        // style: style_route_function
+        style: styles_multipoint
     });
     map.addLayer(routesLayer);
 }
@@ -196,26 +199,26 @@ function getDrivers() {
         // Crea un elemento por cada portador
         myItems.push("" +
             "<div class='resultItem'>" +
-                "<img class='list-thumbnail' src='/images/" + gender_icon + "' width='50' alt='icon result'>" +
-                "<div href='#" + id + "' class='details'>" +
-                    "<div class='list-group-item-heading'><i class='fa fa-hashtag'></i>" + id + "</div>" +
-                    "<div title='Email'><i class='fa fa-at'></i>" + email + "</div>" +
-                    "<div title='Nombre de portador'><i class='glyphicon glyphicon-user'></i>" + name + " " + surname + "</div>" +
-                    "<div title='Fecha de nacimiento'><i class='glyphicon glyphicon-calendar'></i>" + birthdate + "</div>" +
-                    "<div title='Género'><i class='fa fa-genderless'></i>" + genre + "</div>" +
-                    "<div title='Número de móvil'><i class='fa fa-mobile-alt'></i>" + mobile_number + "</div>" +
-                    "<div title='Objeto Móvil'><i class='fa'>&#x" + vehicle_mini_icon + "</i>" + id_vehicle + "</div>" +
-                "</div>" +
-                "<div class='tileActions'>" +
-                    "<a title='Eliminar portador' class='deleteIcon delete-driver' data-id=" + id + "><i class='fa fa-trash'></i></a>" +
-                    "<a title='Editar portador' class='editIcon edit-driver' data-toggle='modal' data-target='#editFormDriver' " +
-                    " data-id=" + id + " data-name=" + name + " data-surname=" + surname + " data-birthdate= " + birthdate +
-                    " data-genre=" + genre + " data-mobile_number= " + mobile_number + " data-email=" + email +
-                    " data-available=" + available +
-                    ">" +
-                    "<i class='fa fa-edit'></i>" +
-                    "</a>" +
-                "</div>" +
+            "<img class='list-thumbnail' src='/images/" + gender_icon + "' width='50' alt='icon result'>" +
+            "<div href='#" + id + "' class='details'>" +
+            "<div class='list-group-item-heading'><i class='fa fa-hashtag'></i>" + id + "</div>" +
+            "<div title='Email'><i class='fa fa-at'></i>" + email + "</div>" +
+            "<div title='Nombre de portador'><i class='glyphicon glyphicon-user'></i>" + name + " " + surname + "</div>" +
+            "<div title='Fecha de nacimiento'><i class='glyphicon glyphicon-calendar'></i>" + birthdate + "</div>" +
+            "<div title='Género'><i class='fa fa-genderless'></i>" + genre + "</div>" +
+            "<div title='Número de móvil'><i class='fa fa-mobile-alt'></i>" + mobile_number + "</div>" +
+            "<div title='Objeto Móvil'><i class='fa'>&#x" + vehicle_mini_icon + "</i>" + id_vehicle + "</div>" +
+            "</div>" +
+            "<div class='tileActions'>" +
+            "<a title='Eliminar portador' class='deleteIcon delete-driver' data-id=" + id + "><i class='fa fa-trash'></i></a>" +
+            "<a title='Editar portador' class='editIcon edit-driver' data-toggle='modal' data-target='#editFormDriver' " +
+            " data-id=" + id + " data-name=" + name + " data-surname=" + surname + " data-birthdate= " + birthdate +
+            " data-genre=" + genre + " data-mobile_number= " + mobile_number + " data-email=" + email +
+            " data-available=" + available +
+            ">" +
+            "<i class='fa fa-edit'></i>" +
+            "</a>" +
+            "</div>" +
             "</div>");
     }
     $('#drivers_results').html(myItems.join(''));
@@ -363,7 +366,6 @@ style_route_function = function (feature) {
             }));
         });
 
-        //TODO: Darle al primer y al último punto simbologías diferentes
         // Simpología para los puntos de parada
         var ptoParada1 = line.getFirstCoordinate();
         styles.push(new ol.style.Style({
@@ -414,6 +416,42 @@ style_route_function = function (feature) {
 
     return styles;
 };
+
+var lineString = new ol.geom.LineString;
+
+styles_multipoint = function (feature) {
+
+    var styles = [
+        new ol.style.Style({
+            stroke: new ol.style.Stroke({
+                color: 'blue',
+                width: 3
+            }),
+            fill: new ol.style.Fill({
+                color: 'rgba(0, 0, 255, 0.1)'
+            }),
+            geometry: function(feature) {
+                console.log('feature: ' + feature);
+                console.log('geometry: ' + feature.getGeometry());
+                console.log('coordinates: ' + feature.getGeometry().getCoordinates());
+                console.log('type: ' + feature.getGeometry().getType());
+
+                var coordinates = feature.getGeometry().getCoordinates();
+                return lineString.appendCoordinate(coordinates);
+            }
+        }),
+        new ol.style.Style({
+            image: new ol.style.Circle({
+                radius: 5,
+                fill: new ol.style.Fill({
+                    color: 'orange'
+                })
+            })
+        })
+    ];
+
+    return styles;
+}
 
 
 var highlightStyle = new ol.style.Style({
@@ -547,7 +585,7 @@ function createVehicleHTMLinfo() {
     if (vehiculo.geometry != null) {
         var coordenadasLonLat = ol.proj.toLonLat(vehiculo.geometry.coordinates);
         var coordenadas = Number(coordenadasLonLat[0].toFixed(2)) + ', ' + Number(coordenadasLonLat[1].toFixed(2));
-    } else{
+    } else {
         coordenadas = 'Coordenadas desconocidas'
     }
 
@@ -596,44 +634,43 @@ function createVehicleHTMLinfo() {
     // Crea elementos HTML para cada objeto
     myItems.push("" +
         "<div>" +
-            "<h3 class='mb-1 font-weight-semi-bold' title='Código objeto'>" + matricula + "</h3>" +
-            "<h5 title='Última dirección registrada del objeto'>" + address + "</h5>" +
-            "<h5 title='Ultimas coordenadas registradas del objeto'>Lon/Lat: " + coordenadas + "</h5>" +
+        "<h3 class='mb-1 font-weight-semi-bold' title='Código objeto'>" + matricula + "</h3>" +
+        "<h5 title='Última dirección registrada del objeto'>" + address + "</h5>" +
+        "<h5 title='Ultimas coordenadas registradas del objeto'>Lon/Lat: " + coordenadas + "</h5>" +
         "</div>" +
         "<hr style='color: #566167;'/>" +
         "<div>" +
-            "<h4 title='Objeto Móvil' style='font-weight: bold'>Datos del Objeto Móvil</h4>" +
-            "<div class='tileActions'>" +
-                "<a title='Editar Vehiculo' class='editIcon edit-vehicle' data-toggle='modal' data-target='#editFormVehicle' " +
-                " data-id=" + parseInt(id) +
-                " data-type=" + type +
-                " data-brand=" + marca +
-                " data-model=" + modelo +
-                " data-passengers=" + pasajeros +
-                " data-fuel=" + fuel +
-                " data-available=" + available +
-                ">" +
-                "<i class='fa fa-edit'></i>" +
-                "</a>" +
-                "<a title='Eliminar vehiculo' class='deleteIcon delete-vehicle' data-id=" + id + "><i class='fa fa-trash'></i></a>" +
-            "</div>" +
-            "<h4><i class='fa'>&#x" + vehicle_mini_icon + "</i> [" + id + "]: " + marca + ", " + modelo + "</h4>" +
-            "<p title='Pasajeros' Pasageros: " + pasajeros + "</p>" +
-            "<p title='Tipo de combustible'>Combustible: " + fuel + "</p>" +
-            "<p class='align-middle' title='Última veolicidad registrada Velocidad'>Velocidad: " + velocidad + " km/h</p>" +
+        "<h4 title='Objeto Móvil' style='font-weight: bold'>Datos del Objeto Móvil</h4>" +
+        "<div class='tileActions'>" +
+        "<a title='Editar Vehiculo' class='editIcon edit-vehicle' data-toggle='modal' data-target='#editFormVehicle' " +
+        " data-id=" + parseInt(id) +
+        " data-type=" + type +
+        " data-brand=" + marca +
+        " data-model=" + modelo +
+        " data-passengers=" + pasajeros +
+        " data-fuel=" + fuel +
+        " data-available=" + available +
+        ">" +
+        "<i class='fa fa-edit'></i>" +
+        "</a>" +
+        "<a title='Eliminar vehiculo' class='deleteIcon delete-vehicle' data-id=" + id + "><i class='fa fa-trash'></i></a>" +
+        "</div>" +
+        "<h4><i class='fa'>&#x" + vehicle_mini_icon + "</i> [" + id + "]: " + marca + ", " + modelo + "</h4>" +
+        "<p title='Pasajeros' Pasageros: " + pasajeros + "</p>" +
+        "<p title='Tipo de combustible'>Combustible: " + fuel + "</p>" +
+        "<p class='align-middle' title='Última veolicidad registrada Velocidad'>Velocidad: " + velocidad + " km/h</p>" +
         "</div>" +
         "<hr style='color: #566167;'/>" +
         "<div>" +
-            "<h4 style='font-weight: bold'>Portador Asignado:</h4>" +
-            "<div class='tileActions'>" +
-                "<a title='Crear relación Objeto-Portador' class='relationIcon create-relation' data-toggle='modal' data-target='#formVehicleDriver'><i class='fa fa-plus-square'></i></a>" +
-                "<a title='Editar relación Objeto-Portador' class='editRelationIcon edit-relation' data-toggle='modal' data-target='#editRelationVehicleDriver'><i class='fa fa-edit'></i></a>" +
-                //TODO: una vez creada o editada la relación objeto-portador, actualizar el panel con los nuevos datos a través de jQuery
-                "<a title='Eliminar relación Objeto-Portador' class='deleteIcon delete-relation' data-id=" + id + "><i class='fa fa-trash'></i></a>"+
-            "</div>" +
-            "<p class='mb-0' title='Portador'>" + conductor_asignado + "</p>" +
+        "<h4 style='font-weight: bold'>Portador Asignado:</h4>" +
+        "<div class='tileActions'>" +
+        "<a title='Crear relación Objeto-Portador' class='relationIcon create-relation' data-toggle='modal' data-target='#formVehicleDriver'><i class='fa fa-plus-square'></i></a>" +
+        "<a title='Editar relación Objeto-Portador' class='editRelationIcon edit-relation' data-toggle='modal' data-target='#editRelationVehicleDriver'><i class='fa fa-edit'></i></a>" +
+        //TODO: una vez creada o editada la relación objeto-portador, actualizar el panel con los nuevos datos a través de jQuery
+        "<a title='Eliminar relación Objeto-Portador' class='deleteIcon delete-relation' data-id=" + id + "><i class='fa fa-trash'></i></a>" +
+        "</div>" +
+        "<p class='mb-0' title='Portador'>" + conductor_asignado + "</p>" +
         "</div>"
-
     );
 
     // Añade los elementos al div #info_result
@@ -712,29 +749,36 @@ function muestraPosicionVehiculos(features) {
 
 // Muestra la ruta completa de un objeto dados su 'id' y la 'fecha'
 function muestraRutaPorFecha(id, fecha) {
-    var ruta;
+    // var ruta;
 
     // Petición del portador asignado
-    var date = theUrl = ROOT + '/getRouteOfVehicleByDate/' + id + '/' + fecha;
+    // var date = theUrl = ROOT + '/getRouteOfVehicleByDate/' + id + '/' + fecha;
+    var date = theUrl = ROOT + '/getPositionByObject/' + id + '/' + fecha;
     ruta = JSON.parse(httpGet(theUrl));
 
+    // console.log(ruta);
+
     // añade propiedades a la respuesta
+    /*
     ruta.properties = {};
     ruta.properties.id_vehicle = id;
     ruta.properties.fecha = fecha;
 
+     */
+
     // Separa la LineString obtenida en getRouteOfVehicleByDate según las tolerancias
-    var multilinestring = separaLineStrings(ruta);
+    // var multilinestring = separaLineStrings(ruta);
 
     var format = new ol.format.GeoJSON({});
-    var feature = format.readFeature(multilinestring, {});
+    // var feature = format.readFeature(multilinestring, {});
+    // var feature = format.readFeature(ruta);
+    var feature = format.readFeatures(ruta);
 
     // Borra la ruta anterior
     routesLayer.getSource().clear();
 
     //Añade la ruta seleccionada
-    routesLayer.getSource().addFeature(feature);
-
+    routesLayer.getSource().addFeatures(feature);
 
 }
 
@@ -872,12 +916,18 @@ var displayFeatureInfo = function (pixel) {
         var informacion = null;
         if (feature.getGeometry().getType() == 'Point') {
             var id_vehicle = feature.getProperties().id_vehicle;
-            var matricula = feature.getProperties().matricula;
-            var brand = feature.getProperties().brand;
-            var model = feature.getProperties().model;
+            var object = getVehicle(id_vehicle);
+            var matricula = object.properties.matricula;
+            var brand = object.properties.brand;
+            var model = object.properties.model;
             var id_driver = feature.getProperties().id_driver;
             var conductor = getDriver(id_driver);
-            var informacion = '[' + id_vehicle + '].- ' + matricula + ', ' + brand + ', ' + model + ', ' + conductor.name + ' ' + conductor.surname;
+            if (feature.getProperties().date_registry != undefined){
+                var fecha = feature.getProperties().date_registry.substring(11, 19);
+            } else if (feature.getProperties().last_date_registry != undefined) {
+                var fecha = feature.getProperties().last_date_registry.substring(0, 9);
+            }
+            var informacion = '[' + id_vehicle + '].- ' + fecha + ', ' + matricula + ', ' + brand + ', ' + model + ', ' + conductor.name + ' ' + conductor.surname;
         } else if (feature.getGeometry().getType() == 'MultiLineString') {
             var id_vehicle = feature.getProperties().id_vehicle;
             var fecha = feature.getProperties().fecha;

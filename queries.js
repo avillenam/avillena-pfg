@@ -77,15 +77,50 @@ const getPositionByDriver = (request, response) => {
     })
 }
 
-const getPositionByVehicle = (request, response) => {
+const getPositionByObject = (request, response) => {
+    var id_vehicle = request.params.id_vehicle;
+    var date = request.params.date;
+
     // pool.query('SELECT st_astext(the_geom) FROM position WHERE id_vehicle=' + parseInt(request.params.id_vehicle) + ' ORDER BY gid ASC', (error, results) => {
-    pool.query("SELECT row_to_json(fc) FROM ( SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) As features FROM ( SELECT 'Feature' As type, ST_AsGeoJSON(lg.the_geom)::json As geometry, id_vehicle, id_driver, origin, destiny, comments, date_registry, accuracy, address, speed FROM position AS lg WHERE id_vehicle=" + parseInt(request.params.id_vehicle) + " AND TO_DATE(TO_CHAR(date_registry, 'DDMMYYYY'),'DDMMYYYY') between to_date('" + fecha_ini + "','YYYYMMDD') and to_date('" + fecha_fin + "','YYYYMMDD')  order by date_registry ASC) AS f ) As fc;",
+    // pool.query("SELECT row_to_json(fc) FROM ( SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) As features FROM ( SELECT 'Feature' As type, ST_AsGeoJSON(ST_Transform(lg.the_geom,3857))::json As geometry, id_vehicle, id_driver, origin, destiny, comments, date_registry, accuracy, address, speed FROM position AS lg WHERE id_vehicle=" + parseInt(request.params.id_vehicle) + " AND TO_DATE(TO_CHAR(date_registry, 'DDMMYYYY'),'DDMMYYYY') = to_date('" + date + "','DD-MM-YYYY')  order by date_registry ASC LIMIT 10) AS f ) As fc;",
+    // pool.query("SELECT row_to_json(fc) FROM (SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) As features FROM (SELECT 'Feature' As type, ST_AsGeoJSON(ST_Transform(lg.the_geom,3857))::json As geometry, row_to_json(lp) AS properties  FROM position AS lg INNER JOIN (SELECT id_vehicle, id_driver, origin, destiny, comments, date_registry, accuracy, address, speed FROM position WHERE id_vehicle=" + id_vehicle + " AND TO_DATE(TO_CHAR(date_registry, 'DDMMYYYY'),'DDMMYYYY') = to_date('" + date + "','DD-MM-YYYY')) AS lp ON lg.id_vehicle = lp.id_vehicle) AS f) AS fc LIMIT 5;",
+    pool.query("SELECT row_to_json(fc) FROM (SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) As features FROM (SELECT 'Feature' As type, ST_AsGeoJSON(ST_Transform(the_geom,3857))::json As geometry, id_vehicle, id_driver, origin, destiny, comments, date_registry, accuracy, address, speed FROM position WHERE id_vehicle=" + id_vehicle + " AND TO_DATE(TO_CHAR(date_registry, 'DDMMYYYY'),'DDMMYYYY') = to_date('" + date + "','DD-MM-YYYY')) AS f) AS fc;",
         //pool.query("SELECT row_to_json(fc) FROM ( SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) As features FROM ( SELECT 'Feature' As type, ST_AsGeoJSON(lg.the_geom)::json As geometry, id_vehicle, id_driver, origin, destiny, \"comments\", date_registry As properties FROM \"position\" AS lg WHERE id_vehicle=" + parseInt(request.params.id_vehicle) + " order by date_registry ASC) AS f ) As fc;",
         (error, results) => {
             if (error) {
                 throw error
             }
-            response.status(200).json(results.rows[0].row_to_json);
+
+            var featureCollection = results.rows[0].row_to_json;
+            var temp = featureCollection.features;
+            featureCollection.features = {};
+            var arrayTemp = [];
+            for (var i = 0; i < temp.length; i++) {
+                var feature = {};
+                feature.type = temp[i].type;
+                feature.geometry = temp[i].geometry;
+                feature.properties = {};
+                feature.properties.id_vehicle = temp[i].id_vehicle;
+                feature.properties.id_driver = temp[i].id_driver;
+                feature.properties.date_registry = temp[i].date_registry;
+                feature.properties.accuracy = temp[i].accuracy;
+                feature.properties.address = temp[i].address;
+                feature.properties.speed = temp[i].speed;
+                arrayTemp.push(feature);
+            }
+
+            featureCollection.features = arrayTemp;
+
+            featureCollection.crs = {};
+            featureCollection.crs.type = 'name';
+            featureCollection.crs.properties = {};
+            featureCollection.crs.properties.name = 'EPSG:3857';
+
+            // response.status(200).json(featureCollection);
+            response.status(200).json(featureCollection);
+
+
+            // response.status(200).json(results.rows[0].row_to_json);
             //console.log(results.rows[0].row_to_json);
         })
 }
@@ -109,7 +144,7 @@ const getTwoLastPositionByVehicle = (request, response) => {
 const getTailVehicle = (request, response) => {
     var id_vehicle = request.params.id_vehicle;
     var fecha_ultima_ruta = request.params.date;
-    var n=15;
+    var n = 15;
 
     pool.query("SELECT row_to_json(f) FROM (SELECT " + parseInt(id_vehicle) + " as id_vehicle, ST_AsGeoJSON(ST_MakeLine(ST_Transform(the_geom,3857)))::json AS geometry FROM (SELECT * from position WHERE id_vehicle=" + parseInt(id_vehicle) + " AND to_char(date_registry,'DD-MM-YYYY') = '" + fecha_ultima_ruta + "' ORDER BY date_registry DESC LIMIT " + n + ") AS fc)AS f;",
         (error, results) => {
@@ -314,7 +349,7 @@ const createVehicle = (request, response) => {
 }
 
 const createObject = (request, response) => {
-    const { type, matricula, brand, model } = request.body;
+    const {type, matricula, brand, model} = request.body;
 
     console.log(request.body);
     console.log(typeof (load_capacity));
@@ -608,7 +643,7 @@ module.exports = {
     getDriverById,
     deleteDriverById,
     getPositionByDriver,
-    getPositionByVehicle,
+    getPositionByObject,
     getTwoLastPositionByVehicle,
     getTailVehicle,
     getCurrentPointByVehicle,

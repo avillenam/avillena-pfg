@@ -1,4 +1,4 @@
-//Root to the app URL
+// Raiz a la URL de la aplicación
 // const ROOT = 'http://localhost:3000';
 const ROOT = 'https://avillena-pfg.herokuapp.com';
 

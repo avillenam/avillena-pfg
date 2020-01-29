@@ -131,7 +131,7 @@ router.get('/vehicleByIdDriver/:id_driver', db.getVehicleByIdDriver);
 router.get('/position-driver/:id_driver', db.getPositionByDriver);
 
 //Selecciona la posicion de un vehículo
-router.get('/position-vehicle/:id_vehicle', db.getPositionByVehicle);
+router.get('/getPositionByObject/:id_vehicle/:date', db.getPositionByObject);
 
 //Obtiene los dos últimos puntos para un id_vehicle dado
 router.get('/getTwoLastPositionByVehicle/:id_vehicle', db.getTwoLastPositionByVehicle);
