@@ -921,13 +921,15 @@ var displayFeatureInfo = function (pixel) {
             var brand = object.properties.brand;
             var model = object.properties.model;
             var id_driver = feature.getProperties().id_driver;
+            var accuracy = feature.getProperties().accuracy;
+            var speed = feature.getProperties().speed;
             var conductor = getDriver(id_driver);
             if (feature.getProperties().date_registry != undefined){
                 var fecha = feature.getProperties().date_registry.substring(11, 19);
             } else if (feature.getProperties().last_date_registry != undefined) {
                 var fecha = feature.getProperties().last_date_registry.substring(0, 9);
             }
-            var informacion = '[' + id_vehicle + '].- ' + fecha + ', ' + matricula + ', ' + brand + ', ' + model + ', ' + conductor.name + ' ' + conductor.surname;
+            var informacion = '[' + id_vehicle + '].- ' + fecha + ', ' + matricula + ', \n' + brand + ',\n ' + model + ', \n' + conductor.name + ' ' + conductor.surname + ', Velocidad: '+ speed +' km/h , Precisión: ' + accuracy + 'm';
         } else if (feature.getGeometry().getType() == 'MultiLineString') {
             var id_vehicle = feature.getProperties().id_vehicle;
             var fecha = feature.getProperties().fecha;
@@ -939,8 +941,10 @@ var displayFeatureInfo = function (pixel) {
 
         info.tooltip('hide')
             .attr('data-original-title', informacion)
+            .attr('html', true)
             .tooltip('fixTitle')
             .tooltip('show');
+
     } else {
         info.tooltip('hide');
     }
