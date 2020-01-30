@@ -57,8 +57,8 @@ function creaCapaRutasVehiculos() {
             })
              */
         }),
-        // style: style_route_function
-        style: styles_multipoint
+        style: style_route_function
+        // style: styles_multipoint
     });
     map.addLayer(routesLayer);
 }
@@ -337,87 +337,102 @@ style_route_function = function (feature) {
         })
     ];
 
+    //Estilo para MultiLineString
+    if (feature.getGeometry().getType() == 'MultiLineString') {
+        console.log(feature.getGeometry().getType());
 
-    var lineStrings = geometry.getLineStrings();
-    for (var i = 0; i < lineStrings.length; i++) {
-        var line = lineStrings[i];
-        var longitud = line.getLength();
-        var coordenadasPuntos = line.getCoordinates();
-        var numPuntos = coordenadasPuntos.length;
-        var ratio = (longitud / numPuntos) * .2;
+        var lineStrings = feature.getGeometry().getLineStrings();
+        for (var i = 0; i < lineStrings.length; i++) {
+            var line = lineStrings[i];
+            var longitud = line.getLength();
+            var coordenadasPuntos = line.getCoordinates();
+            var numPuntos = coordenadasPuntos.length;
+            var ratio = (longitud / numPuntos) * .2;
 
-        // Simplifica el LineString para que no sature el mapa de flechas
-        line = line.simplify(ratio);
+            // Simplifica el LineString para que no sature el mapa de flechas
+            line = line.simplify(ratio);
 
-        // Introduce las flechas de direccion de la ruta
-        line.forEachSegment(function (start, end) {
-            var dx = end[0] - start[0];
-            var dy = end[1] - start[1];
-            var rotation = Math.atan2(dy, dx);
-            // arrows
+            // Introduce las flechas de direccion de la ruta
+            line.forEachSegment(function (start, end) {
+                var dx = end[0] - start[0];
+                var dy = end[1] - start[1];
+                var rotation = Math.atan2(dy, dx);
+                // arrows
+                styles.push(new ol.style.Style({
+                    geometry: new ol.geom.Point(end),
+                    image: new ol.style.Icon({
+                        src: '/images/Red_Arrow_small.png',
+                        anchor: [.5, .5],
+                        rotateWithView: true,
+                        // rotation: (Math.PI - rotation)
+                        rotation: (-rotation)
+                    })
+                }));
+            });
+
+            // Simpología para los puntos de parada
+            var ptoParada1 = line.getFirstCoordinate();
             styles.push(new ol.style.Style({
-                geometry: new ol.geom.Point(end),
-                image: new ol.style.Icon({
-                    src: '/images/Red_Arrow_small.png',
-                    anchor: [.5, .5],
-                    rotateWithView: true,
-                    rotation: (Math.PI - rotation)
-                })
-            }));
-        });
-
-        // Simpología para los puntos de parada
-        var ptoParada1 = line.getFirstCoordinate();
-        styles.push(new ol.style.Style({
-            geometry: new ol.geom.Point(ptoParada1),
-            image: new ol.style.Icon({
-                src: '/images/route_stop.png',
-                anchor: [.5, .5],
-                rotateWithView: true
-            })
-        }));
-
-        if (i !== (lineStrings.length - 1)) {
-            var ptoParada2 = line.getLastCoordinate();
-            styles.push(new ol.style.Style({
-                geometry: new ol.geom.Point(ptoParada2),
+                geometry: new ol.geom.Point(ptoParada1),
                 image: new ol.style.Icon({
                     src: '/images/route_stop.png',
                     anchor: [.5, .5],
                     rotateWithView: true
                 })
             }));
+
+            if (i !== (lineStrings.length - 1)) {
+                var ptoParada2 = line.getLastCoordinate();
+                styles.push(new ol.style.Style({
+                    geometry: new ol.geom.Point(ptoParada2),
+                    image: new ol.style.Icon({
+                        src: '/images/route_stop.png',
+                        anchor: [.5, .5],
+                        rotateWithView: true
+                    })
+                }));
+            }
+
+
+            // Diferente simbología para los puntos inicial y final
+            var ptoInicio = geometry.getFirstCoordinate();
+            var ptoFinal = geometry.getLastCoordinate();
+            styles.push(new ol.style.Style({
+                geometry: new ol.geom.Point(ptoFinal),
+                image: new ol.style.Icon({
+                    src: '/images/route_start.png',
+                    anchor: [.5, .5],
+                    rotateWithView: true
+                })
+            }));
+
+            styles.push(new ol.style.Style({
+                geometry: new ol.geom.Point(ptoInicio),
+                image: new ol.style.Icon({
+                    src: '/images/route_end.png',
+                    anchor: [.5, .5],
+                    rotateWithView: true
+                })
+            }));
+
         }
-
-
-        // Diferente simbología para los puntos inicial y final
-        var ptoInicio = geometry.getFirstCoordinate();
-        var ptoFinal = geometry.getLastCoordinate();
+    } else if (feature.getGeometry().getType() == 'Point') {    //Estilo para Point
+        console.log(feature.getGeometry().getType());
         styles.push(new ol.style.Style({
-            geometry: new ol.geom.Point(ptoFinal),
-            image: new ol.style.Icon({
-                src: '/images/route_start.png',
-                anchor: [.5, .5],
-                rotateWithView: true
+                image: new ol.style.Circle({
+                    radius: 10,
+                    fill: new ol.style.Fill({
+                        color: 'orange'
+                    })
+                })
             })
-        }));
-
-        styles.push(new ol.style.Style({
-            geometry: new ol.geom.Point(ptoInicio),
-            image: new ol.style.Icon({
-                src: '/images/route_end.png',
-                anchor: [.5, .5],
-                rotateWithView: true
-            })
-        }));
-
+        )
     }
-
 
     return styles;
 };
 
-var lineString = new ol.geom.LineString;
+// var lineString = new ol.geom.LineString;
 
 styles_multipoint = function (feature) {
 
@@ -429,16 +444,7 @@ styles_multipoint = function (feature) {
             }),
             fill: new ol.style.Fill({
                 color: 'rgba(0, 0, 255, 0.1)'
-            }),
-            geometry: function(feature) {
-                console.log('feature: ' + feature);
-                console.log('geometry: ' + feature.getGeometry());
-                console.log('coordinates: ' + feature.getGeometry().getCoordinates());
-                console.log('type: ' + feature.getGeometry().getType());
-
-                var coordinates = feature.getGeometry().getCoordinates();
-                return lineString.appendCoordinate(coordinates);
-            }
+            })
         }),
         new ol.style.Style({
             image: new ol.style.Circle({
@@ -449,6 +455,15 @@ styles_multipoint = function (feature) {
             })
         })
     ];
+
+    // console.log('feature: ' + feature);
+    // console.log('geometry: ' + feature.getGeometry());
+    console.log('geometryType: ' + feature.getGeometry().getType());
+    if (feature.getGeometry().getType() == 'Point') {
+
+    } else if (feature.getGeometry().getType() == 'LineString') {
+
+    }
 
     return styles;
 }
@@ -772,14 +787,42 @@ function muestraRutaPorFecha(id, fecha) {
     var format = new ol.format.GeoJSON({});
     // var feature = format.readFeature(multilinestring, {});
     // var feature = format.readFeature(ruta);
-    var feature = format.readFeatures(ruta);
+    var points = format.readFeatures(ruta);
+    // console.log('points');
+    // console.log(points);
+
+
+    // General el LineString
+    var numPuntos = ruta.features.length;
+    var coordinates = [];
+    var line = new ol.geom.LineString();
+    for (var i = 0; i < numPuntos; i++) {
+        // coordinates.push(ruta.features[i].geometry.coordinates)
+        line.appendCoordinate(ruta.features[i].geometry.coordinates);
+    }
+
+    // var lineString = new ol.geom.LineString(coordinates);
+    // console.log(lineString);
+
+    var lineString = new ol.Feature({
+        geometry: line,
+        name: 'Line'
+    });
+
+    var linestringSeparada = separaLineStrings(lineString);
+    var multilinestring = new ol.Feature({
+        geometry: linestringSeparada,
+        name: 'MultiLineString'
+    });
+
 
     // Borra la ruta anterior
     routesLayer.getSource().clear();
 
     //Añade la ruta seleccionada
-    routesLayer.getSource().addFeatures(feature);
-
+    // routesLayer.getSource().addFeature(lineString);
+    routesLayer.getSource().addFeature(multilinestring);
+    routesLayer.getSource().addFeatures(points);
 }
 
 // Muestra la cola de la ruta del objeto seleccionado
@@ -864,6 +907,40 @@ function distanciaEntreDosPuntos(pto1, pto2) {
 
 // Obtiene un MultiLineString
 function separaLineStrings(line) {
+    var puntos = line.getGeometry().getCoordinates();
+    var numPtos = puntos.length;
+    var distMaxima = 1000;
+    var distMinima = 5;
+
+    var ptoInicial = puntos[0];
+    var lineStrings = [];
+    var lineString = new ol.geom.LineString();
+    var multiLineString = new ol.geom.MultiLineString();
+
+    lineString.appendCoordinate(ptoInicial);
+
+    for (var i = 1; i < numPtos; i++) {
+        var distancia = distanciaEntreDosPuntos(puntos[i - 1], puntos[i]);
+
+        if (distancia > distMinima) {
+            if (distancia < distMaxima) {
+                lineString.appendCoordinate(puntos[i]);
+            } else if (distancia > distMaxima) {
+                // lineStrings.push(lineString);
+                multiLineString.appendLineString(lineString);
+                lineString = new ol.geom.LineString();
+                lineString.appendCoordinate(puntos[i]);
+            }
+        }
+    }
+
+    multiLineString.appendLineString(lineString);
+
+    console.log('multiLineString: ' + multiLineString.getLineStrings());
+
+    return multiLineString;
+
+    /*
     var puntos = line.coordinates;
     var numPtos = puntos.length;
     var distMaxima = 3000;
@@ -901,6 +978,8 @@ function separaLineStrings(line) {
     feature.geometry.coordinates.push(multiLineString);
 
     return feature;
+
+     */
 }
 
 // Muestra la información de las entidades del mapa
@@ -916,24 +995,30 @@ var displayFeatureInfo = function (pixel) {
         var informacion = null;
         if (feature.getGeometry().getType() == 'Point') {
             var id_vehicle = feature.getProperties().id_vehicle;
-            var object = getVehicle(id_vehicle);
-            var matricula = object.properties.matricula;
-            var brand = object.properties.brand;
-            var model = object.properties.model;
-            var id_driver = feature.getProperties().id_driver;
-            var accuracy = feature.getProperties().accuracy;
-            var speed = feature.getProperties().speed;
-            var conductor = getDriver(id_driver);
-            if (feature.getProperties().date_registry != undefined){
-                var fecha = feature.getProperties().date_registry.substring(11, 19);
-            } else if (feature.getProperties().last_date_registry != undefined) {
-                var fecha = feature.getProperties().last_date_registry.substring(0, 9);
+            if (id_vehicle != undefined) {
+                var object = getVehicle(id_vehicle);
+                var matricula = object.properties.matricula;
+                var brand = object.properties.brand;
+                var model = object.properties.model;
+                var id_driver = feature.getProperties().id_driver;
+                var accuracy = feature.getProperties().accuracy;
+                var speed = feature.getProperties().speed;
+                var conductor = getDriver(id_driver);
+                if (feature.getProperties().date_registry != undefined) {
+                    var fecha = feature.getProperties().date_registry.substring(11, 19);
+                } else if (feature.getProperties().last_date_registry != undefined) {
+                    var fecha = feature.getProperties().last_date_registry.substring(0, 9);
+                }
+                var informacion = '[' + id_vehicle + '].- ' + fecha + ', ' + matricula + ', \n' + brand + ',\n ' + model + ', \n' + conductor.name + ' ' + conductor.surname + ', Velocidad: ' + speed + ' km/h , Precisión: ' + accuracy + 'm';
             }
-            var informacion = '[' + id_vehicle + '].- ' + fecha + ', ' + matricula + ', \n' + brand + ',\n ' + model + ', \n' + conductor.name + ' ' + conductor.surname + ', Velocidad: '+ speed +' km/h , Precisión: ' + accuracy + 'm';
+
         } else if (feature.getGeometry().getType() == 'MultiLineString') {
+            /*
             var id_vehicle = feature.getProperties().id_vehicle;
             var fecha = feature.getProperties().fecha;
             var informacion = 'Id objeto: ' + id_vehicle + ', Fecha ruta: ' + fecha;
+
+             */
         } else if (feature.getGeometry().getType() == 'LineString') {
 
         }

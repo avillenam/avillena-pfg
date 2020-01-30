@@ -140,7 +140,7 @@
       <workItem from="1579953677990" duration="1721000" />
       <workItem from="1579956644642" duration="2981000" />
       <workItem from="1580061595761" duration="670000" />
-      <workItem from="1580130139281" duration="29960000" />
+      <workItem from="1580130139281" duration="44543000" />
     </task>
     <task id="LOCAL-00001" summary="version 2.5.1">
       <created>1572271103995</created>
@@ -457,7 +457,14 @@
       <option name="project" value="LOCAL" />
       <updated>1580302811709</updated>
     </task>
-    <option name="localTasksCounter" value="46" />
+    <task id="LOCAL-00046" summary="version 5.8.1">
+      <created>1580306691830</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1580306691830</updated>
+    </task>
+    <option name="localTasksCounter" value="47" />
     <servers />
   </component>
   <component name="TodoView">
@@ -501,7 +508,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="version 2.8.8" />
     <MESSAGE value="version 3.0" />
     <MESSAGE value="version 3.0.1" />
     <MESSAGE value="version 3.0.3" />
@@ -526,18 +532,19 @@
     <MESSAGE value="version 5.6" />
     <MESSAGE value="version 5.7" />
     <MESSAGE value="version 5.8" />
-    <option name="LAST_COMMIT_MESSAGE" value="version 5.8" />
+    <MESSAGE value="version 5.8.1" />
+    <option name="LAST_COMMIT_MESSAGE" value="version 5.8.1" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="2505" y="115" key="CommitChangelistDialog2" timestamp="1580302809773">
+    <state x="2505" y="115" key="CommitChangelistDialog2" timestamp="1580306690453">
       <screen x="1920" y="0" width="1920" height="1040" />
     </state>
-    <state x="2505" y="115" key="CommitChangelistDialog2/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1580302809773" />
+    <state x="2505" y="115" key="CommitChangelistDialog2/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1580306690453" />
     <state x="585" y="115" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1579958496410" />
-    <state x="2472" y="254" key="Vcs.Push.Dialog.v2" timestamp="1580302813249">
+    <state x="2472" y="254" key="Vcs.Push.Dialog.v2" timestamp="1580306693869">
       <screen x="1920" y="0" width="1920" height="1040" />
     </state>
-    <state x="2472" y="254" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1580302813249" />
+    <state x="2472" y="254" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1580306693869" />
     <state x="552" y="254" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1579958551361" />
     <state x="2543" y="225" key="search.everywhere.popup" timestamp="1580287487796">
       <screen x="1920" y="0" width="1920" height="1040" />
