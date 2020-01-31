@@ -8,6 +8,9 @@ const SUAVIDAD = 0;
 const OFFSET_UP = 11;
 const OFFSET_DOWN = 7;
 
+const TOLERANCIA_MAXIMA_DISTANCIA_ENTRE_PUNTOS = 1000;
+const TOLERANCIA_MINIMA_DISTANCIA_ENTRE_PUNTOS = 3.22;
+
 
 // Estilo para cada vehículo
 var COLORS = ['#F0F8FF', '#FAEBD7', '#00FFFF', '#7FFFD4', '#F0FFFF', '#F5F5DC', '#FFE4C4',

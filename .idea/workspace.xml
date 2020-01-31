@@ -5,7 +5,6 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/javascripts/constants.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/javascripts/constants.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/javascripts/funciones.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/javascripts/funciones.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/queries.js" beforeDir="false" afterPath="$PROJECT_DIR$/queries.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -140,7 +139,7 @@
       <workItem from="1579953677990" duration="1721000" />
       <workItem from="1579956644642" duration="2981000" />
       <workItem from="1580061595761" duration="670000" />
-      <workItem from="1580130139281" duration="44543000" />
+      <workItem from="1580130139281" duration="50380000" />
     </task>
     <task id="LOCAL-00001" summary="version 2.5.1">
       <created>1572271103995</created>
@@ -464,7 +463,14 @@
       <option name="project" value="LOCAL" />
       <updated>1580306691830</updated>
     </task>
-    <option name="localTasksCounter" value="47" />
+    <task id="LOCAL-00047" summary="version 5.9">
+      <created>1580397101897</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1580397101897</updated>
+    </task>
+    <option name="localTasksCounter" value="48" />
     <servers />
   </component>
   <component name="TodoView">
@@ -508,7 +514,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="version 3.0" />
     <MESSAGE value="version 3.0.1" />
     <MESSAGE value="version 3.0.3" />
     <MESSAGE value="version 3.1.&#10;Versión funcionando del proyecto. A partir de aquí, se van a hacer modificaciones importantes." />
@@ -533,18 +538,19 @@
     <MESSAGE value="version 5.7" />
     <MESSAGE value="version 5.8" />
     <MESSAGE value="version 5.8.1" />
-    <option name="LAST_COMMIT_MESSAGE" value="version 5.8.1" />
+    <MESSAGE value="version 5.9" />
+    <option name="LAST_COMMIT_MESSAGE" value="version 5.9" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="2505" y="115" key="CommitChangelistDialog2" timestamp="1580306690453">
+    <state x="2505" y="115" key="CommitChangelistDialog2" timestamp="1580397100409">
       <screen x="1920" y="0" width="1920" height="1040" />
     </state>
-    <state x="2505" y="115" key="CommitChangelistDialog2/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1580306690453" />
+    <state x="2505" y="115" key="CommitChangelistDialog2/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1580397100409" />
     <state x="585" y="115" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1579958496410" />
-    <state x="2472" y="254" key="Vcs.Push.Dialog.v2" timestamp="1580306693869">
+    <state x="2472" y="254" key="Vcs.Push.Dialog.v2" timestamp="1580397103443">
       <screen x="1920" y="0" width="1920" height="1040" />
     </state>
-    <state x="2472" y="254" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1580306693869" />
+    <state x="2472" y="254" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1580397103443" />
     <state x="552" y="254" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1579958551361" />
     <state x="2543" y="225" key="search.everywhere.popup" timestamp="1580287487796">
       <screen x="1920" y="0" width="1920" height="1040" />
