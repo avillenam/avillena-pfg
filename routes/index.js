@@ -85,85 +85,85 @@ router.get('/test', function (req, res, next) {
 //*******************************************************************************
 // Interacción con la base de datos a través de peticiones GET, POST, PUT, DELETE
 //*******************************************************************************
-//Crea un conductor
+//Crea un portador
 router.post('/driver', db.createDriver);
 
 //Crea un objeto
 router.post('/createObject', db.createObject);
 
-//Edita conductor
+//Edita portador
 router.post('/editDriver', db.editDriver);
 
 //Crea un vehículo
 router.post('/vehicle', db.createVehicle);
 
-//Edita Vehículo
+//Edita objeto
 router.post('/editVehicle', db.editVehicle);
 
 //Inserta una posición
 router.post('/position', db.insertPosition);
 
-//Selecciona vehículos
+//Obtiene todos los objetos
 router.get('/getVehicles', db.getVehicles);
 
-//Selecciona vehículo por id_vehicle
+//Obtiene objeto por su id
 router.get('/vehicle/:id_vehicle', db.getVehicleById);
 
-//Elimina vehículo por id_driver
+//Elimina objeto por su id
 router.delete('/deleteVehicle/:id_vehicle', db.deleteVehicleById);
 
-//Selecciona conductor por id_vehicle
+//Obtiene portador por su id
 router.get('/driverByIdVehicle/:id_vehicle', db.getDriverByIdVehicle);
 
-//Seleccioma conmductores
+//Obtiene todos los conductores
 router.get('/getDrivers', db.getDrivers);
 
-//Selecciona conductor por id_driver
+//Obtiene portador por su id
 router.get('/driver/:id_driver', db.getDriverById);
 
-//Elimina conductor por id_driver
+//Elimina portador por su id
 router.delete('/deleteDriver/:id_driver', db.deleteDriverById);
 
-//Selecciona vehículo a través de id_driver
+//Obtiene objeto a través de su id
 router.get('/vehicleByIdDriver/:id_driver', db.getVehicleByIdDriver);
 
-//Obtiene la posicion de un conductor
+//Obtiene la posición de un portador por su id
 router.get('/position-driver/:id_driver', db.getPositionByDriver);
 
-//Selecciona la posicion de un vehículo
+//Selecciona la posición de un objeto a partir de su id y la fecha
 router.get('/getPositionByObject/:id_vehicle/:date', db.getPositionByObject);
 
-//Obtiene los dos últimos puntos para un id_vehicle dado
+//Obtiene los dos últimos puntos de un objeto para un id dado
 router.get('/getTwoLastPositionByVehicle/:id_vehicle', db.getTwoLastPositionByVehicle);
 
-//Obtiene los n últimos puntos para un id_vehicle dado
+//Obtiene los 'n' últimos puntos de un objeto dados su id y la fecha
 router.get('/getTailVehicle/:id_vehicle/:date', db.getTailVehicle); //Formato: DD-MM-YYYY
 
-//Obtiene el último punto, con sus atributos, para un id_vehicle dado
+//Obtiene el último punto de un objeto, con sus atributos, dado su id
 router.get('/getCurrentPointByVehicle/:id_vehicle', db.getCurrentPointByVehicle);
 
-// Obtiene las fechas de las rutas de cada vehículo a través de su id_vehicle
+//Obtiene las fechas de las rutas de cada objeto a través de su id
 router.get('/getRoutesByVehicle/:id_vehicle', db.getRoutesByVehicle);
 
-// Obtiene la ruta de un vehículo para una fecha dada
+//Obtiene la ruta de un objeto dados su id y la fecha
 router.get('/getRouteOfVehicleByDate/:id_vehicle/:date', db.getRouteOfVehicleByDate);
 
-//Establecer relación driver-vehicle
+//Establece la relación objeto-portador
 router.post('/vehicleDriver', db.vehicleDriver);
 
-//Eliminar relacion driver-vehicle
+//Elimina la relacion objeto-portador
 router.post('/deleteVehicleDriver', db.deleteVehicleDriver);
 
-// Establece available para el conductor
+//Establece la disponibilidad para el portador
 router.post('/driverAvailability', db.availabilityDriver);
 
-// Establece available para el vehiculo
+//Establece la disponibilidad para el objeto
 router.post('/vehicleAvailability', db.availabilityVehicle);
 
-// Establece la fecha de registro que se quiere mostrar
+//Establece la fecha de registro que se quiere mostrar
 router.get('/time/:fecha_ini/:fecha_fin', db.dateRegistryToShow);
 
-//Login Driver in system
+//Realiza la comprobación de usuario registrado
 router.get('/loginDriver/:email/:password', db.loginDriver);
 
 router.post('/pos', function (req, res) {

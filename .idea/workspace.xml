@@ -3,8 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="6d5f1f38-e885-4881-8791-5da2d0a04345" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/javascripts/constants.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/javascripts/constants.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/javascripts/funciones.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/javascripts/funciones.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/index.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -139,7 +138,8 @@
       <workItem from="1579953677990" duration="1721000" />
       <workItem from="1579956644642" duration="2981000" />
       <workItem from="1580061595761" duration="670000" />
-      <workItem from="1580130139281" duration="50380000" />
+      <workItem from="1580130139281" duration="50459000" />
+      <workItem from="1581609302957" duration="1826000" />
     </task>
     <task id="LOCAL-00001" summary="version 2.5.1">
       <created>1572271103995</created>
@@ -470,7 +470,14 @@
       <option name="project" value="LOCAL" />
       <updated>1580397101897</updated>
     </task>
-    <option name="localTasksCounter" value="48" />
+    <task id="LOCAL-00048" summary="version 6.0">
+      <created>1580474408253</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1580474408253</updated>
+    </task>
+    <option name="localTasksCounter" value="49" />
     <servers />
   </component>
   <component name="TodoView">
@@ -514,7 +521,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="version 3.0.1" />
     <MESSAGE value="version 3.0.3" />
     <MESSAGE value="version 3.1.&#10;Versión funcionando del proyecto. A partir de aquí, se van a hacer modificaciones importantes." />
     <MESSAGE value="version 3.1.1&#10;Versión funcionando del proyecto. A partir de aquí, se van a hacer modificaciones importantes." />
@@ -539,18 +545,19 @@
     <MESSAGE value="version 5.8" />
     <MESSAGE value="version 5.8.1" />
     <MESSAGE value="version 5.9" />
-    <option name="LAST_COMMIT_MESSAGE" value="version 5.9" />
+    <MESSAGE value="version 6.0" />
+    <option name="LAST_COMMIT_MESSAGE" value="version 6.0" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="2505" y="115" key="CommitChangelistDialog2" timestamp="1580397100409">
+    <state x="2505" y="115" key="CommitChangelistDialog2" timestamp="1580474406818">
       <screen x="1920" y="0" width="1920" height="1040" />
     </state>
-    <state x="2505" y="115" key="CommitChangelistDialog2/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1580397100409" />
+    <state x="2505" y="115" key="CommitChangelistDialog2/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1580474406818" />
     <state x="585" y="115" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1579958496410" />
-    <state x="2472" y="254" key="Vcs.Push.Dialog.v2" timestamp="1580397103443">
+    <state x="2472" y="254" key="Vcs.Push.Dialog.v2" timestamp="1580474410139">
       <screen x="1920" y="0" width="1920" height="1040" />
     </state>
-    <state x="2472" y="254" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1580397103443" />
+    <state x="2472" y="254" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1580474410139" />
     <state x="552" y="254" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1579958551361" />
     <state x="2543" y="225" key="search.everywhere.popup" timestamp="1580287487796">
       <screen x="1920" y="0" width="1920" height="1040" />
