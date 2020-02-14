@@ -2,8 +2,21 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6d5f1f38-e885-4881-8791-5da2d0a04345" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/config/auth.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config/database.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config/passport.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/views/login.jade" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/views/register.jade" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/app.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/css/style.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/javascripts/constants.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/javascripts/constants.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/queries.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/javascripts/queries.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/modules/common.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/javascripts/common.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/map.jade" beforeDir="false" afterPath="$PROJECT_DIR$/views/map.jade" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,6 +28,7 @@
       <list>
         <option value="Jade File" />
         <option value="JavaScript File" />
+        <option value="Pug File" />
       </list>
     </option>
   </component>
@@ -47,23 +61,24 @@
     <property name="TODO_SCOPE" value="Current File" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="editor.config.ad.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/views" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="settings.editor.selected.configurable" value="vcs.Git" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\express_example\views" />
-      <recent name="C:\" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\HEROKU\avillena-pfg\public\javascripts" />
+      <recent name="D:\HEROKU\avillena-pfg" />
+      <recent name="D:\HEROKU\avillena-pfg\src\config" />
       <recent name="C:\SIDI_AntonioVillenaMartin\PFG\public\css" />
       <recent name="C:\SIDI_AntonioVillenaMartin\PFG\routes\modules" />
-      <recent name="C:\SIDI_AntonioVillenaMartin\PFG\routes" />
-      <recent name="C:\SIDI_AntonioVillenaMartin\PFG\public\javascripts" />
-      <recent name="C:\SIDI_AntonioVillenaMartin\PFG\routes\common" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\HEROKU\avillena-pfg\views" />
+      <recent name="C:\express_example\views" />
+      <recent name="C:\" />
     </key>
   </component>
   <component name="RunManager">
@@ -139,7 +154,8 @@
       <workItem from="1579956644642" duration="2981000" />
       <workItem from="1580061595761" duration="670000" />
       <workItem from="1580130139281" duration="50459000" />
-      <workItem from="1581609302957" duration="1826000" />
+      <workItem from="1581609302957" duration="2589000" />
+      <workItem from="1581667429772" duration="8320000" />
     </task>
     <task id="LOCAL-00001" summary="version 2.5.1">
       <created>1572271103995</created>
@@ -477,7 +493,14 @@
       <option name="project" value="LOCAL" />
       <updated>1580474408253</updated>
     </task>
-    <option name="localTasksCounter" value="49" />
+    <task id="LOCAL-00049" summary="version 6.1">
+      <created>1581611167530</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1581611167530</updated>
+    </task>
+    <option name="localTasksCounter" value="50" />
     <servers />
   </component>
   <component name="TodoView">
@@ -521,7 +544,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="version 3.0.3" />
     <MESSAGE value="version 3.1.&#10;Versión funcionando del proyecto. A partir de aquí, se van a hacer modificaciones importantes." />
     <MESSAGE value="version 3.1.1&#10;Versión funcionando del proyecto. A partir de aquí, se van a hacer modificaciones importantes." />
     <MESSAGE value="version 3.1.2&#10;Versión funcionando del proyecto. A partir de aquí, se van a hacer modificaciones importantes." />
@@ -546,19 +568,24 @@
     <MESSAGE value="version 5.8.1" />
     <MESSAGE value="version 5.9" />
     <MESSAGE value="version 6.0" />
-    <option name="LAST_COMMIT_MESSAGE" value="version 6.0" />
+    <MESSAGE value="version 6.1" />
+    <option name="LAST_COMMIT_MESSAGE" value="version 6.1" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="2505" y="115" key="CommitChangelistDialog2" timestamp="1580474406818">
+    <state x="2505" y="115" key="CommitChangelistDialog2" timestamp="1581611166105">
       <screen x="1920" y="0" width="1920" height="1040" />
     </state>
-    <state x="2505" y="115" key="CommitChangelistDialog2/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1580474406818" />
+    <state x="2505" y="115" key="CommitChangelistDialog2/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1581611166105" />
     <state x="585" y="115" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1579958496410" />
-    <state x="2472" y="254" key="Vcs.Push.Dialog.v2" timestamp="1580474410139">
+    <state x="2472" y="254" key="Vcs.Push.Dialog.v2" timestamp="1581611170954">
       <screen x="1920" y="0" width="1920" height="1040" />
     </state>
-    <state x="2472" y="254" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1580474410139" />
+    <state x="2472" y="254" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1581611170954" />
     <state x="552" y="254" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1579958551361" />
+    <state x="2538" y="160" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1581668765248">
+      <screen x="1920" y="0" width="1920" height="1040" />
+    </state>
+    <state x="2538" y="160" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1581668765248" />
     <state x="2543" y="225" key="search.everywhere.popup" timestamp="1580287487796">
       <screen x="1920" y="0" width="1920" height="1040" />
     </state>

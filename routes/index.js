@@ -1,86 +1,37 @@
 var express = require('express');
 var router = express.Router();
 var bodyParser = require('body-parser');
-const db = require('../queries');
-
-// var pg = require("pg");position-vehicle
-//var conString = "postgres://postgres:postgres@localhost:5432/api";
-// var conString = "postgres://wzkowhhekyvcbh:dbc37ca58c23fa2edf7ed4af8319e00316de9aaf1defbb8cac1fd86500704f6a@ec2-107-20-173-2.compute-1.amazonaws.com:5432/d2346t6en0926l";
-
-// const {Pool} = require('pg');
-
-
-// const pool = new Pool({
-//     connectionString: conString,
-// });
+const db = require('../public/javascripts/queries');
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-    // res.render('index', {title: 'Express'});
-    res.json({info: 'Node.js, Express, and Postgres API'});
+    res.render('login', {
+        title: 'Geolocalización de objetos móviles',
+        message: req.flash('loginMessage')
+        // vehicles: respuesta
+    });
+});
+
+router.post('/login', (req, res) => {
+});
+
+router.get('/register', function (req, res, next) {
+    res.render('register', {
+        title: 'Registro de usuario nuevo'
+        // vehicles: respuesta
+    });
 });
 
 //map page
 router.get('/map', function (req, res, next) {
-    // pool.on('error', (err, client) => {
-    //     console.error('Unexpected error on idle client', err)
-    //     process.exit(-1)
-    // })
-
-    // pool.connect((err, client, done) => {
-    //     if (err) throw err;
-    //     client.query('SELECT * FROM vehicles ORDER BY id_vehicle ASC', (err, response) => {
-            //done();
-
-            // if (err) {
-            //     console.log(err.stack)
-            // } else {
-                //console.log(res.rows[0])
-                // var respuesta = response.rows;
-                //console.log(respuesta);
-                //console.log(typeof (respuesta));
-
-                res.render('map', {
-                    title: ' Geolocalización de objetos móviles',
-                    lat: 40.034,
-                    lng: -4.02
-                    // vehicles: respuesta
-                });
-            // }
-        // })
-        // done();
-    // })
-
+    res.render('map', {
+        title: 'Geolocalización de objetos móviles',
+        lat: 40.034,
+        lng: -4.02
+        // vehicles: respuesta
+    });
 });
 
-router.get('/test', function (req, res, next) {
-    pool.on('error', (err, client) => {
-        console.error('Unexpected error on idle client', err)
-        process.exit(-1)
-    })
-
-    pool.connect((err, client, done) => {
-        if (err) throw err;
-        client.query('SELECT * FROM drivers ORDER BY id_driver ASC', (err, response) => {
-            //done();
-
-            if (err) {
-                console.log(err.stack)
-            } else {
-                //console.log(res.rows[0])
-                var respuesta = response.rows;
-                //console.log(respuesta);
-                //console.log(typeof (respuesta));
-
-                res.render('test',{
-                    title: 'Catálogo',
-                    drivers: (respuesta)
-                });
-            }
-        })
-        done();
-    })
-});
 
 //*******************************************************************************
 // Interacción con la base de datos a través de peticiones GET, POST, PUT, DELETE
@@ -186,6 +137,7 @@ router.get('/send_coord', function (req, res) {
     );
 });
 
+// Petición de prueba
 router.post('/coords', function (req, res) {
     var coord_x = req.body.coord_x;
     var coord_y = req.body.coord_y;
@@ -196,22 +148,6 @@ router.post('/coords', function (req, res) {
     console.log('Coordenada Y recibida: ' + coord_y);
 
     res.json(pos);
-
-
-    /*
-    res.send('<html>'
-        +       '<body>'
-        +           '<form method="post" action="/check">'
-        +               '<p>Las coordenadas introducidas son: </p>'
-        +               '<p>Identificador:' + identifier + '</p>'
-        +               '<p>Coord X:' + coord_x + '</p>'
-        +               '<p>Coord Y:' + coord_y + '</p>'
-        +               '<a href="/send_coord">Introduce coordenadas de nuevo</a>'
-        +           '</form>'
-        +       '</body>'
-        +   '</html>'
-    );
-    */
 });
 
 module.exports = router;

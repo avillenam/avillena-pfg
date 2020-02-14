@@ -1,0 +1,20 @@
+extends layout
+
+block content
+    div#toolbar.intro.container-fluid.col-md-12
+        div.col-md-8
+        div.col-md-4.hidden-xs(style="padding:0px;") Geolocalización de objetos móviles
+    .wrapper
+        #formContent
+            .fadeIn.first
+                h1
+                    span.fa.fa-lock  Inicio de sesión
+                img(src="/images/mapPNOA.jpg")
+            form
+                input(type="email" id="login" class="fadeIn second" name="email" placeholder="email usuario")
+                input(type="password" id="password" class="fadeIn third" name="password" placeholder="contraseña")
+                input(type="submit" class="fadeIn fourth" value="Iniciar Sesión")
+            #formFooter
+                a.underlineHover(href="/register") Registro de nuevo usuario
+
+
