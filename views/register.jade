@@ -1,18 +1,50 @@
-extends layout
+doctype html
+html
+    head
+        title= "Registro de usuario"
+        meta(charset="UTF-8")
+        link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css", integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb", crossorigin="anonymous")
+        link(rel="stylesheet", href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css")
+        link(rel='stylesheet', href='/css/main.css')
 
-block content
-    div#toolbar.intro.container-fluid.col-md-12
-        div.col-md-8
-        div.col-md-4.hidden-xs(style="padding:0px;") Geolocalización de objetos móviles
-    .wrapper
-        #formContent
-            .fadeIn.first
-                h1
-                    span.fa.fa-lock  Registro de usuario nuevo
-                img(src="/images/mapPNOA.jpg")
-            form
-                input(type="text" id="login" class="fadeIn second" name="login" placeholder="email usuario")
-                input(type="text" id="password" class="fadeIn third" name="login" placeholder="contraseña")
-                input(type="submit" class="fadeIn fourth" value="Iniciar Sesión")
-            #formFooter
-                a.underlineHover(href="/register") Registro de nuevo usuario
+    body.register
+        block content
+            h1.text-center Geolocalización de objetos móviles
+        .wrapper
+            .container
+                .col-sm-6.mx-auto
+                    .card.mt-5
+                        .card-body
+                            h1.text-center
+                                span.fa.fa-sign-in-alt  Registro de nuevo usuario
+                            if(message.length > 0)
+                                .alert.alert-danger #{message}
+                            form(action="/register" method="post")
+                                .form-group
+                                    label(for="email") Email
+                                    input.form-control(type="email" name="email")
+                                .form-group
+                                    label(for="password") Contraseña
+                                    input.form-control(type="password" name="password")
+                                .form-group
+                                    label(for="name") Nombre
+                                    input.form-control(type="text" name="name")
+                                .form-group
+                                    label(for="surname") Apellidos
+                                    input.form-control(type="text" name="surname")
+                                .form-group
+                                    label(for="birthdate") Fecha Nacimiento
+                                    input.form-control(type="date" name="birthdate")
+                                .form-group
+                                    label(for="genre") Género
+                                    input.form-control(type="text" name="genre")
+                                .form-group
+                                    label(for="mobile_number") Número de móvil
+                                    input.form-control(type="number" name="mobile_number")
+                                input.btn.btn-dark.btn-lg(type="submit")
+                            hr
+                            .text-center
+                                p ¿Ya tienes una cuenta?
+                                    a(href="/login") Iniciar sesión
+
+email, password, name, surname, birthdate, genre, mobile_number

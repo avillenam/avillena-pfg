@@ -8,21 +8,29 @@ router.get('/', function (req, res, next) {
     res.render('login', {
         title: 'Geolocalización de objetos móviles',
         message: req.flash('loginMessage')
-        // vehicles: respuesta
     });
 });
 
-router.post('/login', (req, res) => {
+router.get('/login', function (req, res, next) {
+    res.render('login', {
+        title: 'Geolocalización de objetos móviles',
+        message: req.flash('loginMessage')
+    });
 });
+
+router.post('/login', db.login);
 
 router.get('/register', function (req, res, next) {
     res.render('register', {
-        title: 'Registro de usuario nuevo'
-        // vehicles: respuesta
+        title: 'Registro de usuario nuevo',
+        message: req.flash('registerMessage')
     });
 });
 
+router.post('/register', db.register);
+
 //map page
+/*
 router.get('/map', function (req, res, next) {
     res.render('map', {
         title: 'Geolocalización de objetos móviles',
@@ -31,6 +39,7 @@ router.get('/map', function (req, res, next) {
         // vehicles: respuesta
     });
 });
+*/
 
 
 //*******************************************************************************

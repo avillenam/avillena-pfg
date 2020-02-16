@@ -2,17 +2,13 @@ extends layout
 
 block content
     div#toolbar.intro.container-fluid.col-md-12
-        div.col-md-8
-        div.col-md-4.hidden-xs(style="padding:0px;") Geolocalización de objetos móviles
+        div.col-md-2.hidden-xs(style="padding:0px;") Geolocalización de objetos móviles
+        div.col.md-8
+        div.col.md-2
+            a(href="/login") Logout
     .map#map
         #info
     #mouse-position
-    //#popup.ol-popup
-    //    a#popup-closer.ol-popup-closer(href='#')
-    //    #popup-content
-    //div.loading
-    //    i.fa.fa.fa-spinner.fa-pulse
-    //    "Loading data..."
     div(style="display: none;")
         #marker(title="Marker")
     a.toggleSettings(title='Panel Principal')

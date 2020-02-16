@@ -586,11 +586,11 @@ const loginDriver = (request, response) => {
     //const {email, password} = request.body;
 
     //console.log(request);
-    console.log("parámetro recibido email: " + email);
-    console.log("parámetro recibido password: " + password);
+    // console.log("parámetro recibido email: " + email);
+    // console.log("parámetro recibido password: " + password);
 
-    console.log("request.body: ")
-    console.log(request.body);
+    // console.log("request.body: ")
+    // console.log(request.body);
 
     pool.query('select drivers.id_driver, drivers.email, drivers.password from drivers;', (error, results) => {
         if (error) {
@@ -621,6 +621,107 @@ const loginDriver = (request, response) => {
         response.status(200).json(login_code);
         //console.log(results.rows[0]);
     });
+}
+
+
+const login = (request, response) => {
+    //Method that test if a user is registered in the system
+    // return
+    // code=0 if user is incorrect or not exist
+    // code=1 if user and password are correct
+    // code=2 if user is correct and password is incorrect
+    const {email, password} = request.body
+    //const {email, password} = request.body;
+
+    //console.log(request);
+    // console.log("parámetro recibido email: " + email);
+    // console.log("parámetro recibido password: " + password);
+
+    console.log("request.body: ")
+    console.log(request.body);
+
+    pool.query('select drivers.id_driver, drivers.email, drivers.password from drivers;', (error, results) => {
+        if (error) {
+            throw error
+        }
+        var respuesta = results.rows;
+        console.log(typeof (respuesta));
+
+        // Test user and password
+        //loop
+        var code = 0;
+        var id_driver = 999;
+        for (var i = 0; i < respuesta.length; i++) {
+            if (respuesta[i].email == email && respuesta[i].password == password) {
+                code = 1;
+                id_driver = respuesta[i].id_driver;
+            } else if (respuesta[i].email == email && respuesta[i].password != password) {
+                code = 2;
+            }
+        }
+
+        var login_code = new Object();
+        login_code.code = code;
+        login_code.id_driver = id_driver;
+        //var myString = JSON.stringify(login_code);
+
+        // response.status(200).json(login_code);
+        console.log('login_code' + login_code);
+        if (login_code.code == 1) {
+            // response.redirect("/map");
+            response.render('map', {
+                title: 'Geolocalización de objetos móviles',
+                lat: 40.034,
+                lng: -4.02
+                // vehicles: respuesta
+            });
+        } else{
+            response.redirect("/login");
+        }
+        // response.status(200).json(login_code);
+        //console.log(results.rows[0]);
+    });
+}
+
+const register = (request, response) => {
+    const {email, password, name, surname, birthdate, genre, mobile_number} = request.body
+
+    console.log(birthdate)
+    console.log()
+
+    regex = /\d{2}\/\d{2}\/\d{4}/;
+
+    if (regex.test(birthdate)) {
+        // formato de fecha para cuando recibe una petición GET de la APP geoloc
+        console.log('formato de fecha: DD/MM/YYYY');
+        pool.query('INSERT INTO drivers ( email, password, name, surname, birthdate, genre, mobile_number, available) ' +
+            'VALUES ($1, $2, $3, $4, TO_DATE($5, \'DD/MM/YYYY\'), $6, $7, true)',
+            [email, password, name, surname, birthdate, genre, mobile_number], (error, results) => {
+                if (error) {
+                    throw error
+                }
+                //response.status(201).send(`Driver added with ID: ${results.rows[0]}`);
+                //console.log(results.rows[0]);
+                console.log(results.rows[0]);
+                response.redirect("/login");
+            })
+    } else {
+        // formato de fecha para cuando recibe una petición GET del cliente web
+        console.log('formato de fecha: YYYY-MM-DD');
+        pool.query('INSERT INTO drivers ( email, password, name, surname, birthdate, genre, mobile_number, available) ' +
+            'VALUES ($1, $2, $3, $4, $5, $6, $7, true)',
+            [email, password, name, surname, birthdate, genre, mobile_number], (error, results) => {
+                if (error) {
+                    throw error
+                }
+                //response.status(201).send(`Driver added with ID: ${results.rows[0]}`);
+                //console.log(results.rows[0]);
+                console.log(results.rows[0]);
+                response.redirect("/login");
+            })
+    }
+
+
 }
 
 const dateRegistryToShow = (req, response) => {
@@ -663,5 +764,7 @@ module.exports = {
     availabilityVehicle,
     dateRegistryToShow,
     createObject,
-    getTest
+    getTest,
+    login,
+    register
 }
