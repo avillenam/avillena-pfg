@@ -634,8 +634,8 @@ const login = (request, response) => {
     //const {email, password} = request.body;
 
     //console.log(request);
-    // console.log("parámetro recibido email: " + email);
-    // console.log("parámetro recibido password: " + password);
+    console.log("parámetro recibido email: " + email);
+    console.log("parámetro recibido password: " + password);
 
     console.log("request.body: ")
     console.log(request.body);

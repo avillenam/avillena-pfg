@@ -7,44 +7,28 @@ html
         link(rel="stylesheet", href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css")
         link(rel='stylesheet', href='/css/main.css')
 
-    body.register
+    body.register.fondo
         block content
-            h1.text-center Geolocalización de objetos móviles
+            h1.text-center#titulo Geolocalización de objetos móviles
         .wrapper
             .container
-                .col-sm-6.mx-auto
-                    .card.mt-5
-                        .card-body
-                            h1.text-center
-                                span.fa.fa-sign-in-alt  Registro de nuevo usuario
-                            if(message.length > 0)
-                                .alert.alert-danger #{message}
-                            form(action="/register" method="post")
-                                .form-group
-                                    label(for="email") Email
-                                    input.form-control(type="email" name="email")
-                                .form-group
-                                    label(for="password") Contraseña
-                                    input.form-control(type="password" name="password")
-                                .form-group
-                                    label(for="name") Nombre
-                                    input.form-control(type="text" name="name")
-                                .form-group
-                                    label(for="surname") Apellidos
-                                    input.form-control(type="text" name="surname")
-                                .form-group
-                                    label(for="birthdate") Fecha Nacimiento
-                                    input.form-control(type="date" name="birthdate")
-                                .form-group
-                                    label(for="genre") Género
-                                    input.form-control(type="text" name="genre")
-                                .form-group
-                                    label(for="mobile_number") Número de móvil
-                                    input.form-control(type="number" name="mobile_number")
-                                input.btn.btn-dark.btn-lg(type="submit")
-                            hr
-                            .text-center
-                                p ¿Ya tienes una cuenta?
-                                    a(href="/login") Iniciar sesión
-
-email, password, name, surname, birthdate, genre, mobile_number
+                .login-box#register
+                    img.avatar(src="./../images/location.jpg" alt="Logo de la aplicación")
+                    h1 Registro de nuevo usuario
+                    form(action="/register" method="post")
+                        label(for"email") Email de usuario
+                        input(type="email" name="email" placeholder="Introduce el email")
+                        label(for"password") Password
+                        input(type="password" name="password" placeholder="Introduce el password")
+                        label(for"name") Nombre
+                        input(type="text" name="name" placeholder="Introduce el nombre")
+                        label(for"surname") Apellidos
+                        input(type="text" name="surname" placeholder="Introduce los apellidos")
+                        label(for"birthdate") Fecha de nacimiento
+                        input(type="date" name="birthdate" placeholder="Introduce la fecha de nacimiento")
+                        label(for"genre") Género
+                        input(type="text" name="genre" placeholder="Introduce el género")
+                        label(for"mobile_number") Número de móvil
+                        input(type="number" name="mobile_number" placeholder="Introduce el número del móvil")
+                        input(type="submit" value="Log in")
+                        a(href="/login") Iniciar sesión

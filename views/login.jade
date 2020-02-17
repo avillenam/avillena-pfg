@@ -7,29 +7,18 @@ html
         link(rel="stylesheet", href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css")
         link(rel='stylesheet', href='/css/main.css')
 
-    body.login
+    body.login.fondo
         block content
-            h1.text-center Geolocalización de objetos móviles
+            h1.text-center#titulo Geolocalización de objetos móviles
         .wrapper
-                .container
-                    .col-sm-6.mx-auto
-                        .card.mt-5
-                            .card-body
-                                h1.text-center
-                                    span.fa.fa-sign-in-alt  Inicio de sesión
-                                if(message.length>0)
-                                    .alert.alert-danger #{message}
-                                form(action="/login" method="post")
-                                    .form-group
-                                        label(for="Email") Email
-                                        input.form-control(type="email" name="email")
-                                    .form-group
-                                        label(for="Password") Contraseña
-                                        input.form-control(type="password" name="password")
-                                    input.btn.btn-dark.btn-lg(type="submit")
-                                hr
-                                .text-center
-                                    p ¿Tienes usuario y contraseña?
-                                        a(href="/register") Registro
-
-
+            .container
+                .login-box
+                    img.avatar(src="./../images/location.jpg" alt="Logo de la aplicación")
+                    h1 Inicio de sesión
+                    form(action="/login" method="post")
+                        label(for"email") Email de usuario
+                        input(type="email" name="email" placeholder="Introduce el email")
+                        label(for"password") Password
+                        input(type="password" name="password" placeholder="Introduce el password")
+                        input(type="submit" value="Log in")
+                        a(href="/register") Registro de usuario
