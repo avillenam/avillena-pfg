@@ -3,12 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="6d5f1f38-e885-4881-8791-5da2d0a04345" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/database.js" beforeDir="false" afterPath="$PROJECT_DIR$/config/database.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/css/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/css/main.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/javascripts/constants.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/javascripts/constants.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/javascripts/queries.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/javascripts/queries.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/login.jade" beforeDir="false" afterPath="$PROJECT_DIR$/views/login.jade" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/register.jade" beforeDir="false" afterPath="$PROJECT_DIR$/views/register.jade" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/app.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/index.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -153,13 +150,6 @@
       <workItem from="1581667429772" duration="8320000" />
       <workItem from="1581768700532" duration="11032000" />
       <workItem from="1581846982377" duration="1298000" />
-    </task>
-    <task id="LOCAL-00001" summary="version 2.5.1">
-      <created>1572271103995</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1572271103996</updated>
     </task>
     <task id="LOCAL-00002" summary="version 2.5.2">
       <created>1572517018781</created>
@@ -497,7 +487,14 @@
       <option name="project" value="LOCAL" />
       <updated>1581611167530</updated>
     </task>
-    <option name="localTasksCounter" value="50" />
+    <task id="LOCAL-00050" summary="version 6.4">
+      <created>1581933846036</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1581933846037</updated>
+    </task>
+    <option name="localTasksCounter" value="51" />
     <servers />
   </component>
   <component name="TodoView">
@@ -541,7 +538,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="version 3.1.&#10;Versión funcionando del proyecto. A partir de aquí, se van a hacer modificaciones importantes." />
     <MESSAGE value="version 3.1.1&#10;Versión funcionando del proyecto. A partir de aquí, se van a hacer modificaciones importantes." />
     <MESSAGE value="version 3.1.2&#10;Versión funcionando del proyecto. A partir de aquí, se van a hacer modificaciones importantes." />
     <MESSAGE value="version 4.0" />
@@ -566,22 +562,24 @@
     <MESSAGE value="version 5.9" />
     <MESSAGE value="version 6.0" />
     <MESSAGE value="version 6.1" />
-    <option name="LAST_COMMIT_MESSAGE" value="version 6.1" />
+    <MESSAGE value="version 6.4" />
+    <option name="LAST_COMMIT_MESSAGE" value="version 6.4" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="585" y="115" key="CommitChangelistDialog2" timestamp="1581854569814">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state x="2505" y="115" key="CommitChangelistDialog2/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1581611166105" />
-    <state x="585" y="115" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1581854569814" />
-    <state x="740" y="276" key="FileChooserDialogImpl" timestamp="1581845105785">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state x="740" y="276" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1581845105785" />
-    <state x="2472" y="254" key="Vcs.Push.Dialog.v2" timestamp="1581611170954">
+    <state x="2505" y="115" key="CommitChangelistDialog2" timestamp="1581933844489">
       <screen x="1920" y="0" width="1920" height="1040" />
     </state>
-    <state x="2472" y="254" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1581611170954" />
+    <state x="2505" y="115" key="CommitChangelistDialog2/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1581933844489" />
+    <state x="585" y="115" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1581854569814" />
+    <state x="2660" y="276" key="FileChooserDialogImpl" timestamp="1581938791263">
+      <screen x="1920" y="0" width="1920" height="1040" />
+    </state>
+    <state x="2660" y="276" key="FileChooserDialogImpl/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1581938791263" />
+    <state x="740" y="276" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1581845105785" />
+    <state x="2472" y="254" key="Vcs.Push.Dialog.v2" timestamp="1581933849367">
+      <screen x="1920" y="0" width="1920" height="1040" />
+    </state>
+    <state x="2472" y="254" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1581933849367" />
     <state x="552" y="254" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1579958551361" />
     <state x="2538" y="160" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1581668765248">
       <screen x="1920" y="0" width="1920" height="1040" />

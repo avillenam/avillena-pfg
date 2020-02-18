@@ -6,15 +6,13 @@ const db = require('../public/javascripts/queries');
 /* GET home page. */
 router.get('/', function (req, res, next) {
     res.render('login', {
-        title: 'Geolocalización de objetos móviles',
-        message: req.flash('loginMessage')
+        title: 'Geolocalización de objetos móviles'
     });
 });
 
 router.get('/login', function (req, res, next) {
     res.render('login', {
-        title: 'Geolocalización de objetos móviles',
-        message: req.flash('loginMessage')
+        title: 'Geolocalización de objetos móviles'
     });
 });
 
@@ -22,8 +20,7 @@ router.post('/login', db.login);
 
 router.get('/register', function (req, res, next) {
     res.render('register', {
-        title: 'Registro de usuario nuevo',
-        message: req.flash('registerMessage')
+        title: 'Registro de usuario nuevo'
     });
 });
 

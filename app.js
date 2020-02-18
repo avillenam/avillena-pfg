@@ -2,18 +2,14 @@ const express = require('express');
 const path = require('path');
 const favicon = require('serve-favicon');
 const morgan = require('morgan');
-const flash = require('connect-flash');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const session = require('express-session');
-const passport = require('passport');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
 
 var app = express();
-
-// require('./config/passport')(passport);
 
 // settings
 app.set('views', path.join(__dirname, 'views'));
@@ -31,13 +27,8 @@ app.use(session({
     resave: false,
     saveUninitialized: false
 }));
-app.use(passport.initialize());
-app.use(passport.session());
-app.use(flash());
-
 
 // routes
-// require('./routes')(app, passport);
 
 app.use('/common', express.static('routes'));
 
