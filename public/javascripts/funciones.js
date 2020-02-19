@@ -1105,4 +1105,3 @@ map.on('pointermove', function(e) {
 });
 
  */
-
