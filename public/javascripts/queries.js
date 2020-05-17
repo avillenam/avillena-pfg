@@ -621,71 +621,71 @@ const loginDriver = (request, response) => {
 }
 
 
-const login = (request, response) => {
-    //Method that test if a user is registered in the system
-    // return
-    // code=0 Si usuario es incorrecto o no existe
-    // code=1 if usuario y contrasña son correctos
-    // code=2 if usuario es correcto pero password incorrecto
-    const { email, password } = request.body
-        //const {email, password} = request.body;
+// const login = (request, response) => {
+//         //Method that test if a user is registered in the system
+//         // return
+//         // code=0 Si usuario es incorrecto o no existe
+//         // code=1 if usuario y contrasña son correctos
+//         // code=2 if usuario es correcto pero password incorrecto
+//         const { email, password } = request.body
+//             //const {email, password} = request.body;
 
-    //console.log(request);
-    console.log("parámetro recibido email: " + email);
-    console.log("parámetro recibido password: " + password);
+//         //console.log(request);
+//         console.log("parámetro recibido email: " + email);
+//         console.log("parámetro recibido password: " + password);
 
-    console.log("request.body: ")
-    console.log(request.body);
+//         console.log("request.body: ")
+//         console.log(request.body);
 
-    pool.query('select drivers.id_driver, drivers.email, drivers.password from drivers;', (error, results) => {
-        if (error) {
-            throw error
-        }
-        var respuesta = results.rows;
-        console.log('typeof (respuesta): ');
-        console.log(typeof(respuesta));
+//         pool.query('select drivers.id_driver, drivers.email, drivers.password from drivers;', (error, results) => {
+//             if (error) {
+//                 throw error
+//             }
+//             var respuesta = results.rows;
+//             console.log('typeof (respuesta): ');
+//             console.log(typeof(respuesta));
 
-        // Comprueba usuario y contraseña
-        //Hace un bucle para comprobar
-        var code = 0;
-        var id_driver = 999;
-        for (var i = 0; i < respuesta.length; i++) {
-            if (respuesta[i].email == email && respuesta[i].password == password) {
-                code = 1;
-                id_driver = respuesta[i].id_driver;
-            } else if (respuesta[i].email == email && respuesta[i].password != password) {
-                code = 2;
-            } else {}
-        }
+//             // Comprueba usuario y contraseña
+//             //Hace un bucle para comprobar
+//             var code = 0;
+//             var id_driver = 999;
+//             for (var i = 0; i < respuesta.length; i++) {
+//                 if (respuesta[i].email == email && respuesta[i].password == password) {
+//                     code = 1;
+//                     id_driver = respuesta[i].id_driver;
+//                 } else if (respuesta[i].email == email && respuesta[i].password != password) {
+//                     code = 2;
+//                 } else {}
+//             }
 
-        var login_code = new Object();
-        login_code.code = code;
-        login_code.id_driver = id_driver;
-        //var myString = JSON.stringify(login_code);
+//             var login_code = new Object();
+//             login_code.code = code;
+//             login_code.id_driver = id_driver;
+//             //var myString = JSON.stringify(login_code);
 
-        // response.status(200).json(login_code);
-        console.log('login_code: ' + code);
-        console.log('login_code: ' + login_code);
-        if (login_code.code == 1) {
-            response.status(200).json(login_code);
-            // response.redirect("/map");
-            /*
-            response.render('map', {
-                title: 'Geolocalización de objetos móviles',
-                lat: 40.034,
-                lng: -4.02
-                // vehicles: respuesta
-            });
-            */
-        } else {
-            //response.status(200).json(login_code);
-            response.redirect("/login");
-        }
-        // response.status(200).json(login_code);
-        //console.log(results.rows[0]);
-    });
-}
-
+//             // response.status(200).json(login_code);
+//             console.log('login_code: ' + code);
+//             console.log('login_code: ' + login_code);
+//             if (login_code.code == 1) {
+//                 response.status(200).json(login_code);
+//                 // response.redirect("/map");
+//                 /*
+//                 response.render('map', {
+//                     title: 'Geolocalización de objetos móviles',
+//                     lat: 40.034,
+//                     lng: -4.02
+//                     // vehicles: respuesta
+//                 });
+//                 */
+//             } else {
+//                 //response.status(200).json(login_code);
+//                 response.redirect("/login");
+//             }
+//             // response.status(200).json(login_code);
+//             //console.log(results.rows[0]);
+//         });
+//     }
+/*
 const register = (request, response) => {
     const { email, password, name, surname, birthdate, genre, mobile_number } = request.body
 
@@ -724,7 +724,7 @@ const register = (request, response) => {
 
 
 }
-
+*/
 const dateRegistryToShow = (req, response) => {
     if (req.params.fecha_ini) {
         fecha_ini = req.params.fecha_ini;
