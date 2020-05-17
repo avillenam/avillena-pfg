@@ -765,7 +765,5 @@ module.exports = {
     availabilityVehicle,
     dateRegistryToShow,
     createObject,
-    getTest,
-    login,
-    register
+    getTest
 }
