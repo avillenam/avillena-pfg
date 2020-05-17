@@ -2,10 +2,52 @@ var express = require('express');
 var router = express.Router();
 var bodyParser = require('body-parser');
 const db = require('../public/javascripts/queries');
+var app = express();
+
+
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const PassportLocal = require('passport-local').Strategy;
+const passport = require('passport');
+
+
+app.use(cookieParser('geoloc'));
+app.use(session({
+    secret: 'geoloc',
+    resave: true,
+    saveUninitialized: true
+}));
+
+// Configuración de Passport
+app.use(passport.initialize());
+
+// Se pasa la configuracion de sesiones de passport en cada escenario que se utilice
+app.use(passport.session());
+
+// Estrategia de autenticación
+passport.use(new PassportLocal(function(email, password, done){
+   if(email ==='a_villenam@hotmail.com' && password==='1234') {
+       return done(null, {id:1, name:'Tony'});
+   }
+
+   done(null, false);
+}))
+
+// {id:1, name:'Tony'}
+// 1=> Serialización 
+passport.serializeUser(function(user, done){
+    done(null, user.id);
+})
+
+// Deserialización
+passport.deserializeUser(function(id, done){
+    done(null, {id:1, name:'Tony'});
+})
+
 
 /* GET home page. */
-router.get('/', function (req, res, next) {
-    res.render('login', {
+router.get('/map', function (req, res, next) {
+    res.render('map', {
         title: 'Geolocalización de objetos móviles'
     });
 });
@@ -16,7 +58,11 @@ router.get('/login', function (req, res, next) {
     });
 });
 
-router.post('/login', db.login);
+//router.post('/login', db.login);
+router.post('/login', passport.authenticate('local', {
+    successRedicect: "/map",
+    failureRedirect: "/login"
+}));
 
 router.get('/register', function (req, res, next) {
     res.render('register', {

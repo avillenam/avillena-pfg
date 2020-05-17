@@ -1,21 +1,24 @@
 // var conString = "postgres://postgres:postgres@localhost:5432/api";
 // var conString = "postgres://wzkowhhekyvcbh:dbc37ca58c23fa2edf7ed4af8319e00316de9aaf1defbb8cac1fd86500704f6a@ec2-107-20-173-2.compute-1.amazonaws.com:5432/d2346t6en0926l";
 
-const {url} = require('../../config/database');
+// const { url } = require('../../config/database');
 
 //Fechas por defecto
 var ahora = new Date();
-var fecha_ini = '20190901';  // fecha inicio 1 de septiembre de 2019
-var fecha_fin = '' + ahora.getFullYear() + (ahora.getMonth() + 1) + ahora.getDate();  // fecha hasta hoy
+var fecha_ini = '20190901'; // fecha inicio 1 de septiembre de 2019
+var fecha_fin = '' + ahora.getFullYear() + (ahora.getMonth() + 1) + ahora.getDate(); // fecha hasta hoy
 
 /*
 const db = require('./public/javascripts/constants');
 let connString = db.CONN_STRING;
 */
-const {Pool} = require('pg');
-const pool = new Pool({
-    connectionString: url,
-});
+// const { Pool } = require('pg');
+// const pool = new Pool({
+//     connectionString: url,
+// });
+
+
+const { pool } = require("../../dbConfig");
 
 /*
 const pool = new Pool({
@@ -43,7 +46,7 @@ function getNow() {
 const insertPosition = (request, response) => {
     //var date_registry = getNow();
     //to_timestamp('2019/06/20 17:15:27','YYYY/MM/DD HH24:MI:SS');
-    const {id_vehicle, id_driver, coord_x, coord_y, origin, destiny, comments, accuracy, address, speed} = request.body;
+    const { id_vehicle, id_driver, coord_x, coord_y, origin, destiny, comments, accuracy, address, speed } = request.body;
     console.log(request.body);
     // console.log(coord_x);
     // console.log(coord_y);
@@ -51,22 +54,21 @@ const insertPosition = (request, response) => {
     // console.log(typeof (coord_y));
 
     pool.query('INSERT INTO position (id_vehicle, id_driver, coord_x, coord_y, origin, destiny, comments, accuracy, address, speed, date_registry, the_geom) ' +
-        'VALUES ($1, $2, $3, $4, $5, $6, $7, round($8::numeric, 2), $9, round($10::numeric, 2), localtimestamp, ' +
-        'st_geometryfromtext(\'POINT(' + coord_x + ' ' + coord_y + ')\',4326))',
-        [id_vehicle, id_driver, coord_x, coord_y, origin, destiny, comments, accuracy, address, speed], (error, results) => {
-            if (error) {
-                throw error
-            }
+            'VALUES ($1, $2, $3, $4, $5, $6, $7, round($8::numeric, 2), $9, round($10::numeric, 2), localtimestamp, ' +
+            'st_geometryfromtext(\'POINT(' + coord_x + ' ' + coord_y + ')\',4326))', [id_vehicle, id_driver, coord_x, coord_y, origin, destiny, comments, accuracy, address, speed], (error, results) => {
+                if (error) {
+                    throw error
+                }
 
-            var login_code = new Object();
-            login_code.code = 1;
-            response.status(200).json(login_code);
+                var login_code = new Object();
+                login_code.code = 1;
+                response.status(200).json(login_code);
 
-            //response.status(201).send(`Position added with ID: ${results.rows[0]}`);
-            //response.json(results.rows[0]);
-            console.log(results.rows[0]);
-        })
-    //pool.end();
+                //response.status(201).send(`Position added with ID: ${results.rows[0]}`);
+                //response.json(results.rows[0]);
+                console.log(results.rows[0]);
+            })
+        //pool.end();
 }
 
 const getPositionByDriver = (request, response) => {
@@ -220,7 +222,7 @@ const getRouteOfVehicleByDate = (request, response) => {
 }
 
 const createDriver = (request, response) => {
-    const {email, password, name, surname, birthdate, genre, mobile_number} = request.body
+    const { email, password, name, surname, birthdate, genre, mobile_number } = request.body
 
     console.log(birthdate)
     console.log()
@@ -231,8 +233,7 @@ const createDriver = (request, response) => {
         // formato de fecha para cuando recibe una petición GET de la APP geoloc
         console.log('formato de fecha: DD/MM/YYYY');
         pool.query('INSERT INTO drivers ( email, password, name, surname, birthdate, genre, mobile_number, available) ' +
-            'VALUES ($1, $2, $3, $4, TO_DATE($5, \'DD/MM/YYYY\'), $6, $7, true)',
-            [email, password, name, surname, birthdate, genre, mobile_number], (error, results) => {
+            'VALUES ($1, $2, $3, $4, TO_DATE($5, \'DD/MM/YYYY\'), $6, $7, true)', [email, password, name, surname, birthdate, genre, mobile_number], (error, results) => {
                 if (error) {
                     throw error
                 }
@@ -245,8 +246,7 @@ const createDriver = (request, response) => {
         // formato de fecha para cuando recibe una petición GET del cliente web
         console.log('formato de fecha: YYYY-MM-DD');
         pool.query('INSERT INTO drivers ( email, password, name, surname, birthdate, genre, mobile_number, available) ' +
-            'VALUES ($1, $2, $3, $4, $5, $6, $7, true)',
-            [email, password, name, surname, birthdate, genre, mobile_number], (error, results) => {
+            'VALUES ($1, $2, $3, $4, $5, $6, $7, true)', [email, password, name, surname, birthdate, genre, mobile_number], (error, results) => {
                 if (error) {
                     throw error
                 }
@@ -262,12 +262,11 @@ const createDriver = (request, response) => {
 }
 
 const editDriver = (request, response) => {
-    const {email, password, name, surname, birthdate, genre, mobile_number, id} = request.body;
+    const { email, password, name, surname, birthdate, genre, mobile_number, id } = request.body;
     console.log(email + ', ' + name + ', ' + surname + ', ' + birthdate + ', ' + genre + ', ' + mobile_number + ', ' + email + ', ' + parseInt(id))
 
 
-    pool.query('UPDATE drivers SET email=$1, password=$2, name=$3, surname=$4, birthdate=$5, genre=$6, mobile_number=$7 WHERE id_driver=$8;',
-        [email, password, name, surname, birthdate, genre, mobile_number, id], (error, results) => {
+    pool.query('UPDATE drivers SET email=$1, password=$2, name=$3, surname=$4, birthdate=$5, genre=$6, mobile_number=$7 WHERE id_driver=$8;', [email, password, name, surname, birthdate, genre, mobile_number, id], (error, results) => {
             if (error) {
                 throw error
             }
@@ -275,7 +274,7 @@ const editDriver = (request, response) => {
             console.log(results.rows[0]);
             response.redirect("/map");
         })
-    //pool.end();
+        //pool.end();
 }
 
 const getDrivers = (req, res) => {
@@ -304,8 +303,8 @@ const getDrivers = (req, res) => {
 }
 
 
-const getTest = function () {
-    var usuario = {nombre: "Antonio", username: "Tony"}
+const getTest = function() {
+    var usuario = { nombre: "Antonio", username: "Tony" }
     return JSON.stringify(usuario);
 }
 
@@ -332,15 +331,19 @@ const deleteDriverById = (request, response) => {
 
 const createVehicle = (request, response) => {
     const {
-        type, brand, model, passengers, fuel, available
+        type,
+        brand,
+        model,
+        passengers,
+        fuel,
+        available
     } = request.body;
 
     console.log(request.body);
-    console.log(typeof (load_capacity));
+    console.log(typeof(load_capacity));
 
     pool.query('INSERT INTO vehicles (type, matricula, brand, model, passengers, fuel, available) ' +
-        'VALUES ($1, $2, $3, $4, $5, $6, $7)',
-        [type, matricula, brand, model, passengers, fuel, available], (error, results) => {
+        'VALUES ($1, $2, $3, $4, $5, $6, $7)', [type, matricula, brand, model, passengers, fuel, available], (error, results) => {
             if (error) {
                 throw error
             }
@@ -351,34 +354,32 @@ const createVehicle = (request, response) => {
 }
 
 const createObject = (request, response) => {
-    const {type, matricula, brand, model} = request.body;
+    const { type, matricula, brand, model } = request.body;
 
     console.log(request.body);
-    console.log(typeof (load_capacity));
+    console.log(typeof(load_capacity));
 
-    pool.query('INSERT INTO vehicles (type, matricula, brand, model) VALUES ($1, $2, $3, $4)',
-        [type, matricula, brand, model], (error, results) => {
-            if (error) {
-                throw error
-            }
-            //response.status(201).send(`Vehicle added with ID: ${results.rows[0]}`);
-            console.log(results.rows[0]);
-            response.redirect("/map");
-        })
+    pool.query('INSERT INTO vehicles (type, matricula, brand, model) VALUES ($1, $2, $3, $4)', [type, matricula, brand, model], (error, results) => {
+        if (error) {
+            throw error
+        }
+        //response.status(201).send(`Vehicle added with ID: ${results.rows[0]}`);
+        console.log(results.rows[0]);
+        response.redirect("/map");
+    })
 }
 
 const editVehicle = (request, response) => {
-    const {type, brand, model, passengers, fuel, available, id} = request.body;
+    const { type, brand, model, passengers, fuel, available, id } = request.body;
 
-    pool.query('UPDATE vehicles SET type=$1, brand=$2, model=$3, passengers=$4, fuel=$5, available=$6 WHERE id_vehicle=$7;',
-        [type, brand, model, passengers, fuel, available, id], (error, results) => {
-            if (error) {
-                throw error
-            }
+    pool.query('UPDATE vehicles SET type=$1, brand=$2, model=$3, passengers=$4, fuel=$5, available=$6 WHERE id_vehicle=$7;', [type, brand, model, passengers, fuel, available, id], (error, results) => {
+        if (error) {
+            throw error
+        }
 
-            console.log(results.rows[0]);
-            response.redirect("/map");
-        })
+        console.log(results.rows[0]);
+        response.redirect("/map");
+    })
 
 }
 
@@ -453,13 +454,12 @@ const getVehicleByIdDriver = (request, response) => {
 
 
 const vehicleDriver = (request, response) => {
-    const {id_vehicle, id_driver} = request.body;
+    const { id_vehicle, id_driver } = request.body;
 
     //console.log(request.body);
 
     pool.query('INSERT INTO vehicle_driver (id_vehicle, id_driver, date_registry) ' +
-        'VALUES ($1, $2, localtimestamp)',
-        [id_vehicle, id_driver], (error, results) => {
+        'VALUES ($1, $2, localtimestamp)', [id_vehicle, id_driver], (error, results) => {
             if (error) {
                 throw error
             }
@@ -480,32 +480,31 @@ const vehicleDriver = (request, response) => {
 }
 
 const deleteVehicleDriver = (request, response) => {
-    const {id_driver} = request.body;
+    const { id_driver } = request.body;
 
     //console.log(request.body);
 
-    pool.query('DELETE FROM vehicle_driver WHERE id_driver=$1;',
-        [id_driver], (error, results) => {
-            if (error) {
-                throw error
-            }
-            //response.status(201).send(`Vehicle added with ID: ${results.rows[0]}`);
-            console.log(results.rows[0]);
+    pool.query('DELETE FROM vehicle_driver WHERE id_driver=$1;', [id_driver], (error, results) => {
+        if (error) {
+            throw error
+        }
+        //response.status(201).send(`Vehicle added with ID: ${results.rows[0]}`);
+        console.log(results.rows[0]);
 
-            // var status = new Object();
-            // status.code = 'ok';
-            // status.id_driver = id_driver;
-            // status.id_vehicle = id_vehicle;
-            //var myString = JSON.stringify(login_code);
+        // var status = new Object();
+        // status.code = 'ok';
+        // status.id_driver = id_driver;
+        // status.id_vehicle = id_vehicle;
+        //var myString = JSON.stringify(login_code);
 
-            response.send({msg: 'Eliminación de las relaciones conductor(' + id_driver + ') con cualquier vehiculo de manera satisfactoria.'});
-            //response.status(200).json(status);
-            //response.redirect("/map");
-        })
+        response.send({ msg: 'Eliminación de las relaciones conductor(' + id_driver + ') con cualquier vehiculo de manera satisfactoria.' });
+        //response.status(200).json(status);
+        //response.redirect("/map");
+    })
 }
 
 const availabilityDriver = (request, response) => {
-    const {id_driver, availability} = request.body;
+    const { id_driver, availability } = request.body;
     //console.log(id_driver + ', ' + availability);
 
     pool.on('error', (err, client) => {
@@ -515,22 +514,21 @@ const availabilityDriver = (request, response) => {
 
     pool.connect((err, client, done) => {
         if (err) throw err;
-        client.query('UPDATE drivers SET available=$2 WHERE id_driver=$1;',
-            [id_driver, availability], (error, results) => {
-                if (error) {
-                    throw error
-                }
+        client.query('UPDATE drivers SET available=$2 WHERE id_driver=$1;', [id_driver, availability], (error, results) => {
+            if (error) {
+                throw error
+            }
 
-                console.log(results.rows[0]);
-                response.send({msg: 'Modificación del atributo \'available\' del conductor id_driver:' + id_driver + ' a \'' + availability + '\' de manera satisfactoria.'});
-                //response.redirect("/map");
-                done();
-            });
+            console.log(results.rows[0]);
+            response.send({ msg: 'Modificación del atributo \'available\' del conductor id_driver:' + id_driver + ' a \'' + availability + '\' de manera satisfactoria.' });
+            //response.redirect("/map");
+            done();
+        });
     })
 }
 
 const availabilityVehicle = (request, response) => {
-    const {id_vehicle, availability} = request.body;
+    const { id_vehicle, availability } = request.body;
     //console.log(id_vehicle + ', ' + availability);
 
     pool.on('error', (err, client) => {
@@ -540,21 +538,20 @@ const availabilityVehicle = (request, response) => {
 
     pool.connect((err, client, done) => {
         if (err) throw err;
-        client.query('UPDATE vehicles SET available=$2 WHERE id_vehicle=$1;',
-            [id_vehicle, availability], (error, results) => {
-                if (error) {
-                    throw error
-                }
+        client.query('UPDATE vehicles SET available=$2 WHERE id_vehicle=$1;', [id_vehicle, availability], (error, results) => {
+            if (error) {
+                throw error
+            }
 
-                console.log(results.rows[0]);
-                response.send({msg: 'Modificación del atributo \'available\' del vehiculo id_vehicle:' + id_vehicle + ' a \'' + availability + '\' de manera satisfactoria.'});
-            });
+            console.log(results.rows[0]);
+            response.send({ msg: 'Modificación del atributo \'available\' del vehiculo id_vehicle:' + id_vehicle + ' a \'' + availability + '\' de manera satisfactoria.' });
+        });
         done();
     })
 }
 
 const deleteVehicleDriverByIdVehicle = (request, response) => {
-// delete relation in 'vehicle_driver' relation
+    // delete relation in 'vehicle_driver' relation
     pool.query('DELETE FROM vehicle_driver WHERE id_vehicle=' + (request.params.id_vehicle).toString() + ';', (error, results) => {
         if (error) {
             throw error
@@ -565,7 +562,7 @@ const deleteVehicleDriverByIdVehicle = (request, response) => {
 }
 
 const deleteVehicleDriverByIdDriver = (request, response) => {
-// delete relation in 'vehicle_driver' relation
+    // delete relation in 'vehicle_driver' relation
     pool.query('DELETE FROM vehicle_driver WHERE id_driver =' + (request.params.id_driver).toString() + ';', (error, results) => {
         if (error) {
             throw error
@@ -598,10 +595,10 @@ const loginDriver = (request, response) => {
         }
         var respuesta = results.rows;
         console.log("respuesta: " + respuesta);
-        console.log(typeof (respuesta));
+        console.log(typeof(respuesta));
 
-        // Test user and password
-        //loop
+        // Comprueba usuario y contraseña
+        //Realiza un bucle
         var code = 0;
         var id_driver = 999;
         for (var i = 0; i < respuesta.length; i++) {
@@ -627,11 +624,11 @@ const loginDriver = (request, response) => {
 const login = (request, response) => {
     //Method that test if a user is registered in the system
     // return
-    // code=0 if user is incorrect or not exist
-    // code=1 if user and password are correct
-    // code=2 if user is correct and password is incorrect
-    const {email, password} = request.body
-    //const {email, password} = request.body;
+    // code=0 Si usuario es incorrecto o no existe
+    // code=1 if usuario y contrasña son correctos
+    // code=2 if usuario es correcto pero password incorrecto
+    const { email, password } = request.body
+        //const {email, password} = request.body;
 
     //console.log(request);
     console.log("parámetro recibido email: " + email);
@@ -645,10 +642,11 @@ const login = (request, response) => {
             throw error
         }
         var respuesta = results.rows;
-        console.log(typeof (respuesta));
+        console.log('typeof (respuesta): ');
+        console.log(typeof(respuesta));
 
-        // Test user and password
-        //loop
+        // Comprueba usuario y contraseña
+        //Hace un bucle para comprobar
         var code = 0;
         var id_driver = 999;
         for (var i = 0; i < respuesta.length; i++) {
@@ -657,7 +655,7 @@ const login = (request, response) => {
                 id_driver = respuesta[i].id_driver;
             } else if (respuesta[i].email == email && respuesta[i].password != password) {
                 code = 2;
-            }
+            } else {}
         }
 
         var login_code = new Object();
@@ -666,16 +664,21 @@ const login = (request, response) => {
         //var myString = JSON.stringify(login_code);
 
         // response.status(200).json(login_code);
-        console.log('login_code' + login_code);
+        console.log('login_code: ' + code);
+        console.log('login_code: ' + login_code);
         if (login_code.code == 1) {
+            response.status(200).json(login_code);
             // response.redirect("/map");
+            /*
             response.render('map', {
                 title: 'Geolocalización de objetos móviles',
                 lat: 40.034,
                 lng: -4.02
                 // vehicles: respuesta
             });
-        } else{
+            */
+        } else {
+            //response.status(200).json(login_code);
             response.redirect("/login");
         }
         // response.status(200).json(login_code);
@@ -684,7 +687,7 @@ const login = (request, response) => {
 }
 
 const register = (request, response) => {
-    const {email, password, name, surname, birthdate, genre, mobile_number} = request.body
+    const { email, password, name, surname, birthdate, genre, mobile_number } = request.body
 
     console.log(birthdate)
     console.log()
@@ -695,8 +698,7 @@ const register = (request, response) => {
         // formato de fecha para cuando recibe una petición GET de la APP geoloc
         console.log('formato de fecha: DD/MM/YYYY');
         pool.query('INSERT INTO drivers ( email, password, name, surname, birthdate, genre, mobile_number, available) ' +
-            'VALUES ($1, $2, $3, $4, TO_DATE($5, \'DD/MM/YYYY\'), $6, $7, true)',
-            [email, password, name, surname, birthdate, genre, mobile_number], (error, results) => {
+            'VALUES ($1, $2, $3, $4, TO_DATE($5, \'DD/MM/YYYY\'), $6, $7, true)', [email, password, name, surname, birthdate, genre, mobile_number], (error, results) => {
                 if (error) {
                     throw error
                 }
@@ -709,8 +711,7 @@ const register = (request, response) => {
         // formato de fecha para cuando recibe una petición GET del cliente web
         console.log('formato de fecha: YYYY-MM-DD');
         pool.query('INSERT INTO drivers ( email, password, name, surname, birthdate, genre, mobile_number, available) ' +
-            'VALUES ($1, $2, $3, $4, $5, $6, $7, true)',
-            [email, password, name, surname, birthdate, genre, mobile_number], (error, results) => {
+            'VALUES ($1, $2, $3, $4, $5, $6, $7, true)', [email, password, name, surname, birthdate, genre, mobile_number], (error, results) => {
                 if (error) {
                     throw error
                 }
@@ -729,7 +730,7 @@ const dateRegistryToShow = (req, response) => {
         fecha_ini = req.params.fecha_ini;
         fecha_fin = req.params.fecha_fin;
         console.log("se ha cambiado la fecha de registro a mostrar desde el día: " + fecha_ini + ' al día ' + fecha_fin);
-        response.status(200).send({msg: 'Se van a mostrar los vehículos con fecha desde: ' + fecha_ini + ' hasta el día: ' + fecha_fin});
+        response.status(200).send({ msg: 'Se van a mostrar los vehículos con fecha desde: ' + fecha_ini + ' hasta el día: ' + fecha_fin });
     }
 }
 

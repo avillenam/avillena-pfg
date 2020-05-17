@@ -1,26 +1,31 @@
 {
-  "name": "PFG",
-  "version": "0.0.0",
-  "private": true,
-  "scripts": {
-    "start": "nodemon ./bin/www"
-  },
-  "dependencies": {
-    "body-parser": "~1.8.1",
-    "cookie-parser": "^1.4.4",
-    "debug": "~2.0.0",
-    "express": "^4.17.1",
-    "express-session": "^1.17.0",
-    "jade": "~1.6.0",
-    "morgan": "^1.9.1",
-    "nodemo": "^1.0.0",
-    "nodemon": "^1.19.1",
-    "ol": "^5.3.3",
-    "openlayers": "^3.16.0",
-    "pg": "*",
-    "postgeo": "*",
-    "serve-favicon": "^2.5.0",
-    "connect-flash": "^0.1.1"
-  },
-  "devDependencies": {}
+    "name": "PFG",
+    "version": "0.0.0",
+    "private": true,
+    "scripts": {
+        "start": "nodemon ./server.js"
+    },
+    "dependencies": {
+        "bcrypt": "^4.0.1",
+        "body-parser": "~1.8.1",
+        "connect-flash": "^0.1.1",
+        "cookie-parser": "^1.4.4",
+        "debug": "~2.0.0",
+        "dotenv": "^8.2.0",
+        "express": "^4.17.1",
+        "express-flash": "0.0.2",
+        "express-session": "^1.17.0",
+        "jade": "~1.6.0",
+        "morgan": "^1.9.1",
+        "nodemo": "^1.0.0",
+        "nodemon": "^1.19.1",
+        "ol": "^5.3.3",
+        "openlayers": "^3.16.0",
+        "passport": "^0.4.1",
+        "passport-local": "^1.0.0",
+        "pg": "*",
+        "postgeo": "*",
+        "serve-favicon": "^2.5.0"
+    },
+    "devDependencies": {}
 }

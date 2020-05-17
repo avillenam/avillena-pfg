@@ -5,7 +5,8 @@ block content
         div.col-md-2.hidden-xs(style="padding:0px;") Geolocalización de objetos móviles
         div.col.md-8
         div.col.md-2
-            a(href="/login") Logout
+            Hola #{user} 
+            a(href="/logout") Logout
     .map#map
         #info
     #mouse-position
@@ -23,11 +24,11 @@ block content
             .panel-heading
                 ul.nav.nav-tabs
                     li.active
-                        a#tab-vehicles(href='#tab_vehicles_results', data-toggle='tab') Objetos móviles/Vehículos
+                        a#tab-vehicles(href='#tab_vehicles_results' data-toggle='tab') Objetos móviles/Vehículos
                     li
-                        a#tab-drivers(href='#tab_drivers_results', data-toggle='tab') Portadores del objeto
+                        a#tab-drivers(href='#tab_drivers_results' data-toggle='tab') Portadores del objeto
                     li
-                        a#tab-opciones(href='#tab_opciones', data-toggle='tab') Opciones
+                        a#tab-opciones(href='#tab_opciones' data-toggle='tab') Opciones
             .panel-body
                 .tab-content
                     #tab_vehicles_results.tab-pane.fade.in.active
@@ -61,9 +62,9 @@ block content
             .panel-heading
                 ul.nav.nav-tabs
                     li.active
-                        a#tab-rutas(href='#tab_rutas', data-toggle='tab') Rutas
+                        a#tab-rutas(href='#tab_rutas' data-toggle='tab') Rutas
                     li
-                        a#tab-info(href='#tab_info', data-toggle='tab') Información del objeto
+                        a#tab-info(href='#tab_info' data-toggle='tab') Información del objeto
             .panel-body
                 .tab-content
                     #tab_rutas.tab-pane.fade.in.active
@@ -145,12 +146,12 @@ block content
         span
 
     // Modal REGISTRAR objeto móvil
-    #formVehicle.modal.fade(tabindex='-1', role='dialog', aria-labelledby='formVehicleLabel')
+    #formVehicle.modal.fade(tabindex='-1' role='dialog' aria-labelledby='formVehicleLabel')
         .modal-dialog(role='document')
             .modal-content
                 form(method="post" action="/createObject")
                     .modal-header
-                        button.close(type='button', data-dismiss='modal', aria-label='Close')
+                        button.close(type='button' data-dismiss='modal' aria-label='Close')
                             span(aria-hidden='true') ×
                         h4#myVehicleLabel.modal-title Registra Objeto Móvil
                     .modal-body
@@ -174,16 +175,16 @@ block content
                             label Modelo/ Propiedades del objeto móvil
                             input.form-control(type="text" name="model")
                     .modal-footer
-                        button.btn.btn-default(type='button', data-dismiss='modal') Cerrar
+                        button.btn.btn-default(type='button' data-dismiss='modal') Cerrar
                         input.btn.btn-primary(type='submit' value="Guardar")
     // Modal EDITAR objeto
-    #editFormVehicle.modal.fade(tabindex='-1', role='dialog', aria-labelledby='editFormVehicleLabel')
+    #editFormVehicle.modal.fade(tabindex='-1' role='dialog' aria-labelledby='editFormVehicleLabel')
         .modal-dialog(role='document')
             .modal-content
                 form(method="post" action="/editVehicle")
                     input(type="hidden" id="edit-vehicle-form-id" name="id")
                     .modal-header
-                        button.close(type='button', data-dismiss='modal', aria-label='Cerrar')
+                        button.close(type='button' data-dismiss='modal' aria-label='Cerrar')
                             span(aria-hidden='true') ×
                         h4#myEditVehicleLabel.modal-title Editar Objeto Móvil
                     .modal-body
@@ -200,15 +201,15 @@ block content
                             label Modelo/ Propiedades del objeto móvil
                             input.form-control(type="text" name="model" id="edit-vehicle-form-model")
                     .modal-footer
-                        button.btn.btn-default(type='button', data-dismiss='modal') Close
+                        button.btn.btn-default(type='button' data-dismiss='modal') Close
                         input.btn.btn-primary(type='submit' value="Guardar")
     // Modal REGISTRAR Portador del objeto
-    #formDriver.modal.fade(tabindex='-1', role='dialog', aria-labelledby='formDriverLabel')
+    #formDriver.modal.fade(tabindex='-1' role='dialog' aria-labelledby='formDriverLabel')
         .modal-dialog(role='document')
             .modal-content
                 form(method="post" action="/driver")
                     .modal-header
-                        button.close(type='button', data-dismiss='modal', aria-label='Cerrar')
+                        button.close(type='button' data-dismiss='modal' aria-label='Cerrar')
                             span(aria-hidden='true') ×
                         h4#myDriverLabel.modal-title Registrar portador del objeto
                     .modal-body
@@ -236,16 +237,16 @@ block content
                             label Número de móvil
                             input.form-control(type="tel" name="mobile_number")
                     .modal-footer
-                        button.btn.btn-default(type='button', data-dismiss='modal') Cerrar
+                        button.btn.btn-default(type='button' data-dismiss='modal') Cerrar
                         input.btn.btn-primary(type='submit' value="Guardar")
     // Modal EDIT Portador
-    #editFormDriver.modal.fade(tabindex='-1', role='dialog', aria-labelledby='editFormDriverLabel')
+    #editFormDriver.modal.fade(tabindex='-1' role='dialog' aria-labelledby='editFormDriverLabel')
         .modal-dialog(role='document')
             .modal-content
                 form(method="post" action="/editDriver")
                     input(type="hidden" id="edit-form-id" name="id")
                     .modal-header
-                        button.close(type='button', data-dismiss='modal', aria-label='Close')
+                        button.close(type='button' data-dismiss='modal' aria-label='Close')
                             span(aria-hidden='true') ×
                         h4#myEditDriverLabel.modal-title Editar Portador del objeto
                     .modal-body
@@ -272,15 +273,15 @@ block content
                             label Número de móvil
                             input.form-control(type="tel" name="mobile_number" id="edit-form-mobile_number")
                     .modal-footer
-                        button.btn.btn-default(type='button', data-dismiss='modal') Close
+                        button.btn.btn-default(type='button' data-dismiss='modal') Close
                         input.btn.btn-primary(type='submit' value="Save")
     // Modal ADD Vehicle-Driver relation
-    #formVehicleDriver.modal.fade(tabindex='-1', role='dialog', aria-labelledby='formVehicleDriverLabel')
+    #formVehicleDriver.modal.fade(tabindex='-1' role='dialog' aria-labelledby='formVehicleDriverLabel')
         .modal-dialog(role='document')
             .modal-content
                 form(method="post" action="/vehicleDriver")
                     .modal-header
-                        button.close(type='button', data-dismiss='modal', aria-label='Close')
+                        button.close(type='button' data-dismiss='modal' aria-label='Close')
                             span(aria-hidden='true') ×
                         h4#myVehicleDriverLabel.modal-title Establece relación Objeto-Portador
                     .modal-body
@@ -292,7 +293,7 @@ block content
                             label Objeto Móvil
                             input.form-control(type="text" name="id_vehicle")
                     .modal-footer
-                        button.btn.btn-default(type='button', data-dismiss='modal') Close
+                        button.btn.btn-default(type='button' data-dismiss='modal') Close
                         input.btn.btn-primary(type='submit' value="Save")
 
     //form.flotante(method="post" action="/coords")
@@ -345,16 +346,16 @@ block content
 
 
         /**
-         * Elements that make up the popup.
-         */
+        * Elements that make up the popup.
+        */
         var container = document.getElementById('popup');
         var content = document.getElementById('popup-content');
         var closer = document.getElementById('popup-closer');
 
 
         /**
-         * Create an overlay to anchor the popup to the map.
-         */
+        * Create an overlay to anchor the popup to the map.
+        */
         /*
         var overlay = new ol.Overlay({
             element: container,
@@ -365,9 +366,9 @@ block content
         });
         */
         /**
-         * Add a click handler to hide the popup.
-         * @return {boolean} Don't follow the href.
-         */
+        * Add a click handler to hide the popup.
+        * @return {boolean} Don't follow the href.
+        */
         /*
         closer.onclick = function () {
             overlay.setPosition(undefined);
@@ -513,8 +514,8 @@ block content
         }
 
         /**
-         * Add a click handler to the map to render the popup.
-         */
+        * Add a click handler to the map to render the popup.
+        */
         /*
         map.on('singleclick', function (evt) {
             var coordinate = evt.coordinate;
@@ -525,7 +526,7 @@ block content
             overlay.setPosition(coordinate);
         });
 
-         */
+            */
 
 
         // Crea los elementos HTML para cada objeto

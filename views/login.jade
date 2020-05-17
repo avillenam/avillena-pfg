@@ -15,6 +15,19 @@ html
                 .login-box
                     img.avatar(src="./../images/location.jpg" alt="Logo de la aplicación")
                     h1 Inicio de sesión
+                    ul
+                        if (typeof errors != 'undefined')
+                            each error in errors
+                                li #{error.message}
+                    ul
+                        if (typeof message != 'undefined')
+                            li #{message}
+                    ul 
+                        if (messages.success_msg)
+                            li #{messages.success_msg}
+                    ul 
+                        if (messages.error)
+                            li #{messages.error}
                     form(action="/login" method="post")
                         label(for"email") Email de usuario
                         input(type="email" name="email" placeholder="Introduce el email")

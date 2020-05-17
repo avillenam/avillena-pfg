@@ -3,24 +3,31 @@ html
     head
         title= "Registro de usuario"
         meta(charset="UTF-8")
-        link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css", integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb", crossorigin="anonymous")
-        link(rel="stylesheet", href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css")
-        link(rel='stylesheet', href='/css/main.css')
+        link(rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous")
+        link(rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css")
+        link(rel='stylesheet' href='/css/main.css')
 
     body.register.fondo
         block content
-            h1.text-center#titulo Geolocalización de objetos móviles
+            h1.text-center#titulo #{title}
         .wrapper
             .container
                 .login-box#register
                     img.avatar(src="./../images/location.jpg" alt="Logo de la aplicación")
                     h1 Registro de nuevo usuario
+                    ul
+                        if (typeof errors != 'undefined')
+                            each error in errors
+                                li #{error.message}
+                    ul
+                        if (typeof message != 'undefined')
+                            li #{message}
                     form(action="/register" method="post")
-                        label(for"email") Email de usuario
+                        label(for"email") Email de usuario *
                         input(type="email" name="email" placeholder="Introduce el email")
-                        label(for"password") Password
+                        label(for"password") Password *
                         input(type="password" name="password" placeholder="Introduce el password")
-                        label(for"name") Nombre
+                        label(for"name") Nombre *
                         input(type="text" name="name" placeholder="Introduce el nombre")
                         label(for"surname") Apellidos
                         input(type="text" name="surname" placeholder="Introduce los apellidos")
@@ -30,5 +37,5 @@ html
                         input(type="text" name="genre" placeholder="Introduce el género")
                         label(for"mobile_number") Número de móvil
                         input(type="number" name="mobile_number" placeholder="Introduce el número del móvil")
-                        input(type="submit" value="Log in")
+                        input(type="submit" value="Registrar")
                         a(href="/login") Iniciar sesión
