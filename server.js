@@ -10,6 +10,7 @@ const db = require('./public/javascripts/queries')
 require("dotenv").config();
 const app = express();
 
+
 const PORT = process.env.PORT || 3000;
 
 const initializePassport = require("./passportConfig");
