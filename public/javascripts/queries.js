@@ -432,7 +432,7 @@ const deleteVehicleById = (request, response) => {
 
 
 const getDriverByIdVehicle = (request, response) => {
-    pool.query('SELECT a.id_vehicle, b.id_driver, b.name, b.surname, a.date_registry FROM vehicle_driver a, drivers b WHERE a.id_driver=b.id_driver AND a.id_vehicle=' + request.params.id_vehicle, (error, results) => {
+    pool.query('SELECT a.id_vehicle, b.id_driver, b.name, b.surname, a.date_registry FROM vehicle_driver a, drivers b WHERE a.id_driver=b.id_driver AND a.id_vehicle=' + request.params.id_vehicle + ' ORDER BY date_registry  LIMIT 1', (error, results) => {
         if (error) {
             throw error
         }
@@ -456,8 +456,13 @@ const getVehicleByIdDriver = (request, response) => {
 const vehicleDriver = (request, response) => {
     const { id_vehicle, id_driver } = request.body;
 
-    //console.log(request.body);
+    //TODO: primero hay que eliminar la relación existente, si la había.
 
+
+
+
+
+    //console.log(request.body);
     pool.query('INSERT INTO vehicle_driver (id_vehicle, id_driver, date_registry) ' +
         'VALUES ($1, $2, localtimestamp)', [id_vehicle, id_driver], (error, results) => {
             if (error) {

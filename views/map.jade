@@ -4,9 +4,9 @@ block content
     div#toolbar.intro.container-fluid.col-md-12
         div.col-md-2.hidden-xs(style="padding:0px;") Geolocalización de objetos móviles
         div.col.md-8
-        div.col.md-2
-            Hola #{user} 
-            a(href="/logout") Logout
+        div.col.md-2#logout
+            div Bienvenido #{user} 
+                a(href="/logout") Logout
     .map#map
         #info
     #mouse-position

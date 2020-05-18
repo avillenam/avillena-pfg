@@ -1,4 +1,5 @@
-html, body {
+html,
+body {
     height: 100%;
     margin: 0;
     font: 12px "Lucida Grande", Helvetica, Arial, sans-serif;
@@ -73,7 +74,8 @@ a {
     min-width: 280px;
 }
 
-.ol-popup:after, .ol-popup:before {
+.ol-popup:after,
+.ol-popup:before {
     top: 100%;
     border: solid transparent;
     content: " ";
@@ -163,7 +165,8 @@ a {
     border-radius: 6px;
 }
 
-#mapOSM, #mapPNOA {
+#mapOSM,
+#mapPNOA {
     width: 100px;
     height: 70px;
     color: #122b40;
@@ -172,11 +175,13 @@ a {
     box-shadow: -1px 1px 5px 1px #2e2e2e !important;
 }
 
-#mapOSM div:hover, #mapPNOA div:hover {
+#mapOSM div:hover,
+#mapPNOA div:hover {
     box-shadow: 0 1px 3px #2e2e2e inset !important;
 }
 
-#mapOSM div:hover:not(.selected), #mapPNOA div:hover:not(.selected) {
+#mapOSM div:hover:not(.selected),
+#mapPNOA div:hover:not(.selected) {
     border: none;
 }
 
@@ -186,11 +191,12 @@ a {
     left: 0px;
     width: 108px;
     height: 77px;
-    border: 3px solid #CC0000 !important;;
+    border: 3px solid #CC0000 !important;
+    ;
     margin: 0px;
 }
 
-.dropdown-menu > li > a {
+.dropdown-menu>li>a {
     display: block;
     padding: 3px 20px;
     clear: both;
@@ -294,15 +300,13 @@ tr {
     position: relative;
 }
 
-.details > div > :first-child {
+.details>div> :first-child {
     width: 15px;
     display: inline-block;
     margin-right: 5px;
 }
 
-#panel_principal {
-
-}
+#panel_principal {}
 
 .tileActions {
     float: right;
@@ -321,6 +325,7 @@ tr {
 .resultItem .deleteIcon {
     color: red;
 }
+
 
 /*
 #info_result .editIcon {
@@ -419,8 +424,7 @@ tr {
     width: auto;
 }
 
-
-.resultItem .details > div {
+.resultItem .details>div {
     margin-bottom: 4px;
 }
 
@@ -434,11 +438,11 @@ tr {
     align-items: center;
 }
 
-.resultItem > :first-child {
+.resultItem> :first-child {
     /*width: 60px;*/
 }
 
-.resultItem > * {
+.resultItem>* {
     /*width: calc(100% - 140px);*/
     margin-right: 0;
     display: inline-block;
@@ -479,11 +483,13 @@ tr {
     font-size: 2em;
 }
 
-.mb-0, .my-0 {
+.mb-0,
+.my-0 {
     margin-bottom: 0 !important;
 }
 
-.mb-1, .my-1 {
+.mb-1,
+.my-1 {
     margin-bottom: .25rem !important;
 }
 
@@ -509,12 +515,14 @@ table {
     font-weight: 600 !important;
 }
 
-.vehicles-table > tbody > tr:hover > td,
-.vehicles-table > tbody > tr:hover > th {
+.vehicles-table>tbody>tr:hover>td,
+.vehicles-table>tbody>tr:hover>th {
     background-color: #CFF5FF;
 }
 
+
 /*Simbología para los popup mostrando información de los vehículos*/
+
 #info {
     position: absolute;
     height: 1px;
@@ -533,7 +541,6 @@ table {
 .tooltip-inner {
     border: 2px solid white;
 }
-
 
 #buttons-group {
     background: #3b3d4d;
@@ -564,7 +571,6 @@ fieldset {
 label {
     font-weight: unset !important;
     font-size: 12px;
-
 }
 
 .huerotate {
@@ -572,23 +578,27 @@ label {
     filter: hue-rotate(3.142rad);
 }
 
+
 /*Vehiculos activos o con geometría*/
+
 .activo {
     color: green;
 }
 
-
-.nav-tabs > li > a {
+.nav-tabs>li>a {
     font-size: 12px;
 }
 
-.nav-tabs > li.active > a, .nav-tabs > li.active > a:focus, .nav-tabs > li.active > a:hover {
+.nav-tabs>li.active>a,
+.nav-tabs>li.active>a:focus,
+.nav-tabs>li.active>a:hover {
     font-size: 14px;
     font-weight: bold;
 }
 
 
 /*formulario login*/
+
 .wrapper {
     display: flex;
     align-items: center;
@@ -632,4 +642,9 @@ h2.inactive {
 h2.active {
     color: #0d0d0d;
     border-bottom: 2px solid #5fbae9;
+}
+
+#logout {
+    text-align: right;
+    font-size: 18px;
 }

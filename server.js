@@ -31,7 +31,8 @@ app.set('view engine', 'jade');
 app.use(
     session({
         // Key we want to keep secret which will encrypt all of our information
-        secret: process.env.SESSION_SECRET,
+        secret: 'geoloc',
+        // secret: process.env.SESSION_SECRET,
         // Should we resave our session variables if nothing has changes which we dont
         resave: false,
         // Save empty value if there is no vaue which we do not want to do
@@ -65,7 +66,7 @@ app.get("/map", checkNotAuthenticated, (req, res) => {
 
 app.get("/logout", (req, res) => {
     req.logout();
-    res.render("login", { message: "Has terminado la sesión correctamente." });
+    res.render("login", { message: "Has finalizado la sesión correctamente." });
 });
 
 app.post("/register", async(req, res) => {
