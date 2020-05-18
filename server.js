@@ -7,7 +7,7 @@ const session = require("express-session");
 const path = require('path');
 const db = require('./public/javascripts/queries')
 
-require("dotenv").config();
+// require("dotenv").config();
 const app = express();
 
 
