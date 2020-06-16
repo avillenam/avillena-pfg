@@ -20,6 +20,7 @@ let connString = db.CONN_STRING;
 
 const { pool } = require("../../dbConfig");
 
+
 /*
 const pool = new Pool({
     user: 'postgres',
@@ -432,7 +433,7 @@ const deleteVehicleById = (request, response) => {
 
 
 const getDriverByIdVehicle = (request, response) => {
-    pool.query('SELECT a.id_vehicle, b.id_driver, b.name, b.surname, a.date_registry FROM vehicle_driver a, drivers b WHERE a.id_driver=b.id_driver AND a.id_vehicle=' + request.params.id_vehicle + ' ORDER BY date_registry  LIMIT 1', (error, results) => {
+    pool.query('SELECT a.id_vehicle, b.id_driver, b.name, b.surname, a.date_registry FROM vehicle_driver a, drivers b WHERE a.id_driver=b.id_driver AND a.id_vehicle=' + request.params.id_vehicle + ' ORDER BY date_registry DESC  LIMIT 1', (error, results) => {
         if (error) {
             throw error
         }
@@ -452,38 +453,135 @@ const getVehicleByIdDriver = (request, response) => {
     })
 }
 
+// Petición POST dada una URL
+function httpPost(theUrl, id, available) {
+    var xmlHttp = new XMLHttpRequest();
+
+    var formData = new FormData();
+
+    formData.append("id", id);
+    formData.append("availability", available);
+
+    xmlHttp.open("POST", theUrl, false); // false for synchronous request
+    xmlHttp.send(formData);
+    return xmlHttp.responseText;
+}
 
 const vehicleDriver = (request, response) => {
     const { id_vehicle, id_driver } = request.body;
 
-    //TODO: primero hay que eliminar la relación existente, si la había.
-
-
-
-
-
-    //console.log(request.body);
-    pool.query('INSERT INTO vehicle_driver (id_vehicle, id_driver, date_registry) ' +
-        'VALUES ($1, $2, localtimestamp)', [id_vehicle, id_driver], (error, results) => {
-            if (error) {
-                throw error
+    // Validation passed
+    pool.query(
+        `SELECT * FROM vehicle_driver WHERE id_vehicle = $1 AND id_driver = $2`, [id_vehicle, id_driver],
+        (err, results) => {
+            if (err) {
+                console.log(err);
             }
-            //response.status(201).send(`Vehicle added with ID: ${results.rows[0]}`);
-            console.log(results.rows[0]);
+            console.log(results.rows);
 
-            var status = new Object();
-            status.code = 'ok';
-            status.id_driver = id_driver;
-            status.id_vehicle = id_vehicle;
-            //var myString = JSON.stringify(login_code);
+            if (results.rows.length > 0) { //Relación ya existente en el sistema
+                var status = new Object();
+                status.code = 1;
+                status.id_driver = id_driver;
+                status.id_vehicle = id_vehicle;
 
-            //response.send({ msg: 'Establecida relación conductor (' + id_driver + ') - vehículo(' + id_vehicle + ')  de manera satisfactoria.'});
-            //response.status(200).json(status);
-            //response.status(200);
-            response.redirect("/map");
-        })
+                return response.render("map", {
+                    message: "Relación ya registrada en el sistema."
+                });
+            } else {
+                pool.query( // Relación establecida correctamente
+                    'INSERT INTO vehicle_driver (id_vehicle, id_driver, date_registry) ' +
+                    'VALUES ($1, $2, localtimestamp)', [id_vehicle, id_driver],
+                    (err, results) => {
+                        if (err) {
+                            throw err;
+                        }
+
+                        // Establece disponibilidad del Portador a false
+                        pool.query(
+                            'UPDATE drivers SET available=$2 WHERE id_driver=$1;', [id_driver, false],
+                            (err, results) => {
+                                if (err) {
+                                    throw err;
+                                }
+                                console.log('Cambiada la disponibilidad del id_driver: ' + id_driver + ' de manera correcta.');
+                            }
+                        );
+
+
+                        // Establece disponibilidad del Objeto a false
+                        pool.query(
+                            'UPDATE vehicles SET available=$2 WHERE id_vehicle=$1;', [id_vehicle, false],
+                            (err, results) => {
+                                if (err) {
+                                    throw err;
+                                }
+                                console.log('Cambiada la disponibilidad del id_vehicle: ' + id_vehicle + ' de manera correcta.');
+                            }
+                        );
+
+
+                        console.log(results.rows[0]);
+                        request.flash("success_msg", "Relación registrada correctamente.");
+                        var status = new Object();
+                        status.code = 1;
+                        status.id_driver = id_driver;
+                        status.id_vehicle = id_vehicle;
+                        // response.status(200).json(status);
+                        response.redirect("/map");
+                    }
+                );
+            }
+        }
+    );
 }
 
+
+
+const vehicleDriverApp = (request, response) => {
+    const { id_vehicle, id_driver } = request.body;
+
+    console.log(request.body);
+    pool.query(
+        `SELECT * FROM vehicle_driver WHERE id_vehicle = $1 AND id_driver = $2`, [id_vehicle, id_driver],
+        (err, results) => {
+            if (err) {
+                console.log(err);
+            }
+            console.log(results.rows);
+
+            if (results.rows.length > 0) { //Relación ya existente en el sistema
+                var status = new Object();
+                status.response = "Relación ya existente en el sistema";
+
+                response.status(200).json(status);
+
+            } else {
+                pool.query('INSERT INTO vehicle_driver (id_vehicle, id_driver, date_registry) ' +
+                    'VALUES ($1, $2, localtimestamp)', [id_vehicle, id_driver], (error, results) => {
+                        if (error) {
+                            throw error
+                        }
+                        //response.status(201).send(`Vehicle added with ID: ${results.rows[0]}`);
+                        console.log(results.rows[0]);
+
+                        var status = new Object();
+                        // status.code = 'ok';
+                        // status.id_driver = id_driver;
+                        // status.id_vehicle = id_vehicle;
+                        status.response = "Relación generada correctamente";
+
+                        //var myString = JSON.stringify(login_code);
+
+                        response.status(200).json(status);
+                        //response.redirect("/map");
+                    }
+                )
+            }
+        }
+    );
+
+}
 const deleteVehicleDriver = (request, response) => {
     const { id_driver } = request.body;
 
@@ -502,14 +600,21 @@ const deleteVehicleDriver = (request, response) => {
         // status.id_vehicle = id_vehicle;
         //var myString = JSON.stringify(login_code);
 
-        response.send({ msg: 'Eliminación de las relaciones conductor(' + id_driver + ') con cualquier vehiculo de manera satisfactoria.' });
+        // response.send({ msg: 'Eliminación de las relaciones conductor(' + id_driver + ') con cualquier vehiculo de manera satisfactoria.' });
+        console.log('Eliminación de las relaciones conductor(' + id_driver + ') con cualquier vehiculo de manera satisfactoria.');
+
+        console.log(results.rows[0]);
+        var message = new Object();
+        message.response = 'Eliminación de las relaciones conductor(' + id_driver + ') con cualquier vehiculo de manera satisfactoria.';
+
+        response.status(200).json(message);
         //response.status(200).json(status);
         //response.redirect("/map");
     })
 }
 
 const availabilityDriver = (request, response) => {
-    const { id_driver, availability } = request.body;
+    const { id, availability } = request.body;
     //console.log(id_driver + ', ' + availability);
 
     pool.on('error', (err, client) => {
@@ -519,13 +624,22 @@ const availabilityDriver = (request, response) => {
 
     pool.connect((err, client, done) => {
         if (err) throw err;
-        client.query('UPDATE drivers SET available=$2 WHERE id_driver=$1;', [id_driver, availability], (error, results) => {
+        client.query('UPDATE drivers SET available=$2 WHERE id_driver=$1;', [id, availability], (error, results) => {
             if (error) {
                 throw error
             }
 
             console.log(results.rows[0]);
-            response.send({ msg: 'Modificación del atributo \'available\' del conductor id_driver:' + id_driver + ' a \'' + availability + '\' de manera satisfactoria.' });
+            // response.send({ msg: 'Modificación del atributo \'available\' del conductor id_driver:' + id + ' a \'' + availability + '\' de manera satisfactoria.' });
+
+
+            console.log(results.rows[0]);
+            var message = new Object();
+            message.response = 'Modificación del atributo \'available\' del conductor id_driver:' + id + ' a \'' + availability + '\' de manera satisfactoria.';
+
+            response.status(200).json(message);
+
+
             //response.redirect("/map");
             done();
         });
@@ -533,7 +647,7 @@ const availabilityDriver = (request, response) => {
 }
 
 const availabilityVehicle = (request, response) => {
-    const { id_vehicle, availability } = request.body;
+    const { id, availability } = request.body;
     //console.log(id_vehicle + ', ' + availability);
 
     pool.on('error', (err, client) => {
@@ -543,13 +657,17 @@ const availabilityVehicle = (request, response) => {
 
     pool.connect((err, client, done) => {
         if (err) throw err;
-        client.query('UPDATE vehicles SET available=$2 WHERE id_vehicle=$1;', [id_vehicle, availability], (error, results) => {
+        client.query('UPDATE vehicles SET available=$2 WHERE id_vehicle=$1;', [id, availability], (error, results) => {
             if (error) {
                 throw error
             }
 
             console.log(results.rows[0]);
-            response.send({ msg: 'Modificación del atributo \'available\' del vehiculo id_vehicle:' + id_vehicle + ' a \'' + availability + '\' de manera satisfactoria.' });
+            var message = new Object();
+            message.response = "Modificación del atributo \'available\' del vehiculo id_vehicle:' + id + ' a \'' + availability + '\' de manera satisfactoria.";
+
+            response.status(200).json(message);
+            // response.send({ msg: 'Modificación del atributo \'available\' del vehiculo id_vehicle:' + id + ' a \'' + availability + '\' de manera satisfactoria.' });
         });
         done();
     })
@@ -577,12 +695,13 @@ const deleteVehicleDriverByIdDriver = (request, response) => {
     });
 }
 
+/*
 const loginDriver = (request, response) => {
     //Method that test if a user is registered in the system
     // return
-    // code=0 if user incorrect or not exist
-    // code=1 if user and password are correct
-    // code=2 if user is correct and password is incorrect
+    // code=0 Si el usuario es incorrecto o no existe
+    // code=1 Si el usuario y la contraseña son correctos
+    // code=2 Si el usuario es correcto y la contraseña incorrecta
     var email = request.params.email;
     var password = request.params.password;
     //const {email, password} = request.body;
@@ -624,7 +743,7 @@ const loginDriver = (request, response) => {
         //console.log(results.rows[0]);
     });
 }
-
+*/
 
 // const login = (request, response) => {
 //         //Method that test if a user is registered in the system
@@ -761,10 +880,11 @@ module.exports = {
     getDriverByIdVehicle,
     getVehicleByIdDriver,
     vehicleDriver,
+    vehicleDriverApp,
     deleteVehicleById,
     deleteVehicleDriverByIdVehicle,
     deleteVehicleDriverByIdDriver,
-    loginDriver,
+    // loginDriver,
     deleteVehicleDriver,
     availabilityDriver,
     availabilityVehicle,

@@ -2,9 +2,9 @@
 // --------CAPAS--------
 /***********************/
 
-var vehiclesLayer;    // Capa para las ultimas posiciones de los objetos
-var tailsLayer;     // Capa para las colas de las rutas de los objetos
-var routesLayer;    // Capa para las rutas de los objetos
+var vehiclesLayer; // Capa para las ultimas posiciones de los objetos
+var tailsLayer; // Capa para las colas de las rutas de los objetos
+var routesLayer; // Capa para las rutas de los objetos
 
 var ruta;
 
@@ -58,7 +58,7 @@ function creaCapaRutasVehiculos() {
              */
         }),
         style: style_route_function
-        // style: styles_multipoint
+            // style: styles_multipoint
     });
     temporalPreviusPoint = [0, 0];
     map.addLayer(routesLayer);
@@ -77,9 +77,17 @@ function generateColor() {
 // Obtiene todos los objetos
 function getVehicles() {
     //console.log('peticion enviada');
-    theUrl = ROOT + '/getVehicles';
+    var theUrl = ROOT + '/getVehicles';
     vehiclesJSON = JSON.parse(httpGet(theUrl));
     return vehiclesJSON;
+}
+
+// Obtiene todos los portadores
+function getPortadores() {
+    var theUrl = ROOT + '/getDrivers';
+    driversJSON = JSON.parse(httpGet(theUrl));
+    numDrivers = driversJSON.length;
+    return driversJSON;
 }
 
 // Obtiene un objeto JSON a partir de su id
@@ -258,6 +266,20 @@ function httpGet(theUrl) {
     return xmlHttp.responseText;
 }
 
+// Petición POST dada una URL
+function httpPost(theUrl, id_driver, available) {
+    var xmlHttp = new XMLHttpRequest();
+
+    var formData = new FormData();
+
+    formData.append("id_driver", id_driver);
+    formData.append("availability", available);
+
+    xmlHttp.open("POST", theUrl, false); // false for synchronous request
+    xmlHttp.send(formData);
+    return xmlHttp.responseText;
+}
+
 //var color = generateColor();
 
 custom_styles = {
@@ -274,7 +296,7 @@ custom_styles = {
 };
 
 // Función que crea el estilo para los puntos que indican la posición actual de los objetos
-style_function = function (feature) {
+style_function = function(feature) {
     var rotation = feature.getProperties().rotacion;
     style_nr = feature.getGeometry().getType();
     //console.log(feature.getProperties().rotacion);
@@ -293,7 +315,7 @@ style_function = function (feature) {
 };
 
 // Función que crea el estilo para los puntos que indican la posición actual de los objetos
-style_tail_function = function (feature) {
+style_tail_function = function(feature) {
     var geometry = feature.getGeometry();
     var styles = [
         // linestring
@@ -305,7 +327,7 @@ style_tail_function = function (feature) {
         })
     ];
 
-    geometry.forEachSegment(function (start, end) {
+    geometry.forEachSegment(function(start, end) {
         var dx = end[0] - start[0];
         var dy = end[1] - start[1];
         var rotation = Math.atan2(dy, dx);
@@ -326,7 +348,7 @@ style_tail_function = function (feature) {
 
 // Estilo para las rutas
 var temporalPreviusPoint = [0, 0];
-style_route_function = function (feature) {
+style_route_function = function(feature) {
     var geometry = feature.getGeometry();
 
     var styles = [
@@ -399,7 +421,7 @@ style_route_function = function (feature) {
             }));
 
         }
-    } else if (feature.getGeometry().getType() == 'Point') {    //Estilo para Point
+    } else if (feature.getGeometry().getType() == 'Point') { //Estilo para Point
 
         // Punto actual
         var currentPoint = feature.getGeometry().getCoordinates();
@@ -418,7 +440,7 @@ style_route_function = function (feature) {
 
         temporalPreviusPoint = currentPoint;
 
-        if(distance >= TOLERANCIA_MINIMA_DISTANCIA_ENTRE_PUNTOS){
+        if (distance >= TOLERANCIA_MINIMA_DISTANCIA_ENTRE_PUNTOS) {
             // almacena las coordenadas para que el sigueinte lo use para calcular la rotación
 
             // arrows
@@ -441,7 +463,7 @@ style_route_function = function (feature) {
 
 // var lineString = new ol.geom.LineString;
 
-styles_multipoint = function (feature) {
+styles_multipoint = function(feature) {
 
     var styles = [
         new ol.style.Style({
@@ -565,14 +587,14 @@ function obtienePosicionActualVehiculos(vehicles) {
 function zoomToFeature(source) {
     var extent = source.getExtent();
     var polygon = new ol.geom.Polygon.fromExtent(extent);
-    map.getView().fit(polygon, {padding: [170, 50, 30, 150], minResolution: 1.19});
+    map.getView().fit(polygon, { padding: [170, 50, 30, 150], minResolution: 1.19 });
 }
 
 // Hace zoom y ajusta la vista a la ruta seleccionada
 function zoomToRoute(source) {
     var extent = source.getExtent();
     var polygon = new ol.geom.Polygon.fromExtent(extent);
-    map.getView().fit(polygon, {padding: [5, 5, 5, 5], minResolution: 0.59});
+    map.getView().fit(polygon, { padding: [5, 5, 5, 5], minResolution: 0.59 });
 }
 
 function seleccionaVehiculoActual(id) {
@@ -686,9 +708,8 @@ function createVehicleHTMLinfo() {
         "<div>" +
         "<h4 style='font-weight: bold'>Portador Asignado:</h4>" +
         "<div class='tileActions'>" +
-        "<a title='Crear relación Objeto-Portador' class='relationIcon create-relation' data-toggle='modal' data-target='#formVehicleDriver'><i class='fa fa-plus-square'></i></a>" +
+        "<a title='Crear relación Objeto-Portador' class='relationIcon create-relation' id='btnRelacionObjetoPortador' data-toggle='modal' data-target='#formVehicleDriver'><i class='fa fa-plus-square'></i></a>" +
         "<a title='Editar relación Objeto-Portador' class='editRelationIcon edit-relation' data-toggle='modal' data-target='#editRelationVehicleDriver'><i class='fa fa-edit'></i></a>" +
-        //TODO: una vez creada o editada la relación objeto-portador, actualizar el panel con los nuevos datos a través de jQuery
         "<a title='Eliminar relación Objeto-Portador' class='deleteIcon delete-relation' data-id=" + id + "><i class='fa fa-trash'></i></a>" +
         "</div>" +
         "<p class='mb-0' title='Portador'>" + conductor_asignado + "</p>" +
@@ -697,11 +718,13 @@ function createVehicleHTMLinfo() {
 
     // Añade los elementos al div #info_result
     $('#info_result').html(myItems.join(''));
+
 }
 
 
 function createVehicleHTMLrutas() {
-    var myItems = [], $vehicles_results = $('#rutas_result');
+    var myItems = [],
+        $vehicles_results = $('#rutas_result');
 
     var vehiculo = currentVehicle;
     var id = vehiculo.properties.id_vehicle;
@@ -748,7 +771,7 @@ function createVehicleHTMLrutas() {
             "</tr></tbody></table>");
     }
 
-// Añade los elementos al div #info_result
+    // Añade los elementos al div #info_result
     $('#rutas_result').html(myItems.join(''));
 
     //updateFunctions();
@@ -836,7 +859,7 @@ function muestraRutaPorFecha(id, fecha) {
 function muestraColaVehiculo(id) {
 
     //var fecha_ultimo_registro = (getVehicle(id).properties.last_date_registry).substring(0, 10);    // formato DD-MM-YYYY
-    var fecha_ultimo_registro = getVehicle(id).properties.last_date_registry;    // formato DD-MM-YYYY
+    var fecha_ultimo_registro = getVehicle(id).properties.last_date_registry; // formato DD-MM-YYYY
 
     // Petición del portador asignado
     if (fecha_ultimo_registro != null) {
@@ -863,7 +886,7 @@ function muestraColaVehiculo(id) {
     }
 
     // Marca y selecciona la ruta seleccionada para pintarla en el mapa
-    $('#tabla-rutas tbody tr').click(function () {
+    $('#tabla-rutas tbody tr').click(function() {
         $(this).addClass('bg-success').siblings().removeClass('bg-success');
         var fecha = $(this).find("td[title='Fecha Ruta']>h5").text();
         ultimaFechaCurrentVehicle = fecha;
@@ -883,7 +906,7 @@ function muestraColaVehiculo(id) {
         }
 
         // Hace la petición para mostrar la ruta con el id_vehicle y la fecha de la ruta seleccionada
-        if (routesLayer.getVisible() == false) {   // Si la capa de rutas está apagada, la enciende
+        if (routesLayer.getVisible() == false) { // Si la capa de rutas está apagada, la enciende
             routesLayer.setVisible(true);
         }
         muestraRutaPorFecha(idCurrentVehicle, fecha);
@@ -988,12 +1011,12 @@ function separaLineStrings(line) {
 }
 
 // Muestra la información de las entidades del mapa
-var displayFeatureInfo = function (pixel) {
+var displayFeatureInfo = function(pixel) {
     info.css({
         left: pixel[0] + 'px',
         top: (pixel[1] - 15) + 'px'
     });
-    var feature = map.forEachFeatureAtPixel(pixel, function (feature) {
+    var feature = map.forEachFeatureAtPixel(pixel, function(feature) {
         return feature;
     });
     if (feature) {

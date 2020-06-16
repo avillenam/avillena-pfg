@@ -7,7 +7,6 @@ const session = require("express-session");
 const path = require('path');
 const db = require('../public/javascripts/queries');
 
-
 // require("dotenv").config();
 const app = express();
 
@@ -50,7 +49,10 @@ app.get("/login", checkAuthenticated, (req, res) => {
 
 app.get("/map", checkNotAuthenticated, (req, res) => {
     console.log(req.isAuthenticated());
-    res.render("map", { user: req.user.name });
+    res.render("map", {
+        user: req.user.name,
+        message: ""
+    });
 });
 
 app.get("/logout", (req, res) => {
@@ -58,8 +60,9 @@ app.get("/logout", (req, res) => {
     res.render("login", { message: "Has finalizado la sesión correctamente." });
 });
 
+/*
 app.post("/register", async(req, res) => {
-    let { name, email, password } = req.body;
+    let { email, password, name, surname, birthdate, genre, mobile_number } = req.body;
 
     let errors = [];
 
@@ -85,7 +88,7 @@ app.post("/register", async(req, res) => {
         // Validation passed
         pool.query(
             `SELECT * FROM drivers
-        WHERE email = $1`, [email],
+                WHERE email = $1`, [email],
             (err, results) => {
                 if (err) {
                     console.log(err);
@@ -98,15 +101,15 @@ app.post("/register", async(req, res) => {
                     });
                 } else {
                     pool.query(
-                        `INSERT INTO drivers (name, email, password)
-                        VALUES ($1, $2, $3)
-                        RETURNING id_driver, password`, [name, email, hashedPassword],
+                        `INSERT INTO drivers (email, password, name, surname, birthdate, genre, mobile_number, available)
+                            VALUES ($1, $2, $3, $4, $5, $6, $7, true)
+                            RETURNING id_driver, password`, [email, hashedPassword, name, surname, birthdate, genre, mobile_number],
                         (err, results) => {
                             if (err) {
                                 throw err;
                             }
                             console.log(results.rows);
-                            req.flash("success_msg", "Ya estás registrado. Por favor autentícate.");
+                            req.flash("success_msg", "Usuario registrado correctamente. Por favor autentícate.");
                             res.redirect("/login");
                         }
                     );
@@ -115,7 +118,7 @@ app.post("/register", async(req, res) => {
         );
     }
 });
-
+*/
 app.post(
     "/login",
     passport.authenticate("local", {
@@ -143,13 +146,143 @@ function checkNotAuthenticated(req, res, next) {
 // Interacción con la base de datos a través de peticiones GET, POST, PUT, DELETE
 //*******************************************************************************
 //Crea un portador
-app.post('/driver', db.createDriver);
+// app.post('/driver', db.createDriver);
+app.post("/register", async(req, res) => {
+    let { email, password, name, surname, birthdate, genre, mobile_number } = req.body;
+
+    let errors = [];
+
+    console.log({
+        name,
+        email,
+        password
+    });
+
+    if (!name || !email || !password) {
+        errors.push({ message: "Por favor, rellena todos los campos obligatorios." });
+    }
+
+    if (password.length < 3) {
+        errors.push({ message: "La contraseña ha de tener, al menos, 4 caracteres." });
+    }
+
+    if (errors.length > 0) {
+        res.render("register", { errors, name, email, password });
+    } else {
+        hashedPassword = await bcrypt.hash(password, 10);
+        console.log(hashedPassword);
+
+        regex = /\d{2}\/\d{2}\/\d{4}/;
+
+        if (regex.test(birthdate)) { // para la APP geoloc
+            // code=0 Si el usuario ya existe en el sistema
+            // code=1 Usuario registrado correctamente
+            // code=2 Error de formato
+            pool.query(
+                `SELECT * FROM drivers
+                WHERE email = $1`, [email],
+                (err, results) => {
+                    if (err) {
+                        console.log(err);
+                        registry_code.code = 2;
+                        registry_code.mensaje = 'Error de formato.';
+
+                        res.status(200).json(registry_code);
+                    }
+                    console.log(results.rows);
+
+                    if (results.rows.length > 0) {
+                        var registry_code = new Object();
+                        registry_code.code = 0;
+                        registry_code.mensaje = 'Email ya registrado en el sistema.';
+
+                        res.status(200).json(registry_code);
+
+                    } else {
+                        pool.query(
+                            `INSERT INTO drivers (email, password, name, surname, birthdate, genre, mobile_number, available)
+                            VALUES ($1, $2, $3, $4, TO_DATE($5, \'DD/MM/YYYY\'), $6, $7, true)
+                            RETURNING id_driver, password`, [email, hashedPassword, name, surname, birthdate, genre, mobile_number],
+                            (err, results) => {
+                                if (err) {
+                                    throw err;
+                                }
+                                console.log(results.rows);
+                                var registry_code = new Object();
+                                registry_code.code = 1;
+                                registry_code.mensaje = 'Usuario registrado correctamente';
+
+                                res.status(200).json(registry_code);
+                            }
+                        );
+                    }
+                }
+            );
+        } else { // para el cliente web
+            // Validation passed
+            pool.query(
+                `SELECT * FROM drivers
+                WHERE email = $1`, [email],
+                (err, results) => {
+                    if (err) {
+                        console.log(err);
+                    }
+                    console.log(results.rows);
+
+                    if (results.rows.length > 0) {
+                        return res.render("register", {
+                            message: "Email ya registrado en el sistema."
+                        });
+                    } else {
+                        pool.query(
+                            `INSERT INTO drivers (email, password, name, surname, birthdate, genre, mobile_number, available)
+                            VALUES ($1, $2, $3, $4, $5, $6, $7, true)
+                            RETURNING id_driver, password`, [email, hashedPassword, name, surname, birthdate, genre, mobile_number],
+                            (err, results) => {
+                                if (err) {
+                                    throw err;
+                                }
+                                console.log(results.rows);
+                                req.flash("success_msg", "Usuario registrado correctamente. Por favor autentícate.");
+                                res.redirect("/login");
+                            }
+                        );
+                    }
+                }
+            );
+        }
+    }
+});
 
 //Crea un objeto
 app.post('/createObject', db.createObject);
 
 //Edita portador
-app.post('/editDriver', db.editDriver);
+// app.post('/editDriver', db.editDriver);
+app.post('/editDriver', async(req, res) => {
+    const { email, password, name, surname, birthdate, genre, mobile_number, id } = req.body;
+    console.log(email + ', ' + name + ', ' + surname + ', ' + birthdate + ', ' + genre + ', ' + mobile_number + ', ' + email + ', ' + parseInt(id))
+
+    // TODO: hacer las mismas comprobaciones que al hacer register
+
+
+    hashedPassword = await bcrypt.hash(password, 10);
+    console.log('hashedPassword: ' + hashedPassword);
+
+    pool.query('UPDATE drivers SET email=$1, password=$2, name=$3, surname=$4, birthdate=$5, genre=$6, mobile_number=$7 WHERE id_driver=$8;', [email, hashedPassword, name, surname, birthdate, genre, mobile_number, id], (error, results) => {
+        if (error) {
+            throw error
+        }
+
+        var registry_code = new Object();
+        registry_code.code = 1;
+        registry_code.mensaje = 'Usuario editado correctamente';
+
+        //res.status(200).json(registry_code);
+
+        res.redirect("/map");
+    })
+});
 
 //Crea un vehículo
 app.post('/vehicle', db.createVehicle);
@@ -208,6 +341,9 @@ app.get('/getRouteOfVehicleByDate/:id_vehicle/:date', db.getRouteOfVehicleByDate
 //Establece la relación objeto-portador
 app.post('/vehicleDriver', db.vehicleDriver);
 
+//Establece la relación objeto-portador para la APP
+app.post('/vehicleDriverApp', db.vehicleDriverApp);
+
 //Elimina la relacion objeto-portador
 app.post('/deleteVehicleDriver', db.deleteVehicleDriver);
 
@@ -221,6 +357,90 @@ app.post('/vehicleAvailability', db.availabilityVehicle);
 app.get('/time/:fecha_ini/:fecha_fin', db.dateRegistryToShow);
 
 //Realiza la comprobación de usuario registrado
-app.get('/loginDriver/:email/:password', db.loginDriver);
+// app.get('/loginDriver/:email/:password', db.loginDriver);
+
+app.post("/loginDriver", async(req, res) => {
+    let { email, password } = req.body;
+
+    let errors = [];
+
+    console.log({
+        email,
+        password
+    });
+
+    if (!email || !password) {
+        errors.push({ message: "Por favor, rellena todos los campos obligatorios." });
+    }
+
+    if (errors.length > 0) {
+        // res.render("register", { errors, email, password });
+    } else {
+        // Validation passed
+        pool.query(
+            `SELECT * FROM drivers WHERE email = $1`, [email],
+            (err, results) => {
+                if (err) {
+                    throw err;
+                }
+                console.log(results.rows);
+                // code=0 Si el usuario es incorrecto o no existe
+                // code=1 Si el usuario y la contraseña son correctos
+                // code=2 Si el usuario es correcto y la contraseña incorrecta
+                var code = 0;
+                var id_driver = 999;
+
+                if (results.rows.length > 0) {
+                    const user = results.rows[0];
+                    console.log('user: ' + user.id_driver + ', ' + user.name);
+
+                    bcrypt.compare(password, user.password, (err, isMatch) => {
+                        if (err) {
+                            console.log(err);
+                        }
+                        console.log('isMatch: ' + isMatch);
+                        if (isMatch) {
+                            // Si el usuario y la contraseña son correctos
+                            console.log('Usuario y contraseña introducidos correctamente');
+                            code = 1;
+                            id_driver = user.id_driver;
+                            var login_code = new Object();
+                            console.log('code: ' + code);
+                            login_code.code = code;
+                            login_code.id_driver = id_driver;
+
+                            res.status(200).json(login_code);
+                        } else {
+                            // Si el usuario es correcto y la contraseña incorrecta
+                            console.log('El password es incorrecto');
+                            code = 2;
+                            var login_code = new Object();
+                            console.log('code: ' + code);
+                            login_code.code = code;
+                            login_code.id_driver = id_driver;
+
+                            res.status(200).json(login_code);
+                        }
+                    });
+
+                } else {
+                    // Si el usuario es incorrecto o no existe
+                    console.log('El usuario no existe o es incorrecto');
+                    // return done(null, false, {
+                    //     message: "No existe el usuario introducido en el sistema"
+                    // });
+                    var login_code = new Object();
+                    console.log('code: ' + code);
+                    login_code.code = code;
+                    login_code.id_driver = id_driver;
+
+                    res.status(200).json(login_code);
+                }
+            }
+        );
+    }
+});
+
+
 
 module.exports = app;

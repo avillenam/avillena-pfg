@@ -10,6 +10,10 @@ block content
     .map#map
         #info
     #mouse-position
+    //- if (typeof message != 'undefined')
+    //-     .alert.alert-primary.alert-dismissible
+    //-         button(type="button" class="close" data-dismiss="alert") &times;
+    //-             div #{message}
     div(style="display: none;")
         #marker(title="Marker")
     a.toggleSettings(title='Panel Principal')
@@ -54,7 +58,7 @@ block content
                                     button.btn.btn-primary.btn-block(type='button' title="Crea nuevo portador" data-toggle="modal" data-target="#formDriver") Crea nuevo portador
                                 h4 Crea relación Objeto-Portador Móvil
                                 div.form-group
-                                    button.btn.btn-primary.btn-block(type='button' title="Crea relación Objeto-Portador" data-toggle="modal" data-target="#formVehicleDriver") Objeto-Portador
+                                    button.btn.btn-primary.btn-block#btnRelacionObjetoPortador(type='button' title="Crea relación Objeto-Portador" data-toggle="modal" data-target="#formVehicleDriver") Objeto-Portador
     div#info-results
         header.logoHeader
             h3 Resultados
@@ -207,20 +211,20 @@ block content
     #formDriver.modal.fade(tabindex='-1' role='dialog' aria-labelledby='formDriverLabel')
         .modal-dialog(role='document')
             .modal-content
-                form(method="post" action="/driver")
+                form(method="post" action="/register")
                     .modal-header
                         button.close(type='button' data-dismiss='modal' aria-label='Cerrar')
                             span(aria-hidden='true') ×
                         h4#myDriverLabel.modal-title Registrar portador del objeto
                     .modal-body
                         .form-group
-                            label Email
+                            label Email*
                             input.form-control(type="email" name="email")
                         .form-group
-                            label Contraseña
+                            label Contraseña*
                             input.form-control(type="password" name="password")
                         .form-group
-                            label Nombre
+                            label Nombre*
                             input.form-control(type="text" name="name")
                         .form-group
                             label Apellido
@@ -251,14 +255,13 @@ block content
                         h4#myEditDriverLabel.modal-title Editar Portador del objeto
                     .modal-body
                         .form-group
-                            label Email
+                            label Email*
                             input.form-control(type="email" name="email" id="edit-form-email")
-                        //TODO: Añadir comprobación de password
                         .form-group
-                            label Contraseña
+                            label Contraseña*
                             input.form-control(type="password" name="password" id="edit-form-password")
                         .form-group
-                            label Nombre
+                            label Nombre*
                             input.form-control(type="text" name="name" id="edit-form-name")
                         .form-group
                             label Apellido
@@ -285,13 +288,12 @@ block content
                             span(aria-hidden='true') ×
                         h4#myVehicleDriverLabel.modal-title Establece relación Objeto-Portador
                     .modal-body
-                        // TODO:para cada uno de los siguientes hacer un "select" obteniendolos de una consulta a la base de datos.
                         .form-group
                             label Portador
-                            input.form-control(type="text" name="id_driver")
+                            select.form-control#select_driver(type="text" name="id_driver")
                         .form-group
                             label Objeto Móvil
-                            input.form-control(type="text" name="id_vehicle")
+                            select.form-control#select_vehicle(type="text" name="id_vehicle")
                     .modal-footer
                         button.btn.btn-default(type='button' data-dismiss='modal') Close
                         input.btn.btn-primary(type='submit' value="Save")
@@ -322,6 +324,11 @@ block content
         const root = 'http://localhost:3000';
         // const root = 'https://avillena-pfg.herokuapp.com';
         */
+
+        // Variables para seleccionar del desplegable objeto-portador
+        var objetosJSON = {};
+        var portadoresJSON = {};
+
 
         // Variable que alojará las entidades 'Vehicle' en JSON
         var vehiclesJSON = {};
@@ -738,6 +745,68 @@ block content
                         }
                     })
                 }
+            });
+
+            // Cuando se presiona el botón Objeto-Portadorrealiza peticion para saber objetos disponibles y conductores
+            $("#btnRelacionObjetoPortador").click(function(){
+                // Captura los vehículos
+                objetosJSON = getVehicles();
+                console.log('objetosJSON: ' + objetosJSON);
+
+                // Captura los portadores
+                portadoresJSON = getPortadores();
+                console.log('portadoresJSON: ' + portadoresJSON);
+
+                // Genera los portadores para seleccionarlos
+                var portadoresHTML = "";
+                for(var i=0; i < portadoresJSON.length; i++){
+                    var id = portadoresJSON[i].id_driver;
+                    var name = portadoresJSON[i].name
+                    var surname = portadoresJSON[i].surname;
+                    var email = portadoresJSON[i].email;
+                    var available = portadoresJSON[i].available;
+
+                    //- Solamente añade los que estén disponibles
+                    if(available == true){
+                        portadoresHTML = portadoresHTML.concat("<option value=" + id + ">[" + id + "] " + name + " " + surname + ", " + email + "</option>");
+                    }
+                }
+
+                // Genera los objetos para seleccionarlos
+                var objetosHTML = "";
+                for(var i=0; i < objetosJSON.length; i++){
+                    var id = objetosJSON[i].id_vehicle;
+                    var type = objetosJSON[i].type;
+                    var brand = objetosJSON[i].brand;
+                    var model = objetosJSON[i].model;
+                    var matricula = objetosJSON[i].matricula;
+                    var available = objetosJSON[i].available;
+
+                    //- Solamente añade los que estén disponibles
+                    if(available == true){
+                        objetosHTML = objetosHTML.concat("<option value=" + id + ">[" + id + "] " + type + ", " + brand + " " + model + ", " + matricula + "</option>");
+                    }
+                }
+
+
+                var portadorItems = [];
+                    portadorItems.push("" +
+                        "<div>" +
+                        portadoresHTML +
+                        "</div>"
+                    );
+
+                var objetosItems = [];
+                    objetosItems.push("" +
+                        "<div>" +
+                        objetosHTML +
+                        "</div>"
+                    );
+
+
+                $("#select_driver").html(portadorItems.join(''));
+                $("#select_vehicle").html(objetosItems.join(''));
+
             });
         }
 
