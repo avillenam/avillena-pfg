@@ -262,22 +262,6 @@ const createDriver = (request, response) => {
     //pool.end();
 }
 
-const editDriver = (request, response) => {
-    const { email, password, name, surname, birthdate, genre, mobile_number, id } = request.body;
-    console.log(email + ', ' + name + ', ' + surname + ', ' + birthdate + ', ' + genre + ', ' + mobile_number + ', ' + email + ', ' + parseInt(id))
-
-
-    pool.query('UPDATE drivers SET email=$1, password=$2, name=$3, surname=$4, birthdate=$5, genre=$6, mobile_number=$7 WHERE id_driver=$8;', [email, password, name, surname, birthdate, genre, mobile_number, id], (error, results) => {
-            if (error) {
-                throw error
-            }
-
-            console.log(results.rows[0]);
-            response.redirect("/map");
-        })
-        //pool.end();
-}
-
 const getDrivers = (req, res) => {
     pool.on('error', (err, client) => {
         console.error('Unexpected error on idle client', err)
@@ -371,9 +355,10 @@ const createObject = (request, response) => {
 }
 
 const editVehicle = (request, response) => {
-    const { type, brand, model, passengers, fuel, available, id } = request.body;
+    // const { type, brand, model, passengers, fuel, available, id } = request.body;
+    const { type, matricula, brand, model, id } = request.body;
 
-    pool.query('UPDATE vehicles SET type=$1, brand=$2, model=$3, passengers=$4, fuel=$5, available=$6 WHERE id_vehicle=$7;', [type, brand, model, passengers, fuel, available, id], (error, results) => {
+    pool.query('UPDATE vehicles SET type=$1, matricula=$2, brand=$3, model=$4 WHERE id_vehicle=$5;', [type, matricula, brand, model, id], (error, results) => {
         if (error) {
             throw error
         }
@@ -862,7 +847,6 @@ const dateRegistryToShow = (req, response) => {
 module.exports = {
     insertPosition,
     createDriver,
-    editDriver,
     createVehicle,
     editVehicle,
     getVehicles,

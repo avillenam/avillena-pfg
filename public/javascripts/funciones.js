@@ -125,7 +125,7 @@ function getDrivers() {
         var name = driversJSON[i]['name'];
         var surname = new String(driversJSON[i]['surname']);
         var birthdate = (new Date(driversJSON[i]['birthdate']));
-        birthdate = birthdate.getDate() + "/" + birthdate.getMonth() + "/" + birthdate.getFullYear();
+        birthdate = birthdate.getDate() + "/" + (birthdate.getMonth() + 1) + "/" + birthdate.getFullYear();
         var genre = driversJSON[i]['genre'];
         var mobile_number = driversJSON[i]['mobile_number'];
         var email = driversJSON[i]['email'];

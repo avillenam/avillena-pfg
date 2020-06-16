@@ -265,11 +265,10 @@ app.post('/editDriver', async(req, res) => {
 
     // TODO: hacer las mismas comprobaciones que al hacer register
 
-
     hashedPassword = await bcrypt.hash(password, 10);
     console.log('hashedPassword: ' + hashedPassword);
 
-    pool.query('UPDATE drivers SET email=$1, password=$2, name=$3, surname=$4, birthdate=$5, genre=$6, mobile_number=$7 WHERE id_driver=$8;', [email, hashedPassword, name, surname, birthdate, genre, mobile_number, id], (error, results) => {
+    pool.query('UPDATE drivers SET email=$1, password=$2, name=$3, surname=$4, birthdate=TO_DATE($5, \'YYYY-MM-DD\'), genre=$6, mobile_number=$7 WHERE id_driver=$8;', [email, hashedPassword, name, surname, birthdate, genre, mobile_number, id], (error, results) => {
         if (error) {
             throw error
         }
