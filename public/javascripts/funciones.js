@@ -403,7 +403,7 @@ style_route_function = function(feature) {
             var ptoInicio = geometry.getFirstCoordinate();
             var ptoFinal = geometry.getLastCoordinate();
             styles.push(new ol.style.Style({
-                geometry: new ol.geom.Point(ptoFinal),
+                geometry: new ol.geom.Point(ptoInicio),
                 image: new ol.style.Icon({
                     src: '/images/route_start.png',
                     anchor: [.5, .5],
@@ -412,7 +412,7 @@ style_route_function = function(feature) {
             }));
 
             styles.push(new ol.style.Style({
-                geometry: new ol.geom.Point(ptoInicio),
+                geometry: new ol.geom.Point(ptoFinal),
                 image: new ol.style.Icon({
                     src: '/images/route_end.png',
                     anchor: [.5, .5],
@@ -745,6 +745,22 @@ function createVehicleHTMLrutas() {
     // Petición del portador asignado
     theUrl = ROOT + '/getRoutesByVehicle/' + id;
     var rutas = JSON.parse(httpGet(theUrl));
+
+    // Funcion que convierte la fecha de formato DD-MM-YYYY en YYYY/MM/DD
+    function convertDate(date) {
+        var day = date.slice(0, 2);
+        var month = date.slice(3, 5);
+        var year = date.slice(6, 10);
+        return (year + "/" + month + "/" + day)
+    }
+
+    // Función para ordenar los resultados según fecha descendente (si se quiere ordenar de manera ascendente, simplemente cambiar la 'a' porla 'b' en el return)
+    function custom_sort(a, b) {
+        return new Date(convertDate(b.date)).getTime() - new Date(convertDate(a.date)).getTime();
+    }
+
+    rutas = rutas.sort(custom_sort);
+
     var fechas_rutas;
     if (rutas.length != 0) {
 
