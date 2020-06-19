@@ -338,19 +338,53 @@ const createVehicle = (request, response) => {
         })
 }
 
+// Crea un objeto nuevo para el entorno del cliente web
 const createObject = (request, response) => {
     const { type, matricula, brand, model } = request.body;
 
     console.log(request.body);
     console.log(typeof(load_capacity));
 
-    pool.query('INSERT INTO vehicles (type, matricula, brand, model) VALUES ($1, $2, $3, $4)', [type, matricula, brand, model], (error, results) => {
+    pool.query('INSERT INTO vehicles (type, matricula, brand, model, available) VALUES ($1, $2, $3, $4, true)', [type, matricula, brand, model], (error, results) => {
         if (error) {
             throw error
+            registry_code.code = 2;
+            registry_code.mensaje = 'Error en la consulta.';
+
+            res.status(200).json(registry_code);
         }
         //response.status(201).send(`Vehicle added with ID: ${results.rows[0]}`);
         console.log(results.rows[0]);
         response.redirect("/map");
+    })
+}
+
+// Crea un objeto nuevo para el entorno de la APP geoloc
+const createNewObject = (request, response) => {
+    const { type, matricula, brand, model } = request.body;
+
+    console.log(request.body);
+    console.log(typeof(load_capacity));
+
+    if (!type || !matricula) {
+        errors.push({ message: "Por favor, rellena todos los campos obligatorios." });
+    }
+
+    pool.query('INSERT INTO vehicles (type, matricula, brand, model, available) VALUES ($1, $2, $3, $4, true)', [type, matricula, brand, model], (error, results) => {
+        if (error) {
+            throw error;
+            var registry_code = new Object();
+            registry_code.code = 2;
+            registry_code.mensaje = 'Ha ocurrido un problema';
+
+            response.status(200).json(registry_code);
+        }
+        console.log(results.rows);
+        var registry_code = new Object();
+        registry_code.code = 1;
+        registry_code.mensaje = 'Objeto registrado correctamente';
+
+        response.status(200).json(registry_code);
     })
 }
 
@@ -378,7 +412,7 @@ const getVehicles = (req, res) => {
 
     pool.connect((err, client, done) => {
         if (err) throw err;
-        client.query('SELECT * FROM vehicles ORDER BY id_vehicle ASC', (err, response) => {
+        client.query('SELECT id_vehicle, matricula, type, brand, model, available FROM vehicles ORDER BY id_vehicle ASC', (err, response) => {
             //done();
             if (err) {
                 console.log(err.stack)
@@ -554,7 +588,7 @@ const vehicleDriverApp = (request, response) => {
                         // status.code = 'ok';
                         // status.id_driver = id_driver;
                         // status.id_vehicle = id_vehicle;
-                        status.response = "Relación generada correctamente";
+                        status.response = "Relación [" + id_vehicle + "-" + id_driver + "] generada correctamente";
 
                         //var myString = JSON.stringify(login_code);
 
@@ -590,7 +624,7 @@ const deleteVehicleDriver = (request, response) => {
 
         console.log(results.rows[0]);
         var message = new Object();
-        message.response = 'Eliminación de las relaciones conductor(' + id_driver + ') con cualquier vehiculo de manera satisfactoria.';
+        message.response = 'Eliminación de la relación del conductor(' + id_driver + ') con el objeto satisfactoria.';
 
         response.status(200).json(message);
         //response.status(200).json(status);
@@ -874,5 +908,6 @@ module.exports = {
     availabilityVehicle,
     dateRegistryToShow,
     createObject,
+    createNewObject,
     getTest
 }

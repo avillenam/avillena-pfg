@@ -257,13 +257,15 @@ app.post("/register", async(req, res) => {
 //Crea un objeto
 app.post('/createObject', db.createObject);
 
+//Crea un objeto para la app geoloc
+app.post('/createNewObject', db.createNewObject);
+
+
 //Edita portador
 // app.post('/editDriver', db.editDriver);
 app.post('/editDriver', async(req, res) => {
     const { email, password, name, surname, birthdate, genre, mobile_number, id } = req.body;
     console.log(email + ', ' + name + ', ' + surname + ', ' + birthdate + ', ' + genre + ', ' + mobile_number + ', ' + email + ', ' + parseInt(id))
-
-    // TODO: hacer las mismas comprobaciones que al hacer register
 
     hashedPassword = await bcrypt.hash(password, 10);
     console.log('hashedPassword: ' + hashedPassword);

@@ -567,7 +567,7 @@ function obtienePosicionActualVehiculos(vehicles) {
         feature.properties.brand = vehicles[i].brand;
         feature.properties.model = vehicles[i].model;
         feature.properties.passengers = vehicles[i].passengers;
-        feature.properties.fuel = vehicles[i].fuel;
+        // feature.properties.fuel = vehicles[i].fuel;
         feature.properties.id_vehicle = idVehicle;
         feature.properties.id_driver = id_driver;
         feature.properties.rotacion = rotacion;
@@ -620,7 +620,7 @@ function createVehicleHTMLinfo() {
     var marca = vehiculo.properties.brand;
     var modelo = vehiculo.properties.model;
     var pasajeros = vehiculo.properties.passengers;
-    var fuel = vehiculo.properties.fuel;
+    // var fuel = vehiculo.properties.fuel;
     var id_driver = vehiculo.properties.id_driver;
     var type = vehiculo.properties.vehicleType;
     var address = vehiculo.properties.address;
@@ -692,7 +692,7 @@ function createVehicleHTMLinfo() {
         " data-brand=" + marca +
         " data-model=" + modelo +
         " data-passengers=" + pasajeros +
-        " data-fuel=" + fuel +
+        // " data-fuel=" + fuel +
         " data-available=" + available +
         ">" +
         "<i class='fa fa-edit'></i>" +
@@ -701,7 +701,7 @@ function createVehicleHTMLinfo() {
         "</div>" +
         "<h4><i class='fa'>&#x" + vehicle_mini_icon + "</i> [" + id + "]: " + marca + ", " + modelo + "</h4>" +
         "<p title='Pasajeros' Pasageros: " + pasajeros + "</p>" +
-        "<p title='Tipo de combustible'>Combustible: " + fuel + "</p>" +
+        // "<p title='Tipo de combustible'>Combustible: " + fuel + "</p>" +
         "<p class='align-middle' title='Última veolicidad registrada Velocidad'>Velocidad: " + velocidad + " km/h</p>" +
         "</div>" +
         "<hr style='color: #566167;'/>" +
