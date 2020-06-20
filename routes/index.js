@@ -7,7 +7,6 @@ const session = require("express-session");
 const path = require('path');
 const db = require('../public/javascripts/queries');
 
-// require("dotenv").config();
 const app = express();
 
 
@@ -18,18 +17,17 @@ initializePassport(passport);
 
 app.use(
     session({
-        // Key we want to keep secret which will encrypt all of our information
+        // Clave que queremos mantener en secreto la cual encriptará toda nuestra información
         secret: 'geoloc',
-        // secret: process.env.SESSION_SECRET,
-        // Should we resave our session variables if nothing has changes which we dont
+        // Debería resalvar nuestras variables de sesión si nada ha cambiado
         resave: false,
-        // Save empty value if there is no vaue which we do not want to do
+        // Salva valor vacio si no hay un valor el cual no se requiere
         saveUninitialized: false
     })
 );
 // Funtion inside passport which initializes passport
 app.use(passport.initialize());
-// Store our variables to be persisted across the whole session. Works with app.use(Session) above
+// Almacena nuestras variables para ser persistentes a lo largo de toda la sesión. Trabaja con app.use(Session) de más arriba.
 app.use(passport.session());
 app.use(flash());
 
@@ -42,7 +40,6 @@ app.get("/register", checkAuthenticated, (req, res) => {
 });
 
 app.get("/login", checkAuthenticated, (req, res) => {
-    // flash sets a messages variable. passport sets the error message
     console.log(req.session.flash.error);
     res.render("login");
 });
@@ -60,65 +57,6 @@ app.get("/logout", (req, res) => {
     res.render("login", { message: "Has finalizado la sesión correctamente." });
 });
 
-/*
-app.post("/register", async(req, res) => {
-    let { email, password, name, surname, birthdate, genre, mobile_number } = req.body;
-
-    let errors = [];
-
-    console.log({
-        name,
-        email,
-        password
-    });
-
-    if (!name || !email || !password) {
-        errors.push({ message: "Por favor, rellena todos los campos obligatorios." });
-    }
-
-    if (password.length < 3) {
-        errors.push({ message: "La contraseña ha de tener, al menos, 4 caracteres." });
-    }
-
-    if (errors.length > 0) {
-        res.render("register", { errors, name, email, password });
-    } else {
-        hashedPassword = await bcrypt.hash(password, 10);
-        console.log(hashedPassword);
-        // Validation passed
-        pool.query(
-            `SELECT * FROM drivers
-                WHERE email = $1`, [email],
-            (err, results) => {
-                if (err) {
-                    console.log(err);
-                }
-                console.log(results.rows);
-
-                if (results.rows.length > 0) {
-                    return res.render("register", {
-                        message: "Email ya registrado en el sistema."
-                    });
-                } else {
-                    pool.query(
-                        `INSERT INTO drivers (email, password, name, surname, birthdate, genre, mobile_number, available)
-                            VALUES ($1, $2, $3, $4, $5, $6, $7, true)
-                            RETURNING id_driver, password`, [email, hashedPassword, name, surname, birthdate, genre, mobile_number],
-                        (err, results) => {
-                            if (err) {
-                                throw err;
-                            }
-                            console.log(results.rows);
-                            req.flash("success_msg", "Usuario registrado correctamente. Por favor autentícate.");
-                            res.redirect("/login");
-                        }
-                    );
-                }
-            }
-        );
-    }
-});
-*/
 app.post(
     "/login",
     passport.authenticate("local", {
@@ -146,7 +84,6 @@ function checkNotAuthenticated(req, res, next) {
 // Interacción con la base de datos a través de peticiones GET, POST, PUT, DELETE
 //*******************************************************************************
 //Crea un portador
-// app.post('/driver', db.createDriver);
 app.post("/register", async(req, res) => {
     let { email, password, name, surname, birthdate, genre, mobile_number } = req.body;
 
@@ -262,7 +199,6 @@ app.post('/createNewObject', db.createNewObject);
 
 
 //Edita portador
-// app.post('/editDriver', db.editDriver);
 app.post('/editDriver', async(req, res) => {
     const { email, password, name, surname, birthdate, genre, mobile_number, id } = req.body;
     console.log(email + ', ' + name + ', ' + surname + ', ' + birthdate + ', ' + genre + ', ' + mobile_number + ', ' + email + ', ' + parseInt(id))
@@ -278,8 +214,6 @@ app.post('/editDriver', async(req, res) => {
         var registry_code = new Object();
         registry_code.code = 1;
         registry_code.mensaje = 'Usuario editado correctamente';
-
-        //res.status(200).json(registry_code);
 
         res.redirect("/map");
     })
@@ -374,9 +308,7 @@ app.post("/loginDriver", async(req, res) => {
         errors.push({ message: "Por favor, rellena todos los campos obligatorios." });
     }
 
-    if (errors.length > 0) {
-        // res.render("register", { errors, email, password });
-    } else {
+    if (errors.length > 0) {} else {
         // Validation passed
         pool.query(
             `SELECT * FROM drivers WHERE email = $1`, [email],
@@ -427,9 +359,7 @@ app.post("/loginDriver", async(req, res) => {
                 } else {
                     // Si el usuario es incorrecto o no existe
                     console.log('El usuario no existe o es incorrecto');
-                    // return done(null, false, {
-                    //     message: "No existe el usuario introducido en el sistema"
-                    // });
+
                     var login_code = new Object();
                     console.log('code: ' + code);
                     login_code.code = code;

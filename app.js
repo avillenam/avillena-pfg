@@ -2,7 +2,6 @@ const express = require('express');
 const path = require('path');
 const favicon = require('serve-favicon');
 const morgan = require('morgan');
-//const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const PassportLocal = require('passport-local').Strategy;
@@ -26,7 +25,6 @@ app.set('view engine', 'jade');
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-//app.use(cookieParser('geoloc'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // routes

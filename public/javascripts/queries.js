@@ -1,35 +1,9 @@
-// var conString = "postgres://postgres:postgres@localhost:5432/api";
-// var conString = "postgres://wzkowhhekyvcbh:dbc37ca58c23fa2edf7ed4af8319e00316de9aaf1defbb8cac1fd86500704f6a@ec2-107-20-173-2.compute-1.amazonaws.com:5432/d2346t6en0926l";
-
-// const { url } = require('../../config/database');
-
 //Fechas por defecto
 var ahora = new Date();
 var fecha_ini = '20190901'; // fecha inicio 1 de septiembre de 2019
 var fecha_fin = '' + ahora.getFullYear() + (ahora.getMonth() + 1) + ahora.getDate(); // fecha hasta hoy
 
-/*
-const db = require('./public/javascripts/constants');
-let connString = db.CONN_STRING;
-*/
-// const { Pool } = require('pg');
-// const pool = new Pool({
-//     connectionString: url,
-// });
-
-
 const { pool } = require("../../dbConfig");
-
-
-/*
-const pool = new Pool({
-    user: 'postgres',
-    host: 'localhost',
-    database: 'api',
-    password: 'postgres',
-    port: 5432,
-});
-*/
 
 function getNow() {
     var m = new Date();
@@ -45,31 +19,24 @@ function getNow() {
 
 //Query functions
 const insertPosition = (request, response) => {
-    //var date_registry = getNow();
-    //to_timestamp('2019/06/20 17:15:27','YYYY/MM/DD HH24:MI:SS');
+
     const { id_vehicle, id_driver, coord_x, coord_y, origin, destiny, comments, accuracy, address, speed } = request.body;
     console.log(request.body);
-    // console.log(coord_x);
-    // console.log(coord_y);
-    // console.log(typeof (coord_x));
-    // console.log(typeof (coord_y));
+
 
     pool.query('INSERT INTO position (id_vehicle, id_driver, coord_x, coord_y, origin, destiny, comments, accuracy, address, speed, date_registry, the_geom) ' +
-            'VALUES ($1, $2, $3, $4, $5, $6, $7, round($8::numeric, 2), $9, round($10::numeric, 2), localtimestamp, ' +
-            'st_geometryfromtext(\'POINT(' + coord_x + ' ' + coord_y + ')\',4326))', [id_vehicle, id_driver, coord_x, coord_y, origin, destiny, comments, accuracy, address, speed], (error, results) => {
-                if (error) {
-                    throw error
-                }
+        'VALUES ($1, $2, $3, $4, $5, $6, $7, round($8::numeric, 2), $9, round($10::numeric, 2), localtimestamp, ' +
+        'st_geometryfromtext(\'POINT(' + coord_x + ' ' + coord_y + ')\',4326))', [id_vehicle, id_driver, coord_x, coord_y, origin, destiny, comments, accuracy, address, speed], (error, results) => {
+            if (error) {
+                throw error
+            }
 
-                var login_code = new Object();
-                login_code.code = 1;
-                response.status(200).json(login_code);
+            var login_code = new Object();
+            login_code.code = 1;
+            response.status(200).json(login_code);
 
-                //response.status(201).send(`Position added with ID: ${results.rows[0]}`);
-                //response.json(results.rows[0]);
-                console.log(results.rows[0]);
-            })
-        //pool.end();
+            console.log(results.rows[0]);
+        })
 }
 
 const getPositionByDriver = (request, response) => {
@@ -121,12 +88,7 @@ const getPositionByObject = (request, response) => {
             featureCollection.crs.properties = {};
             featureCollection.crs.properties.name = 'EPSG:3857';
 
-            // response.status(200).json(featureCollection);
             response.status(200).json(featureCollection);
-
-
-            // response.status(200).json(results.rows[0].row_to_json);
-            //console.log(results.rows[0].row_to_json);
         })
 }
 
@@ -165,9 +127,6 @@ const getTailVehicle = (request, response) => {
             feature.properties.fecha = fecha_ultima_ruta;
 
             response.status(200).json(feature);
-
-            //response.status(200).json(results.rows[0].row_to_json);
-            //console.log(results.rows[0].row_to_json);
         })
 }
 
@@ -183,7 +142,6 @@ const getCurrentPointByVehicle = (request, response) => {
             }
 
             response.status(200).json(results.rows[0].row_to_json);
-            //console.log(results.rows[0].row_to_json);
         })
 }
 
@@ -195,7 +153,6 @@ const getRoutesByVehicle = (request, response) => {
                 throw error
             }
             response.status(200).json(results.rows);
-            //console.log(results.rows[0].row_to_json);
         })
 }
 
@@ -209,16 +166,7 @@ const getRouteOfVehicleByDate = (request, response) => {
             if (error) {
                 throw error
             }
-            /*
-            var feature = {};
-            feature.type = 'Feature';
-            feature.geometry = results.rows[0].st_asgeojson;
-
-             */
-
             response.status(200).json(results.rows[0].st_asgeojson);
-            //response.status(200).json(feature);
-
         })
 }
 
@@ -238,8 +186,6 @@ const createDriver = (request, response) => {
                 if (error) {
                     throw error
                 }
-                //response.status(201).send(`Driver added with ID: ${results.rows[0]}`);
-                //console.log(results.rows[0]);
                 console.log(results.rows[0]);
                 response.redirect("/map");
             })
@@ -251,8 +197,6 @@ const createDriver = (request, response) => {
                 if (error) {
                     throw error
                 }
-                //response.status(201).send(`Driver added with ID: ${results.rows[0]}`);
-                //console.log(results.rows[0]);
                 console.log(results.rows[0]);
                 response.redirect("/map");
             })
@@ -275,10 +219,7 @@ const getDrivers = (req, res) => {
             if (err) {
                 console.log(err.stack)
             } else {
-                //console.log(res.rows[0])
                 var respuesta = response.rows;
-                //console.log(respuesta);
-                //console.log(typeof (respuesta));
 
                 res.status(200).json(respuesta);
             }
@@ -310,7 +251,6 @@ const deleteDriverById = (request, response) => {
             throw error
         }
         response.status(200).json(results.rows);
-        // console.log(results.rows[0]);
     })
 }
 
@@ -332,7 +272,6 @@ const createVehicle = (request, response) => {
             if (error) {
                 throw error
             }
-            //response.status(201).send(`Vehicle added with ID: ${results.rows[0]}`);
             console.log(results.rows[0]);
             response.redirect("/map");
         })
@@ -353,7 +292,6 @@ const createObject = (request, response) => {
 
             res.status(200).json(registry_code);
         }
-        //response.status(201).send(`Vehicle added with ID: ${results.rows[0]}`);
         console.log(results.rows[0]);
         response.redirect("/map");
     })
@@ -389,7 +327,6 @@ const createNewObject = (request, response) => {
 }
 
 const editVehicle = (request, response) => {
-    // const { type, brand, model, passengers, fuel, available, id } = request.body;
     const { type, matricula, brand, model, id } = request.body;
 
     pool.query('UPDATE vehicles SET type=$1, matricula=$2, brand=$3, model=$4 WHERE id_vehicle=$5;', [type, matricula, brand, model, id], (error, results) => {
@@ -413,14 +350,10 @@ const getVehicles = (req, res) => {
     pool.connect((err, client, done) => {
         if (err) throw err;
         client.query('SELECT id_vehicle, matricula, type, brand, model, available FROM vehicles ORDER BY id_vehicle ASC', (err, response) => {
-            //done();
             if (err) {
                 console.log(err.stack)
             } else {
-                //console.log(res.rows[0])
                 var respuesta = response.rows;
-                //console.log(respuesta);
-                //console.log(typeof (respuesta));
 
                 res.status(200).json(respuesta);
             }
@@ -446,7 +379,6 @@ const deleteVehicleById = (request, response) => {
             throw error
         }
         response.status(200).json(results.rows);
-        //console.log(results.rows[0]);
     });
 }
 
@@ -457,7 +389,6 @@ const getDriverByIdVehicle = (request, response) => {
             throw error
         }
         response.status(200).json(results.rows);
-        //console.log(results.rows[0]);
     })
 }
 
@@ -468,7 +399,6 @@ const getVehicleByIdDriver = (request, response) => {
             throw error
         }
         response.status(200).json(results.rows);
-        //console.log(results.rows);
     })
 }
 
@@ -581,19 +511,13 @@ const vehicleDriverApp = (request, response) => {
                         if (error) {
                             throw error
                         }
-                        //response.status(201).send(`Vehicle added with ID: ${results.rows[0]}`);
                         console.log(results.rows[0]);
 
                         var status = new Object();
-                        // status.code = 'ok';
-                        // status.id_driver = id_driver;
-                        // status.id_vehicle = id_vehicle;
+
                         status.response = "Relación [" + id_vehicle + "-" + id_driver + "] generada correctamente";
 
-                        //var myString = JSON.stringify(login_code);
-
                         response.status(200).json(status);
-                        //response.redirect("/map");
                     }
                 )
             }
@@ -604,22 +528,12 @@ const vehicleDriverApp = (request, response) => {
 const deleteVehicleDriver = (request, response) => {
     const { id_driver } = request.body;
 
-    //console.log(request.body);
-
     pool.query('DELETE FROM vehicle_driver WHERE id_driver=$1;', [id_driver], (error, results) => {
         if (error) {
             throw error
         }
-        //response.status(201).send(`Vehicle added with ID: ${results.rows[0]}`);
         console.log(results.rows[0]);
 
-        // var status = new Object();
-        // status.code = 'ok';
-        // status.id_driver = id_driver;
-        // status.id_vehicle = id_vehicle;
-        //var myString = JSON.stringify(login_code);
-
-        // response.send({ msg: 'Eliminación de las relaciones conductor(' + id_driver + ') con cualquier vehiculo de manera satisfactoria.' });
         console.log('Eliminación de las relaciones conductor(' + id_driver + ') con cualquier vehiculo de manera satisfactoria.');
 
         console.log(results.rows[0]);
@@ -627,14 +541,11 @@ const deleteVehicleDriver = (request, response) => {
         message.response = 'Eliminación de la relación del conductor(' + id_driver + ') con el objeto satisfactoria.';
 
         response.status(200).json(message);
-        //response.status(200).json(status);
-        //response.redirect("/map");
     })
 }
 
 const availabilityDriver = (request, response) => {
     const { id, availability } = request.body;
-    //console.log(id_driver + ', ' + availability);
 
     pool.on('error', (err, client) => {
         console.error('Unexpected error on idle client', err)
@@ -649,8 +560,6 @@ const availabilityDriver = (request, response) => {
             }
 
             console.log(results.rows[0]);
-            // response.send({ msg: 'Modificación del atributo \'available\' del conductor id_driver:' + id + ' a \'' + availability + '\' de manera satisfactoria.' });
-
 
             console.log(results.rows[0]);
             var message = new Object();
@@ -658,8 +567,6 @@ const availabilityDriver = (request, response) => {
 
             response.status(200).json(message);
 
-
-            //response.redirect("/map");
             done();
         });
     })
@@ -667,7 +574,6 @@ const availabilityDriver = (request, response) => {
 
 const availabilityVehicle = (request, response) => {
     const { id, availability } = request.body;
-    //console.log(id_vehicle + ', ' + availability);
 
     pool.on('error', (err, client) => {
         console.error('Unexpected error on idle client', err)
@@ -686,7 +592,6 @@ const availabilityVehicle = (request, response) => {
             message.response = "Modificación del atributo \'available\' del vehiculo id_vehicle:' + id + ' a \'' + availability + '\' de manera satisfactoria.";
 
             response.status(200).json(message);
-            // response.send({ msg: 'Modificación del atributo \'available\' del vehiculo id_vehicle:' + id + ' a \'' + availability + '\' de manera satisfactoria.' });
         });
         done();
     })
@@ -699,7 +604,6 @@ const deleteVehicleDriverByIdVehicle = (request, response) => {
             throw error
         }
         response.status(200).json(results.rows);
-        //console.log(results.rows[0]);
     });
 }
 
@@ -710,164 +614,9 @@ const deleteVehicleDriverByIdDriver = (request, response) => {
             throw error
         }
         response.status(200).json(results.rows);
-        //console.log(results.rows[0]);
     });
 }
 
-/*
-const loginDriver = (request, response) => {
-    //Method that test if a user is registered in the system
-    // return
-    // code=0 Si el usuario es incorrecto o no existe
-    // code=1 Si el usuario y la contraseña son correctos
-    // code=2 Si el usuario es correcto y la contraseña incorrecta
-    var email = request.params.email;
-    var password = request.params.password;
-    //const {email, password} = request.body;
-
-    //console.log(request);
-    // console.log("parámetro recibido email: " + email);
-    // console.log("parámetro recibido password: " + password);
-
-    // console.log("request.body: ")
-    // console.log(request.body);
-
-    pool.query('select drivers.id_driver, drivers.email, drivers.password from drivers;', (error, results) => {
-        if (error) {
-            throw error
-        }
-        var respuesta = results.rows;
-        console.log("respuesta: " + respuesta);
-        console.log(typeof(respuesta));
-
-        // Comprueba usuario y contraseña
-        //Realiza un bucle
-        var code = 0;
-        var id_driver = 999;
-        for (var i = 0; i < respuesta.length; i++) {
-            if (respuesta[i].email == email && respuesta[i].password == password) {
-                code = 1;
-                id_driver = respuesta[i].id_driver;
-            } else if (respuesta[i].email == email && respuesta[i].password != password) {
-                code = 2;
-            }
-        }
-
-        var login_code = new Object();
-        login_code.code = code;
-        login_code.id_driver = id_driver;
-        //var myString = JSON.stringify(login_code);
-
-        response.status(200).json(login_code);
-        //console.log(results.rows[0]);
-    });
-}
-*/
-
-// const login = (request, response) => {
-//         //Method that test if a user is registered in the system
-//         // return
-//         // code=0 Si usuario es incorrecto o no existe
-//         // code=1 if usuario y contrasña son correctos
-//         // code=2 if usuario es correcto pero password incorrecto
-//         const { email, password } = request.body
-//             //const {email, password} = request.body;
-
-//         //console.log(request);
-//         console.log("parámetro recibido email: " + email);
-//         console.log("parámetro recibido password: " + password);
-
-//         console.log("request.body: ")
-//         console.log(request.body);
-
-//         pool.query('select drivers.id_driver, drivers.email, drivers.password from drivers;', (error, results) => {
-//             if (error) {
-//                 throw error
-//             }
-//             var respuesta = results.rows;
-//             console.log('typeof (respuesta): ');
-//             console.log(typeof(respuesta));
-
-//             // Comprueba usuario y contraseña
-//             //Hace un bucle para comprobar
-//             var code = 0;
-//             var id_driver = 999;
-//             for (var i = 0; i < respuesta.length; i++) {
-//                 if (respuesta[i].email == email && respuesta[i].password == password) {
-//                     code = 1;
-//                     id_driver = respuesta[i].id_driver;
-//                 } else if (respuesta[i].email == email && respuesta[i].password != password) {
-//                     code = 2;
-//                 } else {}
-//             }
-
-//             var login_code = new Object();
-//             login_code.code = code;
-//             login_code.id_driver = id_driver;
-//             //var myString = JSON.stringify(login_code);
-
-//             // response.status(200).json(login_code);
-//             console.log('login_code: ' + code);
-//             console.log('login_code: ' + login_code);
-//             if (login_code.code == 1) {
-//                 response.status(200).json(login_code);
-//                 // response.redirect("/map");
-//                 /*
-//                 response.render('map', {
-//                     title: 'Geolocalización de objetos móviles',
-//                     lat: 40.034,
-//                     lng: -4.02
-//                     // vehicles: respuesta
-//                 });
-//                 */
-//             } else {
-//                 //response.status(200).json(login_code);
-//                 response.redirect("/login");
-//             }
-//             // response.status(200).json(login_code);
-//             //console.log(results.rows[0]);
-//         });
-//     }
-/*
-const register = (request, response) => {
-    const { email, password, name, surname, birthdate, genre, mobile_number } = request.body
-
-    console.log(birthdate)
-    console.log()
-
-    regex = /\d{2}\/\d{2}\/\d{4}/;
-
-    if (regex.test(birthdate)) {
-        // formato de fecha para cuando recibe una petición GET de la APP geoloc
-        console.log('formato de fecha: DD/MM/YYYY');
-        pool.query('INSERT INTO drivers ( email, password, name, surname, birthdate, genre, mobile_number, available) ' +
-            'VALUES ($1, $2, $3, $4, TO_DATE($5, \'DD/MM/YYYY\'), $6, $7, true)', [email, password, name, surname, birthdate, genre, mobile_number], (error, results) => {
-                if (error) {
-                    throw error
-                }
-                //response.status(201).send(`Driver added with ID: ${results.rows[0]}`);
-                //console.log(results.rows[0]);
-                console.log(results.rows[0]);
-                response.redirect("/login");
-            })
-    } else {
-        // formato de fecha para cuando recibe una petición GET del cliente web
-        console.log('formato de fecha: YYYY-MM-DD');
-        pool.query('INSERT INTO drivers ( email, password, name, surname, birthdate, genre, mobile_number, available) ' +
-            'VALUES ($1, $2, $3, $4, $5, $6, $7, true)', [email, password, name, surname, birthdate, genre, mobile_number], (error, results) => {
-                if (error) {
-                    throw error
-                }
-                //response.status(201).send(`Driver added with ID: ${results.rows[0]}`);
-                //console.log(results.rows[0]);
-                console.log(results.rows[0]);
-                response.redirect("/login");
-            })
-    }
-
-
-}
-*/
 const dateRegistryToShow = (req, response) => {
     if (req.params.fecha_ini) {
         fecha_ini = req.params.fecha_ini;
@@ -902,7 +651,6 @@ module.exports = {
     deleteVehicleById,
     deleteVehicleDriverByIdVehicle,
     deleteVehicleDriverByIdDriver,
-    // loginDriver,
     deleteVehicleDriver,
     availabilityDriver,
     availabilityVehicle,

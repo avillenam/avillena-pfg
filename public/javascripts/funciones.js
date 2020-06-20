@@ -104,7 +104,6 @@ function getVehicle(id) {
 }
 
 // Obtiene todos los portadores y crea los elementos HTML
-//TODO: separar el obtener los objetos de los portadores de la creación de los HTML como en getVehicles()
 function getDrivers() {
     // consulta a lanzarse
     theUrl = ROOT + '/getDrivers';
@@ -113,14 +112,12 @@ function getDrivers() {
     driversJSON = JSON.parse(httpGet(theUrl));
     numDrivers = driversJSON.length;
 
-    //console.log('driversJSON: ' + JSON.stringify(driversJSON));
 
     //Variables para alojar los items
     var myItems = [];
 
     // Buclque para crear cada elemento en el panel del visualizador
     for (var i = 0; i < numDrivers; i++) {
-        //console.log('i: ' + i);
         var id = driversJSON[i]['id_driver'];
         var name = driversJSON[i]['name'];
         var surname = new String(driversJSON[i]['surname']);
@@ -134,27 +131,21 @@ function getDrivers() {
         // Petición de objeto asignado
         theUrlVehicle = ROOT + '/vehicleByIdDriver/' + id;
         var response = httpGet(theUrlVehicle);
-        //console.log('Ha hecho la petición: ' + theUrlVehicle );
-        //console.log('response: ' + response );
+
         var resVehicleAssigned = JSON.parse(response);
-        //console.log('resVehicleAssigned: ' + resVehicleAssigned);
-        //console.log('resVehicleAssigned: ' + JSON.stringify(resVehicleAssigned));
-        //console.log('resVehicleAssigned.length: ' + resVehicleAssigned.length);
+
         // variable para establecer el icono del tipo de objeto asignado. Por defecto: 'coche'
         var vehicle_mini_icon = 'f1b2';
         var id_vehicle;
         var visibility;
         if (resVehicleAssigned.length != 0) {
-            //console.log('resVehicleAssigned.length == !0');
             var vehicle = resVehicleAssigned[0];
             id_vehicle = vehicle['id_vehicle'] + ': ' + vehicle['brand'] + ' ' + vehicle['model'];
             var vehicle_type = vehicle['type'];
             visibility = vehicle['visibility'];
-            //console.log(id_vehicle);
         } else {
             id_vehicle = 'No asignado.';
             visibility = false;
-            //console.log(id_vehicle);
         }
 
         // Icono para el tipo de género
@@ -231,8 +222,6 @@ function getDrivers() {
             "</div>");
     }
     $('#drivers_results').html(myItems.join(''));
-    //console.log('portadores capturados: ')
-    //console.log(driversJSON);
     updateFunctions();
 }
 
@@ -299,7 +288,6 @@ custom_styles = {
 style_function = function(feature) {
     var rotation = feature.getProperties().rotacion;
     style_nr = feature.getGeometry().getType();
-    //console.log(feature.getProperties().rotacion);
     var style = new ol.style.Style({
         image: new ol.style.Icon({
             opacity: 1,
@@ -485,8 +473,6 @@ styles_multipoint = function(feature) {
         })
     ];
 
-    // console.log('feature: ' + feature);
-    // console.log('geometry: ' + feature.getGeometry());
     console.log('geometryType: ' + feature.getGeometry().getType());
     if (feature.getGeometry().getType() == 'Point') {
 
@@ -692,7 +678,6 @@ function createVehicleHTMLinfo() {
         " data-brand=" + marca +
         " data-model=" + modelo +
         " data-passengers=" + pasajeros +
-        // " data-fuel=" + fuel +
         " data-available=" + available +
         ">" +
         "<i class='fa fa-edit'></i>" +
@@ -701,7 +686,6 @@ function createVehicleHTMLinfo() {
         "</div>" +
         "<h4><i class='fa'>&#x" + vehicle_mini_icon + "</i> [" + id + "]: " + marca + ", " + modelo + "</h4>" +
         "<p title='Pasajeros' Pasageros: " + pasajeros + "</p>" +
-        // "<p title='Tipo de combustible'>Combustible: " + fuel + "</p>" +
         "<p class='align-middle' title='Última veolicidad registrada Velocidad'>Velocidad: " + velocidad + " km/h</p>" +
         "</div>" +
         "<hr style='color: #566167;'/>" +
@@ -789,8 +773,6 @@ function createVehicleHTMLrutas() {
 
     // Añade los elementos al div #info_result
     $('#rutas_result').html(myItems.join(''));
-
-    //updateFunctions();
 }
 
 
@@ -834,8 +816,7 @@ function muestraRutaPorFecha(id, fecha) {
     // var feature = format.readFeature(multilinestring, {});
     // var feature = format.readFeature(ruta);
     var points = format.readFeatures(ruta);
-    // console.log('points');
-    // console.log(points);
+
 
 
     // General el LineString
@@ -848,7 +829,6 @@ function muestraRutaPorFecha(id, fecha) {
     }
 
     // var lineString = new ol.geom.LineString(coordinates);
-    // console.log(lineString);
 
     var lineString = new ol.Feature({
         geometry: line,
@@ -984,46 +964,6 @@ function separaLineStrings(line) {
 
     return multiLineString;
 
-    /*
-    var puntos = line.coordinates;
-    var numPtos = puntos.length;
-    var distMaxima = 3000;
-    var distMinima = 5;
-
-    var feature = {};
-    feature.type = "Feature";
-    feature.geometry = {};
-    feature.geometry.type = "MultiLineString";
-    feature.geometry.coordinates = [];
-    feature.properties = {};
-    feature.properties.id_vehicle = line.properties.id_vehicle;
-    feature.properties.fecha = line.properties.fecha;
-
-    var ptoInicial = puntos[0];
-    var multiLineString = [];
-    multiLineString.push(ptoInicial);
-
-    for (var i = 1; i < numPtos; i++) {
-        var distancia = distanciaEntreDosPuntos(puntos[i - 1], puntos[i]);
-
-        //console.log('i-1: ' + (i - 1) + ', i: ' + i + ', Distancia: ' + distancia);
-
-        if (distancia > distMinima) {
-            if (distancia < distMaxima) {
-                multiLineString.push(puntos[i]);
-            } else if (distancia > distMaxima) {
-                feature.geometry.coordinates.push(multiLineString);
-                multiLineString = [];
-                multiLineString.push(puntos[i]);
-            }
-        }
-    }
-
-    feature.geometry.coordinates.push(multiLineString);
-
-    return feature;
-
-     */
 }
 
 // Muestra la información de las entidades del mapa
@@ -1118,29 +1058,3 @@ function toggleBtnMostrarRutas() {
         }
     }
 }
-
-
-// Funcionalidad al pasar el ratón por encima de un elemento se ilumine en el panel de resultados
-
-
-/*
-map.on('pointermove', function(e) {
-    if (selected !== null) {
-        selected.setStyle(undefined);
-        selected = null;
-    }
-
-    map.forEachFeatureAtPixel(e.pixel, function(f) {
-        selected = f;
-        f.setStyle(highlightStyle);
-        return true;
-    });
-
-    if (selected) {
-        console.log(selected.get('matricula'));
-    } else {
-        console.log();
-    }
-});
-
- */

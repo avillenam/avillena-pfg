@@ -10,10 +10,6 @@ block content
     .map#map
         #info
     #mouse-position
-    //- if (typeof message != 'undefined')
-    //-     .alert.alert-primary.alert-dismissible
-    //-         button(type="button" class="close" data-dismiss="alert") &times;
-    //-             div #{message}
     div(style="display: none;")
         #marker(title="Marker")
     a.toggleSettings(title='Panel Principal')
@@ -297,33 +293,7 @@ block content
                     .modal-footer
                         button.btn.btn-default(type='button' data-dismiss='modal') Close
                         input.btn.btn-primary(type='submit' value="Save")
-
-    //form.flotante(method="post" action="/coords")
-    //    .input-group.flex-nowrap.col-12
-    //        .input-group-prepend
-    //            span.input-group-text Id
-    //        input(type="text" id='identifier' class="form-control" placeholder="Id")
-    //    .input-group.flex-nowrap.col-12
-    //        .input-group-prepend
-    //            span.input-group-text Coo/positionrd X
-    //        input(type="text" id='coord_x' class="form-control" placeholder="Coord X")
-    //    .input-group.flex-nowrap.col-12
-    //        .input-group-prepend
-    //            span.input-group-text Coord Y
-    //        input(type="text" id='coord_y' class="form-control" placeholder="Coord Y")
-    //    .input-group.flex-nowrap.col-12
-    //        .input-group-prepend
-    //            span.input-group-text fecha
-    //        input(type="text/javascript" id='fecha' class="form-control" placeholder="Fecha")
-    //    input(type="submit" value="Send")
     script(type='text/javascript').
-        //$(document).ready(function() {
-        //import {dibujaPosicion} from '../routes/modules/common'
-        // import TileWMS from 'https://github.com/openlayers/openlayers/blob/master/src/ol/source/TileWMS.js';
-        /*
-        const root = 'http://localhost:3000';
-        // const root = 'https://avillena-pfg.herokuapp.com';
-        */
 
         // Variables para seleccionar del desplegable objeto-portador
         var objetosJSON = {};
@@ -360,30 +330,6 @@ block content
         var closer = document.getElementById('popup-closer');
 
 
-        /**
-        * Create an overlay to anchor the popup to the map.
-        */
-        /*
-        var overlay = new ol.Overlay({
-            element: container,
-            autoPan: true,
-            autoPanAnimation: {
-                duration: 250
-            }
-        });
-        */
-        /**
-        * Add a click handler to hide the popup.
-        * @return {boolean} Don't follow the href.
-        */
-        /*
-        closer.onclick = function () {
-            overlay.setPosition(undefined);
-            closer.blur();
-            return false;
-        };
-        */
-
         // The vector graph
         var graph = new ol.source.Vector({
             url: '/data/main_roads.geojson',
@@ -412,8 +358,6 @@ block content
                 })
             ]),
             layers: [pnoaWmts, osm, americano, interministerial, olistat, sigpac, pnoa2006, pnoa2009, pnoa2011, pnoa2014, IGNBaseOrto],
-            //overlays: [overlay],
-            //interactions: ol.interaction.defaults({altShiftDragRotate: false, pinchRotate: false}),
             view: new ol.View({
                 //center: ol.proj.transform([#{lng},#{lat}], 'EPSG:4326', 'EPSG:3857'), zoom: 6
                 center: ol.proj.fromLonLat([#{lng}, #{lat}]),
@@ -467,13 +411,6 @@ block content
                 peticion_http.open('GET', theUrl, true);
                 peticion_http.send(null);
             }
-
-            // Cambiar la simbología en función del día
-            // https://viglino.github.io/ol-ext/examples/style/map.style.gpxline.html
-
-            //Actualiza mapa
-            //updateVehiclesPosition();
-
         }
 
         // establecer como fecha de registro a mostrar 'Hoy'
@@ -490,7 +427,6 @@ block content
             lanzaPeticionFecha();
         }
 
-        // TODO: eliminar al final
         // dibuja Point pasandole una geometria en geográficas
         function dibujaPosicion(coords) {
             var pointPos = new ol.geom.Point(toUtm(coords));
@@ -510,8 +446,6 @@ block content
             vectorLayer.getSource().addFeature(point);
         }
 
-        //var view = new ol.View(map.getView());
-
         function toGeo(coords) {
             return ol.proj.transform(coords, 'EPSG:3857', 'EPSG:4326');
         }
@@ -519,22 +453,6 @@ block content
         function toUtm(coords) {
             return ol.proj.transform(coords, 'EPSG:4326', 'EPSG:3857');
         }
-
-        /**
-        * Add a click handler to the map to render the popup.
-        */
-        /*
-        map.on('singleclick', function (evt) {
-            var coordinate = evt.coordinate;
-            var hdms = toGeo(coordinate);
-
-            content.innerHTML = '<p>Coordenadas:</p><code>' + hdms +
-                '</code>';
-            overlay.setPosition(coordinate);
-        });
-
-            */
-
 
         // Crea los elementos HTML para cada objeto
         function createVehicleHTMLelements() {
@@ -598,7 +516,6 @@ block content
                 myItems.push("" +
                     "<tr>" +
                     "<td class='align-items-center align-middle' title='Icono'>" +
-                    // "<img class='list-thumbnail' src='/images/" + type_icon + "' width=\"50\">" +
                     "<i class='fa fa-4x " + type_icon + " " + activo + " list-thumbnail' width=\"50\">" +
                     "</td>" +
                     "<td class='align-middle' title='Número'>" + id + "</td>" +
@@ -613,12 +530,6 @@ block content
             }
 
             $('#vehicles_results').html(myItems.join(''));
-
-            // hace visible el menu lateral de la información de cada objeto
-            //$("#info-results").toggle();
-
-            //console.log('vehiculos creados: ')
-            //console.log(vehiclesJSON);
 
             updateFunctions();
         }
@@ -666,7 +577,6 @@ block content
 
         // Función que dibuja la posición de la capa con el identificador especificado
         function drawCurrentIdPosition(id, layer, layerposition) {
-            //console.log('dibujar posición del punto actual de la capa con id: ' + id);
             var vectorSource = layer.getSource();
             if (vectorSource != null) {
                 var features = vectorSource.getFeatures();
@@ -676,7 +586,6 @@ block content
                 var endPoint = new ol.Feature(new ol.geom.Point(coordinatesEnd));
                 var style = styles[layerposition - OFFSET_DOWN];
                 endPoint.setStyle(style.endpoint);
-                //console.log('layer.getVisible(): ' + layer.getVisible());
                 vectorSource.addFeature(endPoint);
             } else {
                 // muestra una alerta que indica si no hay posiciones registradas para el vhículo con id especificado
@@ -866,26 +775,6 @@ block content
                 }
                 displayFeatureInfo(map.getEventPixel(e.originalEvent));
 
-                /*
-                // resaltar elemento al pasar el ratón
-                if (selected !== null) {
-                    selected.setStyle(undefined);
-                    selected = null;
-                }
-
-                map.forEachFeatureAtPixel(e.pixel, function (f) {
-                    selected = f;
-                    f.setStyle(highlightStyle);
-                    return true;
-                });
-
-                if (selected) {
-                    console.log(selected.get('matricula'));
-                } else {
-                    console.log();
-                }
-            */
-
             });
 
             // Funcionalidad para abrir la barra de herramientas al pinchar cobre un objeto en el mapa
@@ -933,9 +822,6 @@ block content
                             }
 
                             muestraColaVehiculo(id);
-
-                            // Hace zoom a la cola del objeto seleccionado
-                            //zoomToFeature(tailsLayer.getSource());
 
                             // muestra el panel lateral con los resultados del objeto seleccionado
                             $("#info-results").show("blind", 500);

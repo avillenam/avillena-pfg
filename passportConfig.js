@@ -25,12 +25,12 @@ function initialize(passport) {
                         if (isMatch) {
                             return done(null, user);
                         } else {
-                            //password is incorrect
+                            //La contraseña es incorrecta
                             return done(null, false, { message: "La contraseña es incorrecta" });
                         }
                     });
                 } else {
-                    // No user
+                    // No existe el usuario introducido en el sistema
                     return done(null, false, {
                         message: "No existe el usuario introducido en el sistema"
                     });
@@ -44,14 +44,9 @@ function initialize(passport) {
             authenticateUser
         )
     );
-    // Stores user details inside session. serializeUser determines which data of the user
-    // object should be stored in the session. The result of the serializeUser method is attached
-    // to the session as req.session.passport.user = {}. Here for instance, it would be (as we provide
-    //   the user id as the key) req.session.passport.user = {id: 'xyz'}
+
     passport.serializeUser((user, done) => done(null, user.id_driver));
 
-    // In deserializeUser that key is matched with the in memory array / database or any data resource.
-    // The fetched object is attached to the request object as req.user
     passport.deserializeUser((id, done) => {
         pool.query(`SELECT * FROM drivers WHERE id_driver = $1`, [id], (err, results) => {
             if (err) {
