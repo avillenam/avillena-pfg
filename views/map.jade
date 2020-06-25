@@ -239,7 +239,7 @@ block content
                     .modal-footer
                         button.btn.btn-default(type='button' data-dismiss='modal') Cerrar
                         input.btn.btn-primary(type='submit' value="Guardar")
-    // Modal EDIT Portador
+    // Modal Editar Portador
     #editFormDriver.modal.fade(tabindex='-1' role='dialog' aria-labelledby='editFormDriverLabel')
         .modal-dialog(role='document')
             .modal-content
@@ -274,7 +274,7 @@ block content
                     .modal-footer
                         button.btn.btn-default(type='button' data-dismiss='modal') Close
                         input.btn.btn-primary(type='submit' value="Save")
-    // Modal ADD Vehicle-Driver relation
+    // Modal Añadir relación Vehicle-Driver
     #formVehicleDriver.modal.fade(tabindex='-1' role='dialog' aria-labelledby='formVehicleDriverLabel')
         .modal-dialog(role='document')
             .modal-content
@@ -563,7 +563,7 @@ block content
 
         // Llama a la función getDrivers() cada vez que se pulsa sobre la pestaña 'Portadores'
         $("#tab-drivers").click(function () {
-            getDrivers();
+            getDrivers(#{id});
         })
 
 
@@ -617,44 +617,44 @@ block content
                 $("#edit-vehicle-form-model").val($(this).data('model'));
             });
 
-            // Borra portador por su 'id'
-            $(".delete-driver").on('click', function () {
-                var id = $(this).data('id');
-                var url = '/deleteDriver/' + id;
-                if (confirm('¿Eliminar portador con id:' + id + '?')) {
-                    $.ajax({
-                        url: url,
-                        type: 'DELETE',
-                        success: function (result) {
-                            console.log('Borrando portador con id:' + id);
-                            window.location.href = '/map';
-                        },
-                        error: function (err) {
-                            console.log(err);
-                        }
-                    })
-                }
-            });
+            //- // Borra portador por su 'id'
+            //- $(".delete-driver").on('click', function () {
+            //-     var id = $(this).data('id');
+            //-     var url = '/deleteDriver/' + id;
+            //-     if (confirm('¿Eliminar portador con id:' + id + '?')) {
+            //-         $.ajax({
+            //-             url: url,
+            //-             type: 'DELETE',
+            //-             success: function (result) {
+            //-                 console.log('Borrando portador con id:' + id);
+            //-                 window.location.href = '/map';
+            //-             },
+            //-             error: function (err) {
+            //-                 console.log(err);
+            //-             }
+            //-         })
+            //-     }
+            //- });
 
-            // Elimina objeto por su 'id'
-            $(".delete-vehicle").on('click', function () {
-                var id = $(this).data('id');
-                var url = '/deleteVehicle/' + id;
-                if (confirm('¿Eliminar objeto con id:' + id + '?')) {
-                    // elimina portador a través de una petición DELETE
-                    $.ajax({
-                        url: url,
-                        type: 'DELETE',
-                        success: function (result) {
-                            console.log('Borrando Vehiculo con id:' + id);
-                            window.location.href = '/map';
-                        },
-                        error: function (err) {
-                            console.log(err);
-                        }
-                    })
-                }
-            });
+            //- // Elimina objeto por su 'id'
+            //- $(".delete-vehicle").on('click', function () {
+            //-     var id = $(this).data('id');
+            //-     var url = '/deleteVehicle/' + id;
+            //-     if (confirm('¿Eliminar objeto con id:' + id + '?')) {
+            //-         // elimina portador a través de una petición DELETE
+            //-         $.ajax({
+            //-             url: url,
+            //-             type: 'DELETE',
+            //-             success: function (result) {
+            //-                 console.log('Borrando Vehiculo con id:' + id);
+            //-                 window.location.href = '/map';
+            //-             },
+            //-             error: function (err) {
+            //-                 console.log(err);
+            //-             }
+            //-         })
+            //-     }
+            //- });
 
             // Cuando se presiona el botón Objeto-Portadorrealiza peticion para saber objetos disponibles y conductores
             $("#btnRelacionObjetoPortador").click(function(){
@@ -673,10 +673,13 @@ block content
                     var email = portadoresJSON[i].email;
                     var available = portadoresJSON[i].available;
 
+                    // Añade todos los portadores.
+                    portadoresHTML = portadoresHTML.concat("<option value=" + id + ">[" + id + "] " + name + " " + surname + ", " + email + "</option>");
+
                     //- Solamente añade los que estén disponibles
-                    if(available == true){
-                        portadoresHTML = portadoresHTML.concat("<option value=" + id + ">[" + id + "] " + name + " " + surname + ", " + email + "</option>");
-                    }
+                    //- if(available == true){
+                    //-     portadoresHTML = portadoresHTML.concat("<option value=" + id + ">[" + id + "] " + name + " " + surname + ", " + email + "</option>");
+                    //- }
                 }
 
                 // Genera los objetos para seleccionarlos
@@ -690,9 +693,11 @@ block content
                     var available = objetosJSON[i].available;
 
                     //- Solamente añade los que estén disponibles
-                    if(available == true){
-                        objetosHTML = objetosHTML.concat("<option value=" + id + ">[" + id + "] " + type + ", " + brand + " " + model + ", " + matricula + "</option>");
-                    }
+                    //- if(available == true){
+                    //-     objetosHTML = objetosHTML.concat("<option value=" + id + ">[" + id + "] " + type + ", " + brand + " " + model + ", " + matricula + "</option>");
+                    //- }
+                    objetosHTML = objetosHTML.concat("<option value=" + id + ">[" + id + "] " + type + ", " + brand + " " + model + ", " + matricula + "</option>");
+
                 }
 
 
@@ -740,7 +745,7 @@ block content
             numVehicles = vehiclesJSON.length;
 
             // Obtiene los portadores y los objetos de la base de datos
-            getDrivers();
+            getDrivers(#{id});
 
             // Obtiene las últimas posiciones de todos los objetos y los dibuja en el mapa
             ultimasPosicionesVehiculos = obtienePosicionActualVehiculos(vehiclesJSON);

@@ -3,9 +3,6 @@ const path = require('path');
 const favicon = require('serve-favicon');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
-const session = require('express-session');
-const PassportLocal = require('passport-local').Strategy;
-
 
 const passport = require('passport');
 

@@ -48,6 +48,7 @@ app.get("/map", checkNotAuthenticated, (req, res) => {
     console.log(req.isAuthenticated());
     res.render("map", {
         user: req.user.name,
+        id: req.user.id_driver,
         message: ""
     });
 });
@@ -156,37 +157,69 @@ app.post("/register", async(req, res) => {
                 }
             );
         } else { // para el cliente web
-            // Validation passed
-            pool.query(
-                `SELECT * FROM drivers
-                WHERE email = $1`, [email],
-                (err, results) => {
-                    if (err) {
-                        console.log(err);
-                    }
-                    console.log(results.rows);
+            if (!surname || !birthdate || !genre || !mobile_number) {
+                pool.query(
+                    `SELECT * FROM drivers
+                    WHERE email = $1`, [email],
+                    (err, results) => {
+                        if (err) {
+                            console.log(err);
+                        }
+                        console.log(results.rows);
 
-                    if (results.rows.length > 0) {
-                        return res.render("register", {
-                            message: "Email ya registrado en el sistema."
-                        });
-                    } else {
-                        pool.query(
-                            `INSERT INTO drivers (email, password, name, surname, birthdate, genre, mobile_number, available)
-                            VALUES ($1, $2, $3, $4, $5, $6, $7, true)
-                            RETURNING id_driver, password`, [email, hashedPassword, name, surname, birthdate, genre, mobile_number],
-                            (err, results) => {
-                                if (err) {
-                                    throw err;
+                        if (results.rows.length > 0) {
+                            return res.render("register", {
+                                message: "Email ya registrado en el sistema."
+                            });
+                        } else {
+                            pool.query(
+                                `INSERT INTO drivers (email, password, name, available)
+                                VALUES ($1, $2, $3, true)
+                                RETURNING id_driver, password`, [email, hashedPassword, name],
+                                (err, results) => {
+                                    if (err) {
+                                        throw err;
+                                    }
+                                    console.log(results.rows);
+                                    req.flash("success_msg", "Usuario registrado correctamente. Por favor autentícate.");
+                                    res.redirect("/login");
                                 }
-                                console.log(results.rows);
-                                req.flash("success_msg", "Usuario registrado correctamente. Por favor autentícate.");
-                                res.redirect("/login");
-                            }
-                        );
+                            );
+                        }
                     }
-                }
-            );
+                );
+            } else {
+                pool.query(
+                    `SELECT * FROM drivers
+                    WHERE email = $1`, [email],
+                    (err, results) => {
+                        if (err) {
+                            console.log(err);
+                        }
+                        console.log(results.rows);
+
+                        if (results.rows.length > 0) {
+                            return res.render("register", {
+                                message: "Email ya registrado en el sistema."
+                            });
+                        } else {
+                            pool.query(
+                                `INSERT INTO drivers (email, password, name, surname, birthdate, genre, mobile_number, available)
+                                VALUES ($1, $2, $3, $4, $5, $6, $7, true)
+                                RETURNING id_driver, password`, [email, hashedPassword, name, surname, birthdate, genre, mobile_number],
+                                (err, results) => {
+                                    if (err) {
+                                        throw err;
+                                    }
+                                    console.log(results.rows);
+                                    req.flash("success_msg", "Usuario registrado correctamente. Por favor autentícate.");
+                                    res.redirect("/login");
+                                }
+                            );
+                        }
+                    }
+                );
+            }
         }
     }
 });
@@ -281,6 +314,9 @@ app.post('/vehicleDriverApp', db.vehicleDriverApp);
 
 //Elimina la relacion objeto-portador
 app.post('/deleteVehicleDriver', db.deleteVehicleDriver);
+
+//Elimina cualquier relacion objeto-portador para el portador con 'id
+app.delete('/deleteVehicleDriverById/:id_driver', db.deleteVehicleDriverById);
 
 //Establece la disponibilidad para el portador
 app.post('/driverAvailability', db.availabilityDriver);

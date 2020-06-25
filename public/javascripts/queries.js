@@ -421,12 +421,14 @@ const vehicleDriver = (request, response) => {
 
     // Validation passed
     pool.query(
-        `SELECT * FROM vehicle_driver WHERE id_vehicle = $1 AND id_driver = $2`, [id_vehicle, id_driver],
+        // `SELECT * FROM vehicle_driver WHERE id_vehicle = $1 AND id_driver = $2`, [id_vehicle, id_driver],
+        'SELECT * FROM vehicle_driver WHERE id_vehicle = $1', [id_vehicle],
         (err, results) => {
             if (err) {
                 console.log(err);
             }
             console.log(results.rows);
+            console.log("Las relaciones del Objeto: " + id_vehicle + ", con cualquier portador se eliminan previamente");
 
             if (results.rows.length > 0) { //Relación ya existente en el sistema
                 var status = new Object();
@@ -434,9 +436,77 @@ const vehicleDriver = (request, response) => {
                 status.id_driver = id_driver;
                 status.id_vehicle = id_vehicle;
 
-                return response.render("map", {
-                    message: "Relación ya registrada en el sistema."
-                });
+                // Hace bucle recorriendo todos los resultados y los elimina
+                for (var i = 0; i < results.rows.length; i++) {
+                    console.log('Eliminando relación i: ' + i);
+                    pool.query('DELETE FROM vehicle_driver WHERE id_vehicle=' + id_vehicle, (error, results) => {
+                        if (error) {
+                            throw error
+                        }
+                    });
+
+                    // Establece disponibilidad del Portador a true
+                    pool.query(
+                        'UPDATE drivers SET available=$2 WHERE id_driver=$1;', [results.rows[i]['id_driver'], true],
+                        (err, results) => {
+                            if (err) {
+                                throw err;
+                            }
+                            console.log('Cambiada la disponibilidad del id_driver: ' + id_driver + ' de manera correcta.');
+                        }
+                    );
+
+                    // Establece disponibilidad del Objeto a true
+                    pool.query(
+                        'UPDATE vehicles SET available=$2 WHERE id_vehicle=$1;', [id_vehicle, true],
+                        (err, results) => {
+                            if (err) {
+                                throw err;
+                            }
+                            console.log('Cambiada la disponibilidad del id_vehicle: ' + id_vehicle + ' de manera correcta.');
+                        }
+                    );
+                }
+                pool.query( // Relación establecida correctamente
+                    'INSERT INTO vehicle_driver (id_vehicle, id_driver, date_registry) ' +
+                    'VALUES ($1, $2, localtimestamp)', [id_vehicle, id_driver],
+                    (err, results) => {
+                        if (err) {
+                            throw err;
+                        }
+
+                        // Establece disponibilidad del Portador a false
+                        pool.query(
+                            'UPDATE drivers SET available=$2 WHERE id_driver=$1;', [id_driver, false],
+                            (err, results) => {
+                                if (err) {
+                                    throw err;
+                                }
+                                console.log('Cambiada la disponibilidad del id_driver: ' + id_driver + ' de manera correcta.');
+                            }
+                        );
+
+                        // Establece disponibilidad del Objeto a false
+                        pool.query(
+                            'UPDATE vehicles SET available=$2 WHERE id_vehicle=$1;', [id_vehicle, false],
+                            (err, results) => {
+                                if (err) {
+                                    throw err;
+                                }
+                                console.log('Cambiada la disponibilidad del id_vehicle: ' + id_vehicle + ' de manera correcta.');
+                            }
+                        );
+
+                        console.log(results.rows[0]);
+                        request.flash("success_msg", "Relación registrada correctamente.");
+                        var status = new Object();
+                        status.code = 1;
+                        status.id_driver = id_driver;
+                        status.id_vehicle = id_vehicle;
+                        // response.status(200).json(status);
+                        response.redirect("/map");
+                    }
+                );
             } else {
                 pool.query( // Relación establecida correctamente
                     'INSERT INTO vehicle_driver (id_vehicle, id_driver, date_registry) ' +
@@ -468,7 +538,6 @@ const vehicleDriver = (request, response) => {
                                 console.log('Cambiada la disponibilidad del id_vehicle: ' + id_vehicle + ' de manera correcta.');
                             }
                         );
-
 
                         console.log(results.rows[0]);
                         request.flash("success_msg", "Relación registrada correctamente.");
@@ -542,6 +611,61 @@ const deleteVehicleDriver = (request, response) => {
 
         response.status(200).json(message);
     })
+}
+
+const deleteVehicleDriverById = (request, response) => {
+    pool.query(
+        'SELECT * FROM vehicle_driver WHERE id_driver=' + (request.params.id_driver).toString(),
+        (err, results) => {
+            if (err) {
+                console.log(err);
+            }
+            console.log(results.rows);
+
+            if (results.rows.length > 0) { //Relación ya existente en el sistema
+                var id_driver = results.rows[0]['id_driver'];
+                var id_vehicle = results.rows[0]['id_vehicle'];
+
+                pool.query('DELETE FROM vehicle_driver WHERE id_driver=' + id_driver, (error, results) => {
+                    if (error) {
+                        throw error
+                    }
+
+                    // Establece disponibilidad del Portador a false
+                    pool.query(
+                        'UPDATE drivers SET available=$2 WHERE id_driver=$1;', [id_driver, true],
+                        (err, results) => {
+                            if (err) {
+                                throw err;
+                            }
+                            console.log('Cambiada la disponibilidad del id_driver: ' + id_driver + ' de manera correcta.');
+                        }
+                    );
+
+                    // Establece disponibilidad del Objeto a false
+                    pool.query(
+                        'UPDATE vehicles SET available=$2 WHERE id_vehicle=$1;', [id_vehicle, true],
+                        (err, results) => {
+                            if (err) {
+                                throw err;
+                            }
+                            console.log('Cambiada la disponibilidad del id_vehicle: ' + id_vehicle + ' de manera correcta.');
+                        }
+                    );
+
+                    response.status(200).json(results.rows);
+                })
+
+            } else {
+
+
+                var status = new Object();
+                status.code = 1;
+                status.id_driver = results.rows['id_driver'];
+                status.id_vehicle = results.rows['id_vehicle'];
+            }
+        }
+    );
 }
 
 const availabilityDriver = (request, response) => {
@@ -652,6 +776,7 @@ module.exports = {
     deleteVehicleDriverByIdVehicle,
     deleteVehicleDriverByIdDriver,
     deleteVehicleDriver,
+    deleteVehicleDriverById,
     availabilityDriver,
     availabilityVehicle,
     dateRegistryToShow,

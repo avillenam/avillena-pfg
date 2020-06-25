@@ -104,7 +104,7 @@ function getVehicle(id) {
 }
 
 // Obtiene todos los portadores y crea los elementos HTML
-function getDrivers() {
+function getDrivers(id_driver) {
     // consulta a lanzarse
     theUrl = ROOT + '/getDrivers';
 
@@ -197,31 +197,79 @@ function getDrivers() {
         }
 
         // Crea un elemento por cada portador
-        myItems.push("" +
-            "<div class='resultItem'>" +
-            "<img class='list-thumbnail' src='/images/" + gender_icon + "' width='50' alt='icon result'>" +
-            "<div href='#" + id + "' class='details'>" +
-            "<div class='list-group-item-heading'><i class='fa fa-hashtag'></i>" + id + "</div>" +
-            "<div title='Email'><i class='fa fa-at'></i>" + email + "</div>" +
-            "<div title='Nombre de portador'><i class='glyphicon glyphicon-user'></i>" + name + " " + surname + "</div>" +
-            "<div title='Fecha de nacimiento'><i class='glyphicon glyphicon-calendar'></i>" + birthdate + "</div>" +
-            "<div title='Género'><i class='fa fa-genderless'></i>" + genre + "</div>" +
-            "<div title='Número de móvil'><i class='fa fa-mobile-alt'></i>" + mobile_number + "</div>" +
-            "<div title='Objeto Móvil'><i class='fa'>&#x" + vehicle_mini_icon + "</i>" + id_vehicle + "</div>" +
-            "</div>" +
-            "<div class='tileActions'>" +
-            "<a title='Eliminar portador' class='deleteIcon delete-driver' data-id=" + id + "><i class='fa fa-trash'></i></a>" +
-            "<a title='Editar portador' class='editIcon edit-driver' data-toggle='modal' data-target='#editFormDriver' " +
-            " data-id=" + id + " data-name=" + name + " data-surname=" + surname + " data-birthdate= " + birthdate +
-            " data-genre=" + genre + " data-mobile_number= " + mobile_number + " data-email=" + email +
-            " data-available=" + available +
-            ">" +
-            "<i class='fa fa-edit'></i>" +
-            "</a>" +
-            "</div>" +
-            "</div>");
+        var info_driver = "";
+
+        if (id == id_driver) { // Solamente se puede editar o borrar la informacion del portador autenticado
+            info_driver = "" +
+                "<div class='resultItem'>" +
+                "<img class='list-thumbnail' src='/images/" + gender_icon + "' width='50' alt='icon result'>" +
+                "<div href='#" + id + "' class='details'>" +
+                "<div class='list-group-item-heading'><i class='fa fa-hashtag'></i>" + id + "</div>" +
+                "<div title='Email'><i class='fa fa-at'></i>" + email + "</div>" +
+                "<div title='Nombre de portador'><i class='glyphicon glyphicon-user'></i>" + name + " " + surname + "</div>" +
+                "<div title='Fecha de nacimiento'><i class='glyphicon glyphicon-calendar'></i>" + birthdate + "</div>" +
+                "<div title='Género'><i class='fa fa-genderless'></i>" + genre + "</div>" +
+                "<div title='Número de móvil'><i class='fa fa-mobile-alt'></i>" + mobile_number + "</div>" +
+                "<div title='Objeto Móvil'><i class='fa'>&#x" + vehicle_mini_icon + "</i>" + id_vehicle + "</div>" +
+                "</div>" +
+                "<div class='tileActions'>" +
+                // Solo edita la info del portador autenticado o lo elimina
+                "<a title='Eliminar portador' class='deleteIcon delete-driver' data-id=" + id + "><i class='fa fa-trash'></i></a>" +
+                "<a title='Editar portador' class='editIcon edit-driver' data-toggle='modal' data-target='#editFormDriver' " +
+                " data-id=" + id + " data-name=" + name + " data-surname=" + surname + " data-birthdate= " + birthdate +
+                " data-genre=" + genre + " data-mobile_number= " + mobile_number + " data-email=" + email +
+                " data-available=" + available +
+                ">" +
+                "<i class='fa fa-edit'></i>" +
+                "</a>" +
+                "</div>" +
+                "</div>";
+        } else {
+            info_driver = "" +
+                "<div class='resultItem'>" +
+                "<img class='list-thumbnail' src='/images/" + gender_icon + "' width='50' alt='icon result'>" +
+                "<div href='#" + id + "' class='details'>" +
+                "<div class='list-group-item-heading'><i class='fa fa-hashtag'></i>" + id + "</div>" +
+                "<div title='Email'><i class='fa fa-at'></i>" + email + "</div>" +
+                "<div title='Nombre de portador'><i class='glyphicon glyphicon-user'></i>" + name + " " + surname + "</div>" +
+                "<div title='Fecha de nacimiento'><i class='glyphicon glyphicon-calendar'></i>" + birthdate + "</div>" +
+                "<div title='Género'><i class='fa fa-genderless'></i>" + genre + "</div>" +
+                "<div title='Número de móvil'><i class='fa fa-mobile-alt'></i>" + mobile_number + "</div>" +
+                "<div title='Objeto Móvil'><i class='fa'>&#x" + vehicle_mini_icon + "</i>" + id_vehicle + "</div>" +
+                "</div>" +
+                "<div class='tileActions'>" +
+                "</div>" +
+                "</div>";
+        }
+
+        myItems.push(info_driver);
     }
     $('#drivers_results').html(myItems.join(''));
+
+    // Borra portador por su 'id'
+    $(".delete-driver").on('click', function() {
+        var theUrl = ROOT + '/logout';
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open("GET", theUrl, false); // false for synchronous request
+        xmlHttp.send(null);
+
+        var id = $(this).data('id');
+        var url = '/deleteDriver/' + id;
+        if (confirm('¿Eliminar portador con id:' + id + '?')) {
+            $.ajax({
+                url: url,
+                type: 'DELETE',
+                success: function(result) {
+                    console.log('Borrando portador con id:' + id);
+                    window.location.href = '/login';
+                },
+                error: function(err) {
+                    console.log(err);
+                }
+            })
+        }
+    });
+
     updateFunctions();
 }
 
@@ -410,38 +458,42 @@ style_route_function = function(feature) {
 
         }
     } else if (feature.getGeometry().getType() == 'Point') { //Estilo para Point
+        // Precisión del punto actual
+        var accuracy = feature.getProperties().accuracy;
+        if (accuracy <= TOLERANCIA_PRECISION) {
 
-        // Punto actual
-        var currentPoint = feature.getGeometry().getCoordinates();
+            // Punto actual
+            var currentPoint = feature.getGeometry().getCoordinates();
 
-        var rotation = 0;
-        var distance = 0;
-        if (temporalPreviusPoint[0] != 0) {
-            // calcula la rotación del punto respecto del anterior
-            var dx = currentPoint[0] - temporalPreviusPoint[0];
-            var dy = currentPoint[1] - temporalPreviusPoint[1];
-            rotation = Math.atan2(dy, dx);
+            var rotation = 0;
+            var distance = 0;
+            if (temporalPreviusPoint[0] != 0) {
+                // calcula la rotación del punto respecto del anterior
+                var dx = currentPoint[0] - temporalPreviusPoint[0];
+                var dy = currentPoint[1] - temporalPreviusPoint[1];
+                rotation = Math.atan2(dy, dx);
 
-            //calcula la distancia del punto respecto del anterior
-            distance = distanciaEntreDosPuntos(currentPoint, temporalPreviusPoint);
-        }
+                //calcula la distancia del punto respecto del anterior
+                distance = distanciaEntreDosPuntos(currentPoint, temporalPreviusPoint);
+            }
 
-        temporalPreviusPoint = currentPoint;
+            temporalPreviusPoint = currentPoint;
 
-        if (distance >= TOLERANCIA_MINIMA_DISTANCIA_ENTRE_PUNTOS) {
-            // almacena las coordenadas para que el sigueinte lo use para calcular la rotación
+            if (distance >= TOLERANCIA_MINIMA_DISTANCIA_ENTRE_PUNTOS) {
+                // almacena las coordenadas para que el sigueinte lo use para calcular la rotación
 
-            // arrows
-            styles.push(new ol.style.Style({
-                geometry: feature.getGeometry(),
-                image: new ol.style.Icon({
-                    src: '/images/Red_Arrow_small.png',
-                    anchor: [.5, .5],
-                    rotateWithView: true,
-                    // rotation: (Math.PI - rotation)
-                    rotation: (-rotation)
-                })
-            }));
+                // arrows
+                styles.push(new ol.style.Style({
+                    geometry: feature.getGeometry(),
+                    image: new ol.style.Icon({
+                        src: '/images/Red_Arrow_small.png',
+                        anchor: [.5, .5],
+                        rotateWithView: true,
+                        // rotation: (Math.PI - rotation)
+                        rotation: (-rotation)
+                    })
+                }));
+            }
         }
     }
 
@@ -607,7 +659,7 @@ function createVehicleHTMLinfo() {
     var modelo = vehiculo.properties.model;
     var pasajeros = vehiculo.properties.passengers;
     // var fuel = vehiculo.properties.fuel;
-    var id_driver = vehiculo.properties.id_driver;
+    var id_driver;
     var type = vehiculo.properties.vehicleType;
     var address = vehiculo.properties.address;
     var available = vehiculo.properties.available;
@@ -625,7 +677,8 @@ function createVehicleHTMLinfo() {
     var conductor_asignado;
     if (resDriverAssigned.length == !0) {
         var driver = resDriverAssigned[0];
-        conductor_asignado = driver['id_driver'] + ': ' + driver['name'] + ' ' + driver['surname'];
+        id_driver = driver['id_driver'];
+        conductor_asignado = id_driver + ': ' + driver['name'] + ' ' + driver['surname'];
     } else {
         address = "Dirección desconocida";
         conductor_asignado = 'No asignado.';
@@ -694,7 +747,7 @@ function createVehicleHTMLinfo() {
         "<div class='tileActions'>" +
         "<a title='Crear relación Objeto-Portador' class='relationIcon create-relation' id='btnRelacionObjetoPortador' data-toggle='modal' data-target='#formVehicleDriver'><i class='fa fa-plus-square'></i></a>" +
         "<a title='Editar relación Objeto-Portador' class='editRelationIcon edit-relation' data-toggle='modal' data-target='#editRelationVehicleDriver'><i class='fa fa-edit'></i></a>" +
-        "<a title='Eliminar relación Objeto-Portador' class='deleteIcon delete-relation' data-id=" + id + "><i class='fa fa-trash'></i></a>" +
+        "<a title='Eliminar relación Objeto-Portador' class='deleteIcon delete-relation' data-id_driver=" + id_driver + "><i class='fa fa-trash'></i></a>" +
         "</div>" +
         "<p class='mb-0' title='Portador'>" + conductor_asignado + "</p>" +
         "</div>"
@@ -702,6 +755,49 @@ function createVehicleHTMLinfo() {
 
     // Añade los elementos al div #info_result
     $('#info_result').html(myItems.join(''));
+
+    // Elimina objeto por su 'id'
+    $(".delete-vehicle").on('click', function() {
+        var id = $(this).data('id');
+        var url = '/deleteVehicle/' + id;
+
+        if (confirm('¿Eliminar objeto con id:' + id + '?')) {
+
+            // elimina portador a través de una petición DELETE
+            $.ajax({
+                url: url,
+                type: 'DELETE',
+                success: function(result) {
+                    console.log('Borrando Vehiculo con id:' + id);
+                    window.location.href = '/map';
+                },
+                error: function(err) {
+                    console.log(err);
+                }
+            })
+        }
+    });
+
+
+    // Elimina relación Objeto-Portador
+    $(".delete-relation").on('click', function() {
+        var id_driver = $(this).data('id_driver');
+        var url = '/deleteVehicleDriverById/' + id_driver;
+        if (confirm('¿Eliminar cualquier relacion del portador con id:' + id_driver + '?')) {
+            // elimina la relacion Objeto-Portador a través de una petición DELETE
+            $.ajax({
+                url: url,
+                type: 'DELETE',
+                success: function(result) {
+                    console.log('Borrando relación del portador con id:' + id_driver);
+                    window.location.href = '/map';
+                },
+                error: function(err) {
+                    console.log(err);
+                }
+            })
+        }
+    });
 
 }
 
