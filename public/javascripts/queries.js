@@ -20,13 +20,13 @@ function getNow() {
 //Query functions
 const insertPosition = (request, response) => {
 
-    const { id_vehicle, id_driver, coord_x, coord_y, origin, destiny, comments, accuracy, address, speed } = request.body;
+    const { id_vehicle, id_driver, coord_x, coord_y, accuracy, address, speed } = request.body;
     console.log(request.body);
 
 
-    pool.query('INSERT INTO position (id_vehicle, id_driver, coord_x, coord_y, origin, destiny, comments, accuracy, address, speed, date_registry, the_geom) ' +
-        'VALUES ($1, $2, $3, $4, $5, $6, $7, round($8::numeric, 2), $9, round($10::numeric, 2), localtimestamp, ' +
-        'st_geometryfromtext(\'POINT(' + coord_x + ' ' + coord_y + ')\',4326))', [id_vehicle, id_driver, coord_x, coord_y, origin, destiny, comments, accuracy, address, speed], (error, results) => {
+    pool.query('INSERT INTO position (id_vehicle, id_driver, coord_x, coord_y, accuracy, address, speed, date_registry, the_geom) ' +
+        'VALUES ($1, $2, $3, $4, round($5::numeric, 2), $6, round($7::numeric, 2), localtimestamp, ' +
+        'st_geometryfromtext(\'POINT(' + coord_x + ' ' + coord_y + ')\',4326))', [id_vehicle, id_driver, coord_x, coord_y, accuracy, address, speed], (error, results) => {
             if (error) {
                 throw error
             }
@@ -56,7 +56,7 @@ const getPositionByObject = (request, response) => {
     // pool.query('SELECT st_astext(the_geom) FROM position WHERE id_vehicle=' + parseInt(request.params.id_vehicle) + ' ORDER BY gid ASC', (error, results) => {
     // pool.query("SELECT row_to_json(fc) FROM ( SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) As features FROM ( SELECT 'Feature' As type, ST_AsGeoJSON(ST_Transform(lg.the_geom,3857))::json As geometry, id_vehicle, id_driver, origin, destiny, comments, date_registry, accuracy, address, speed FROM position AS lg WHERE id_vehicle=" + parseInt(request.params.id_vehicle) + " AND TO_DATE(TO_CHAR(date_registry, 'DDMMYYYY'),'DDMMYYYY') = to_date('" + date + "','DD-MM-YYYY')  order by date_registry ASC LIMIT 10) AS f ) As fc;",
     // pool.query("SELECT row_to_json(fc) FROM (SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) As features FROM (SELECT 'Feature' As type, ST_AsGeoJSON(ST_Transform(lg.the_geom,3857))::json As geometry, row_to_json(lp) AS properties  FROM position AS lg INNER JOIN (SELECT id_vehicle, id_driver, origin, destiny, comments, date_registry, accuracy, address, speed FROM position WHERE id_vehicle=" + id_vehicle + " AND TO_DATE(TO_CHAR(date_registry, 'DDMMYYYY'),'DDMMYYYY') = to_date('" + date + "','DD-MM-YYYY')) AS lp ON lg.id_vehicle = lp.id_vehicle) AS f) AS fc LIMIT 5;",
-    pool.query("SELECT row_to_json(fc) FROM (SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) As features FROM (SELECT 'Feature' As type, ST_AsGeoJSON(ST_Transform(the_geom,3857))::json As geometry, id_vehicle, id_driver, origin, destiny, comments, date_registry, accuracy, address, speed FROM position WHERE id_vehicle=" + id_vehicle + " AND TO_DATE(TO_CHAR(date_registry, 'DDMMYYYY'),'DDMMYYYY') = to_date('" + date + "','DD-MM-YYYY')) AS f) AS fc;",
+    pool.query("SELECT row_to_json(fc) FROM (SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) As features FROM (SELECT 'Feature' As type, ST_AsGeoJSON(ST_Transform(the_geom,3857))::json As geometry, id_vehicle, id_driver, date_registry, accuracy, address, speed FROM position WHERE id_vehicle=" + id_vehicle + " AND TO_DATE(TO_CHAR(date_registry, 'DDMMYYYY'),'DDMMYYYY') = to_date('" + date + "','DD-MM-YYYY')) AS f) AS fc;",
         //pool.query("SELECT row_to_json(fc) FROM ( SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) As features FROM ( SELECT 'Feature' As type, ST_AsGeoJSON(lg.the_geom)::json As geometry, id_vehicle, id_driver, origin, destiny, \"comments\", date_registry As properties FROM \"position\" AS lg WHERE id_vehicle=" + parseInt(request.params.id_vehicle) + " order by date_registry ASC) AS f ) As fc;",
         (error, results) => {
             if (error) {

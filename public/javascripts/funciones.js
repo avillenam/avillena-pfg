@@ -407,7 +407,8 @@ style_route_function = function(feature) {
             var longitud = line.getLength();
             var coordenadasPuntos = line.getCoordinates();
             var numPuntos = coordenadasPuntos.length;
-            var ratio = (longitud / numPuntos) * .2;
+            // var ratio = (longitud / numPuntos) * .2;
+            var ratio = (longitud / numPuntos) * .8;
 
             // Simplifica el LineString para que no sature el mapa de flechas
             line = line.simplify(ratio);
@@ -481,7 +482,6 @@ style_route_function = function(feature) {
 
             if (distance >= TOLERANCIA_MINIMA_DISTANCIA_ENTRE_PUNTOS) {
                 // almacena las coordenadas para que el sigueinte lo use para calcular la rotación
-
                 // arrows
                 styles.push(new ol.style.Style({
                     geometry: feature.getGeometry(),
