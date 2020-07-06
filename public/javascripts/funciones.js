@@ -745,8 +745,8 @@ function createVehicleHTMLinfo() {
         "<div>" +
         "<h4 style='font-weight: bold'>Portador Asignado:</h4>" +
         "<div class='tileActions'>" +
-        "<a title='Crear relación Objeto-Portador' class='relationIcon create-relation' id='btnRelacionObjetoPortador' data-toggle='modal' data-target='#formVehicleDriver'><i class='fa fa-plus-square'></i></a>" +
-        "<a title='Editar relación Objeto-Portador' class='editRelationIcon edit-relation' data-toggle='modal' data-target='#editRelationVehicleDriver'><i class='fa fa-edit'></i></a>" +
+        // "<a title='Crear relación Objeto-Portador' class='relationIcon create-relation' id='btnRelacionObjetoPortador' data-toggle='modal' data-target='#formVehicleDriver'><i class='fa fa-plus-square'></i></a>" +
+        // "<a title='Editar relación Objeto-Portador' class='editRelationIcon edit-relation' data-toggle='modal' data-target='#editRelationVehicleDriver'><i class='fa fa-edit'></i></a>" +
         "<a title='Eliminar relación Objeto-Portador' class='deleteIcon delete-relation' data-id_driver=" + id_driver + "><i class='fa fa-trash'></i></a>" +
         "</div>" +
         "<p class='mb-0' title='Portador'>" + conductor_asignado + "</p>" +
