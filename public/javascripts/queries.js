@@ -25,7 +25,7 @@ const insertPosition = (request, response) => {
 
 
     pool.query('INSERT INTO position (id_vehicle, id_driver, coord_x, coord_y, accuracy, address, speed, date_registry, the_geom) ' +
-        'VALUES ($1, $2, $3, $4, round($5::numeric, 2), $6, round($7::numeric, 2), localtimestamp, ' +
+        'VALUES ($1, $2, $3, $4, round($5::numeric, 2), $6, round($7::numeric, 2), localtimestamp + INTERVAL \'2 hour\', ' +
         'st_geometryfromtext(\'POINT(' + coord_x + ' ' + coord_y + ')\',4326))', [id_vehicle, id_driver, coord_x, coord_y, accuracy, address, speed], (error, results) => {
             if (error) {
                 throw error
