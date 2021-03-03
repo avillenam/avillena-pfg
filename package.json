@@ -24,7 +24,7 @@
         "passport-local": "^1.0.0",
         "pg": "*",
         "postgeo": "*",
-        "pug": "^3.0.0",
+        "pug": "^3.0.1",
         "serve-favicon": "^2.5.0",
         "xmlhttprequest": "^1.8.0"
     },
